@@ -1,0 +1,20 @@
+dependencies: \
+  /Users/nemanjapopovic/pixel_editor_app-1/ios/Runner/GeneratedPluginRegistrant.m \
+  /Users/nemanjapopovic/pixel_editor_app-1/ios/Runner/GeneratedPluginRegistrant.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Modules/module.modulemap \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/Flutter.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterAppDelegate.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterMacros.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterPlugin.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterBinaryMessenger.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterChannels.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterCodecs.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterPlatformViews.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterTexture.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterCallbackCache.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterDartProject.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterEngine.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterEngineGroup.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterHeadlessDartRunner.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h \
+  /Users/nemanjapopovic/pixel_editor_app-1/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterViewController.h
