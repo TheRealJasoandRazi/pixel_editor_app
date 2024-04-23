@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  box_transform:
+    dependency: transitive
+    description:
+      name: box_transform
+      sha256: ec813f125e6ddc7d386dde229aff8601f39ac2dba5a7ff733e1daa8f184b39d7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   characters:
     dependency: transitive
     description:
@@ -62,6 +70,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_box_transform:
+    dependency: "direct main"
+    description:
+      name: flutter_box_transform
+      sha256: "78e00c1c244d04ab25ed891bb6c289044e208c7096ac8f68192be885b15def81"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -210,3 +226,4 @@ packages:
     version: "13.0.0"
 sdks:
   dart: ">=3.3.3 <4.0.0"
+  flutter: ">=3.10.0"
