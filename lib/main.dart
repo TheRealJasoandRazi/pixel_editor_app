@@ -45,150 +45,69 @@ class _MyHomePageState extends State<MyHomePage> {
   Offset? originalToolbarPosition;
   Offset toolbarPosition = Offset.zero;
 
-  void _calculateToolbarPosition() {
-    RenderBox? box = toolBarKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box != null) {
-      Offset position = box.localToGlobal(Offset.zero);
-      setState(() {
-        toolbarPosition = position;
-        if (originalToolbarPosition == null) {
-            originalToolbarPosition = position;
-        }
-      });
-    }
-  } 
-
-  int _currentColumnIndex = 1; //by default is in column 1
-  void _moveContainer(index){
+  void _handlePanUpdate(DragUpdateDetails details) {
     setState(() {
-      _currentColumnIndex = index;
+      toolbarPosition += details.delta;
     });
   }
 
-  Widget toolBar(Alignment alignment) {
-    BorderRadius borderRadius;
-    double? widthf;
-    double? heightf;
+  Widget toolBar(double width, double height){
+    final screenHeight = MediaQuery.of(context).size.height;
+    double threshold = screenHeight * 0.05;
+    double lowerThreshold = screenHeight - threshold - height;
+    bool rotatedBar = false;
 
-    if (alignment == Alignment.centerLeft) {
-      borderRadius = BorderRadius.only(
-        topRight: Radius.circular(16.0),
-        bottomRight: Radius.circular(16.0),
-      );
-      widthf = 0.5;
-      heightf = 0.5;
-    } else if (alignment == Alignment.centerRight) {
-      borderRadius = BorderRadius.only(
-        topLeft: Radius.circular(16.0),
-        bottomLeft: Radius.circular(16.0),
-      );
-      widthf = 0.5;
-      heightf = 0.5;
-    } else if (alignment == Alignment.topCenter) {
-      borderRadius = BorderRadius.only(
-        bottomLeft: Radius.circular(16.0),
-        bottomRight: Radius.circular(16.0),
-      );
-      widthf = 1.0;
-      heightf = 0.1;
-    } else if (alignment == Alignment.bottomCenter) {
-      borderRadius = BorderRadius.only(
-        topLeft: Radius.circular(16.0),
-        topRight: Radius.circular(16.0),
-      );
-      widthf = 1.0;
-      heightf = 0.1;
+    if(toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold)
+    {
+      rotatedBar = true;
     } else {
-      // Default case if no matching alignment is found
-      borderRadius = BorderRadius.circular(0.0);
+      rotatedBar = false;
     }
 
-    Widget toolbarWidget = GestureDetector(
-        key: toolBarKey,
-        onPanUpdate: (details) {
-            setState(() {
-                toolbarPosition += details.delta;
-                print("Original position: $originalToolbarPosition");
-                print("Current position: $toolbarPosition");
-            });
-        },
-        child: Container(
-            decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: borderRadius,
-            ),
+    return AnimatedRotation(
+      turns: rotatedBar ? 0.25 : 0,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      child:Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0),
+          color: Colors.blue,
         ),
-    );
-
-    print(toolbarPosition);
-    print(originalToolbarPosition);
-    if (toolbarPosition != originalToolbarPosition) {
-      print("moved");
-      return Positioned(
-          left: toolbarPosition.dx,
-          top: toolbarPosition.dy,
-          child: toolbarWidget,
-      );
-    }
-    print("not");
-    return Expanded(
-        child: Align(
-            alignment: alignment,
-            child: FractionallySizedBox(
-                widthFactor: widthf,
-                heightFactor: heightf,
-                child: toolbarWidget,
-            ),
-        ),
+      ), 
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    _calculateToolbarPosition();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    if(toolbarPosition == Offset(0,0)){//initialise toolbar location
+      toolbarPosition = Offset(0, screenHeight/4);
+    }
+
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Row(
-          children: [
-            Flexible(
-              flex: 2,
-              fit: FlexFit.tight,
-              child: Column(
-                children: [
-                  if(_currentColumnIndex == 1)
-                    toolBar(Alignment.centerLeft),
-                ],
-              )
+      body: Stack(
+        children: [
+          // Pixel editor canvas
+          Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          // Movable toolbar
+          Positioned(
+            left: toolbarPosition.dx,
+            top: toolbarPosition.dy,
+            child: GestureDetector(
+              onPanUpdate: _handlePanUpdate,
+              child: toolBar(screenWidth * 0.1, screenHeight * 0.5)
             ),
-            Flexible(
-              flex: 6,
-              fit: FlexFit.tight,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if(_currentColumnIndex == 2)
-                    toolBar(Alignment.topCenter),
-                  if(_currentColumnIndex == 4)
-                    toolBar(Alignment.bottomCenter),
-                ],
-              )
-            ),
-            Flexible(
-              flex: 2,
-              fit: FlexFit.tight,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (_currentColumnIndex == 3)
-                    toolBar(Alignment.centerRight),
-                ],
-              )
-            ),
-          ],
-        )
-      )
+          ),
+        ],
+      ),
     );
   }
 }
