@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +41,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  GlobalKey toolBarKey = GlobalKey();
+  Offset? originalToolbarPosition;
+  Offset toolbarPosition = Offset.zero;
+
+  void _calculateToolbarPosition() {
+    RenderBox? box = toolBarKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box != null) {
+      Offset position = box.localToGlobal(Offset.zero);
+      setState(() {
+        toolbarPosition = position;
+        if (originalToolbarPosition == null) {
+            originalToolbarPosition = position;
+        }
+      });
+    }
+  } 
+
   int _currentColumnIndex = 1; //by default is in column 1
   void _moveContainer(index){
     setState(() {
@@ -49,8 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget toolBar(Alignment alignment) {
     BorderRadius borderRadius;
-    double widthf = 0;
-    double heightf = 0;
+    double? widthf;
+    double? heightf;
 
     if (alignment == Alignment.centerLeft) {
       borderRadius = BorderRadius.only(
@@ -85,55 +103,49 @@ class _MyHomePageState extends State<MyHomePage> {
       borderRadius = BorderRadius.circular(0.0);
     }
 
-    return Expanded(
-      child: Align(
-        alignment: alignment, // Align the child to the middle left
-        child: FractionallySizedBox(
-          widthFactor: widthf, // 50% of the width of the parent
-          heightFactor: heightf, // 50% of the height of the parent
-          child: GestureDetector(
-            onVerticalDragUpdate: (details) {
-              if (details.delta.dy < 0) {
-                // Upward movement
-                _moveContainer(2);
-                print('up');
-              } else if (details.delta.dy > 0) {
-                // Downward movement
-                _moveContainer(4);
-                print('down');
-              }
-            },
-            onHorizontalDragUpdate: (details) {
-              if (details.delta.dx > 0) {
-                // Rightward movement
-                _moveContainer(3);
-                print('right');
-              } else if (details.delta.dx < 0) {
-                // Leftward movement
-                _moveContainer(1); // Add handling for leftward movement
-                print('left');
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey, // Background color set to blue
+    Widget toolbarWidget = GestureDetector(
+        key: toolBarKey,
+        onPanUpdate: (details) {
+            setState(() {
+                toolbarPosition += details.delta;
+                print("Original position: $originalToolbarPosition");
+                print("Current position: $toolbarPosition");
+            });
+        },
+        child: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey,
                 borderRadius: borderRadius,
-              ),
             ),
-          ),
         ),
-      ),
+    );
+
+    print(toolbarPosition);
+    print(originalToolbarPosition);
+    if (toolbarPosition != originalToolbarPosition) {
+      print("moved");
+      return Positioned(
+          left: toolbarPosition.dx,
+          top: toolbarPosition.dy,
+          child: toolbarWidget,
+      );
+    }
+    print("not");
+    return Expanded(
+        child: Align(
+            alignment: alignment,
+            child: FractionallySizedBox(
+                widthFactor: widthf,
+                heightFactor: heightf,
+                child: toolbarWidget,
+            ),
+        ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    _calculateToolbarPosition();
     return Scaffold(
       body: Container(
         width: double.infinity,
