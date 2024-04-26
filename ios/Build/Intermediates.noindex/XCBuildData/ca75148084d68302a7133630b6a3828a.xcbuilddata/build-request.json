@@ -43,7 +43,7 @@
           "BUILD_DIR" : "/Users/nemanjapopovic/pixel_editor_app/build/ios",
           "COMPILER_INDEX_STORE_ENABLE" : "NO",
           "FLUTTER_SUPPRESS_ANALYTICS" : "true",
-          "SCRIPT_OUTPUT_STREAM_FILE" : "/var/folders/2_/sy527zl135b037m3dnqfs4y40000gn/T/flutter_tools.tW41Yy/flutter_ios_build_temp_dirfSOH0Q/pipe_to_stdout",
+          "SCRIPT_OUTPUT_STREAM_FILE" : "/var/folders/2_/sy527zl135b037m3dnqfs4y40000gn/T/flutter_tools.kMtjtv/flutter_ios_build_temp_dirgfRAYC/pipe_to_stdout",
           "SDKROOT" : "iphonesimulator17.4"
         }
       },

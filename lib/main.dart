@@ -74,8 +74,40 @@ class _MyHomePageState extends State<MyHomePage> {
         height: height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          color: Colors.blue,
+          color: Colors.grey[400],
         ),
+        child:Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start, //theres no "top" in flutter
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: FractionallySizedBox( //needs to be under a flexible widget, otherwise theres layout issues
+                  widthFactor: 0.75,
+                  heightFactor: 0.1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0),
+                      color: Colors.grey[350],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5), // Shadow color
+                          spreadRadius: 5, // Spread radius of the shadow
+                          blurRadius: 7, // Blur radius of the shadow
+                          offset: Offset(0, 3), // Offset of the shadow
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.grid_on,
+                    ),
+                  )
+                )
+              )
+            ],
+          )
+          )
       ), 
     );
   }
