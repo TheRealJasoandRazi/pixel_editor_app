@@ -65,8 +65,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
+
   Widget gridForm(height){
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final TextEditingController _width = TextEditingController();
     final TextEditingController _height = TextEditingController();
 
@@ -78,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.blueAccent,
       ),
       child: Form(
-        key: _formKey,
+        //key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,8 +136,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     String _widthInput = _width.text;
                     String _heightInput = _height.text;
 
-                    print(_widthInput);
+                    print(_widthInput); //for testing
                     print(_heightInput);
+
+                    _toggleFormVisibility();
                   },
                   child: Text('Submit'),
               ),
@@ -143,6 +147,39 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget toolBarButton(IconData icon, Function() action){
+    return Flexible(
+      flex: 1,
+      child: FractionallySizedBox( //needs to be under a flexible widget, otherwise theres layout issues
+        widthFactor: 0.75,
+        heightFactor: 0.2,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              color: Colors.grey[350],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5), // Shadow color
+                  spreadRadius: 5, // Spread radius of the shadow
+                  blurRadius: 7, // Blur radius of the shadow
+                  offset: Offset(0, 3), // Offset of the shadow
+                ),
+              ],
+            ),
+            child: GestureDetector(
+              onTap: action,
+              child: Icon(
+                icon,
+              )
+            ),
+          )
+        )
+      )
     );
   }
 
@@ -176,35 +213,11 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.start, //theres no "top" in flutter
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(
-                child: FractionallySizedBox( //needs to be under a flexible widget, otherwise theres layout issues
-                  widthFactor: 0.75,
-                  heightFactor: 0.1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Colors.grey[350],
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5), // Shadow color
-                          spreadRadius: 5, // Spread radius of the shadow
-                          blurRadius: 7, // Blur radius of the shadow
-                          offset: Offset(0, 3), // Offset of the shadow
-                        ),
-                      ],
-                    ),
-                    child: GestureDetector(
-                      onTap: _toggleFormVisibility,
-                      child: Icon(
-                        Icons.grid_on,
-                      )
-                    ),
-                  )
-                )
-              )
+              toolBarButton(Icons.grid_on, () => _toggleFormVisibility()),
+              toolBarButton(Icons.format_paint, () => _toggleFormVisibility()), //change function later
             ],
           )
-          )
+        )
       ), 
     );
   }
