@@ -4,7 +4,6 @@ class CustomToolBar extends StatefulWidget{
     final double screenWidth;
     final double screenHeight;
     final double ypos;
-    final Function() toggleFormVisibility;
 
     final List<Widget> toolList = [];
     void add(Widget button){
@@ -15,7 +14,6 @@ class CustomToolBar extends StatefulWidget{
         required this.screenWidth,
         required this.screenHeight,
         required this.ypos,
-        required this.toggleFormVisibility,
     });
 
     @override

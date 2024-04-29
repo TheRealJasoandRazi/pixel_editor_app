@@ -5,7 +5,7 @@ mixin ToolBarButtons {
     return Expanded(
       child: FractionallySizedBox(
         widthFactor: 0.75,
-        heightFactor: 0.4,
+        heightFactor: 0.5,
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: GestureDetector(

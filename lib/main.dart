@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_box_transform/flutter_box_transform.dart'; //leave for later
+import 'package:pixel_editor_app/GridTool.dart';
 import 'package:pixel_editor_app/PaintTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
@@ -37,17 +38,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Offset formPosition = Offset.zero;
-  bool _isFormVisible = false;
-
-  void _toggleFormVisibility() {
-    setState(() {
-      _isFormVisible = !_isFormVisible;
-    });
-  }
 
   void _handleFormUpdate(DragUpdateDetails details) {
     setState(() {
       formPosition += details.delta;
+    });
+  }
+
+  void _rebuildHomePage() {
+    setState(() {
+      print("rebuild");
     });
   }
 
@@ -122,8 +122,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     print(_widthInput); //for testing
                     print(_heightInput);
-
-                    _toggleFormVisibility();
                   },
                   child: Text('Submit'),
               ),
@@ -134,8 +132,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  PaintTool paintTool = PaintTool();
+  late CustomToolBar customToolBar; // Declare as a state variable
+  late GridTool gridTool; // Declare as a state variable
+  late PaintTool paintTool; // Declare as a state variable
 
+  @override
+  void initState() {
+    super.initState();
+    gridTool = GridTool(rebuildHomePage: _rebuildHomePage);
+    paintTool = PaintTool();
+  }
+  
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -144,14 +151,12 @@ class _MyHomePageState extends State<MyHomePage> {
     if(formPosition == Offset(0,0)){//initialise form location
       formPosition = Offset(screenWidth/2, screenWidth/2);
     }
-    CustomToolBar customToolBar = CustomToolBar(
+    customToolBar = CustomToolBar(
       screenHeight: screenHeight,
       screenWidth: screenWidth,
       ypos: screenHeight / 4,
-      toggleFormVisibility: _toggleFormVisibility,
     );
-    customToolBar.add(paintTool);
-    customToolBar.add(paintTool);
+    customToolBar.add(gridTool);
     customToolBar.add(paintTool);
 
     return Scaffold(
@@ -166,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // Movable toolbar
           customToolBar,
           //movable form
-          if (_isFormVisible)
+          if (gridTool.isFormVisibile)
             Positioned(
               left: formPosition.dx,
               top: formPosition.dy,
@@ -179,6 +184,5 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 }
 
