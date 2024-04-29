@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'toolBarButton.dart';
+import 'toolBarButtons.dart';
 
 class PaintTool extends StatefulWidget with ToolBarButtons {
 
