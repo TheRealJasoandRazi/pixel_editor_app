@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class CustomToolBar extends StatefulWidget{
     final double screenWidth;
@@ -22,6 +23,9 @@ class CustomToolBar extends StatefulWidget{
 
 class _CustomToolBarState extends State<CustomToolBar> {
     Offset toolbarPosition = Offset.zero;
+    bool rotatingBar = false; //in thresholds
+    bool rotationComplete = false; //done the rotations
+    bool draggable = false; //only true when its been rotated and the user stops dragging
 
     @override
     initState() {
@@ -31,9 +35,23 @@ class _CustomToolBarState extends State<CustomToolBar> {
 
     void _handleToolBarUpdate(DragUpdateDetails details) {
       setState(() {
-        toolbarPosition += details.delta;
+          if(draggable) {
+            //print("up");
+            double angle = 0.25; // Determine the angle of rotation
+            // Convert delta to radians for trigonometric calculations
+            double angleInRadians = angle * 2 * 3.14159;
+            // Calculate the rotated delta
+            double rotatedDeltaX = details.delta.dx * cos(angleInRadians) - details.delta.dy * sin(angleInRadians);
+            double rotatedDeltaY = details.delta.dx * sin(angleInRadians) + details.delta.dy * cos(angleInRadians);
+            // Update toolbarPosition with the rotated delta
+            toolbarPosition += Offset(rotatedDeltaX, rotatedDeltaY);
+          } else if (!draggable) {
+            //print("normal");
+            toolbarPosition += details.delta;
+          }
+        
       });
-    }
+    } 
 
     @override
     Widget build(BuildContext context) {
@@ -42,24 +60,42 @@ class _CustomToolBarState extends State<CustomToolBar> {
 
       double threshold = widget.screenHeight * 0.05;
       double lowerThreshold = widget.screenHeight - threshold - height;
-      bool rotatedBar = false;
 
       if(toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold)
       {
-        rotatedBar = true;
+        rotatingBar = true;
       } else {
-        rotatedBar = false;
+        rotatingBar = false;
       }
 
         return Positioned(
             left: toolbarPosition.dx,
             top: toolbarPosition.dy,
-            child: GestureDetector(
-                onPanUpdate: _handleToolBarUpdate,
-                child: AnimatedRotation(
-                    turns: rotatedBar ? 0.25 : 0, 
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
+              child: AnimatedRotation(
+                  turns: rotatingBar ? 0.25 : 0, 
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  onEnd: () {
+                    setState(() {
+                      rotationComplete = !rotationComplete;
+                    });
+                  },
+                  child: GestureDetector(
+                    onPanUpdate: (details) {
+                      setState(() {
+                          _handleToolBarUpdate(details);
+                      });
+                    },
+                    onPanEnd: (details) {
+                      setState(() {
+                        if(rotationComplete){ //fixes transitioning into rotation
+                          draggable = true;
+                        } else {
+                          draggable = false;
+                        }
+                      });
+                    },
+                    
                     child: Container(
                         width: width,
                         height: height,
@@ -75,7 +111,7 @@ class _CustomToolBarState extends State<CustomToolBar> {
                                 children: [
                                    ...widget.toolList.map((tool) {
                                     return AnimatedRotation(
-                                      turns: rotatedBar ? -0.25 : 0,
+                                      turns: rotatingBar ? -0.25 : 0,
                                       duration: Duration(milliseconds: 600),
                                       curve: Curves.easeInOut,
                                       child: tool,
