@@ -73,8 +73,13 @@ class _CustomToolBarState extends State<CustomToolBar> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  ...widget.toolList.map((tool) {
-                                    return tool;
+                                   ...widget.toolList.map((tool) {
+                                    return AnimatedRotation(
+                                      turns: rotatedBar ? -0.25 : 0,
+                                      duration: Duration(milliseconds: 600),
+                                      curve: Curves.easeInOut,
+                                      child: tool,
+                                    );
                                   }).toList(),
                                 ],
                             ),

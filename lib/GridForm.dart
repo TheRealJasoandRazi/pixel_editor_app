@@ -45,7 +45,7 @@ class _GridFormState extends State<GridForm> {
           height: height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
-            color: Colors.blueAccent,
+            color: Colors.grey.shade400,
           ),
           child: Form(
             child: Column(
@@ -67,7 +67,7 @@ class _GridFormState extends State<GridForm> {
                       controller: _widthController,
                       decoration: InputDecoration(
                         labelText: 'Width',
-                        fillColor: Colors.blueAccent,
+                        fillColor: Colors.grey.shade400,
                         filled: true,
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -84,7 +84,7 @@ class _GridFormState extends State<GridForm> {
                       controller: _heightController,
                       decoration: InputDecoration(
                         labelText: 'Height',
-                        fillColor: Colors.blueAccent,
+                        fillColor: Colors.grey.shade400,
                         filled: true,
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -95,9 +95,23 @@ class _GridFormState extends State<GridForm> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Handle form submission
+                  child: Container(
+                    width: 100, // Adjust the width as needed
+                    height: 50, // Adjust the height as needed
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade500, // Background color
+                        borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                        boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3), // Shadow position
+                            ),
+                        ],
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
                       final String widthInput = _widthController.text;
                       final String heightInput = _heightController.text;
 
@@ -105,10 +119,16 @@ class _GridFormState extends State<GridForm> {
                       print('Width: $widthInput');
                       print('Height: $heightInput');
 
-                      // Toggle form visibility
                       widget.changeVisibility();
-                    },
-                    child: Text('Submit'),
+                      },
+                      child: Center(
+                          // Center the text within the container
+                          child: Text(
+                              'Submit',
+                              style: TextStyle(color: Colors.white),
+                          ),
+                      ),
+                    )
                   ),
                 ),
               ],
