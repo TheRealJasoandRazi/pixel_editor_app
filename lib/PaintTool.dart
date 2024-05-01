@@ -11,7 +11,7 @@ class _PaintToolState extends State<PaintTool> {
   bool paintSelected = false;
   Color buttonColor = Colors.grey.shade300;
 
-  // Method to handle paint button toggle
+  // changes icon colour to signify to user if its active or not
   void _togglePaintButton() {
     setState(() {
       paintSelected = !paintSelected;
@@ -21,7 +21,6 @@ class _PaintToolState extends State<PaintTool> {
 
   @override
   Widget build(BuildContext context) {
-    // Call the inherited toolBarButton function to create the toolbar button
     return widget.toolBarButton(
       Icons.format_paint,
       _togglePaintButton,

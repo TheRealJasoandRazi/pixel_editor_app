@@ -4,7 +4,7 @@ import 'toolBarButtons.dart';
 class GridTool extends StatefulWidget with ToolBarButtons {
   final Function() changeVisibility;
 
-  GridTool({
+  GridTool({ //pass in the homepage method to change visibility of form
     required this.changeVisibility,
   });
 
@@ -13,12 +13,7 @@ class GridTool extends StatefulWidget with ToolBarButtons {
 }
 
 class _GridToolState extends State<GridTool> {
-  /*void _toggleFormVisibility() {
-    print("ICON CLICKED");
-    widget.isFormVisible = !widget.isFormVisible;
-    widget.rebuildHomePage();
-  }*/
-
+  
   @override
   Widget build(BuildContext context) {
     return widget.toolBarButton(

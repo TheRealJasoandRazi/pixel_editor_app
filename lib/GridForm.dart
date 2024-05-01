@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class GridForm extends StatefulWidget {
   final Function() changeVisibility;
 
-  GridForm({
+  GridForm({ //pass in the homepage method to change visibility of form
     required this.changeVisibility,
   });
 
@@ -22,6 +22,7 @@ class _GridFormState extends State<GridForm> {
 
   @override
   Widget build(BuildContext context) {
+    //grabs values entered into the form
     final TextEditingController _widthController = TextEditingController();
     final TextEditingController _heightController = TextEditingController();
     

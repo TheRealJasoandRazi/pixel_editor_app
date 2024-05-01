@@ -38,21 +38,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool formVisibility = false;
+  bool formVisibility = false; //grid form variable and method
   void changeVisibility(){
     setState(() {
       formVisibility = !formVisibility;
     });
   }
 
-  late CustomToolBar customToolBar; // Declare as a state variable
-  late GridTool gridTool; // Declare as a state variable
-  late PaintTool paintTool; // Declare as a state variable
+  //declare an instance of all classes
+  late CustomToolBar customToolBar;
+  late GridTool gridTool;
+  late PaintTool paintTool; 
   late GridForm gridForm;
 
   @override
   void initState() {
-    super.initState();
+    super.initState(); //instantiate buttons
     gridForm = GridForm(changeVisibility: changeVisibility);
     gridTool = GridTool(changeVisibility: changeVisibility);
     paintTool = PaintTool();
@@ -63,11 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    //instantiate toolbar     
     customToolBar = CustomToolBar(
       screenHeight: screenHeight,
       screenWidth: screenWidth,
       ypos: screenHeight / 4,
-    );
+    ); 
+
+    //add buttons to custom toolbar
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
 
@@ -80,9 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
             width: double.infinity,
             height: double.infinity,
           ),
-          // Movable toolbar
+          // display movable toolbar
           customToolBar,
-          //movable form
+          //add movable form
           if (formVisibility)
             gridForm
         ],
