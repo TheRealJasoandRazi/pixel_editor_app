@@ -22,6 +22,9 @@ class CustomToolBar extends StatefulWidget{
 }
 
 class _CustomToolBarState extends State<CustomToolBar> {
+    late double toolbarWidth;
+    late double toolbarHeight;
+
     Offset toolbarPosition = Offset.zero;
     bool rotatingBar = false; //in thresholds
     bool rotationComplete = false; //done the rotations
@@ -30,6 +33,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
     @override
     initState() {
       super.initState();
+      toolbarWidth = widget.screenWidth * 0.1;
+      toolbarHeight = widget.screenHeight * 0.5;
       toolbarPosition = Offset(0, widget.ypos);
     }
 
@@ -62,8 +67,11 @@ class _CustomToolBarState extends State<CustomToolBar> {
         required double toolbarHeight
     }) {
         return Positioned(
-            top: top,
-            left: left,
+          top: top,
+          left: left,
+          //child: AnimatedRotation(
+           // turns: rotatingBar ? 0.25 : 0,
+            //duration: Duration(milliseconds: 300),
             child: GestureDetector(
                 onPanUpdate: onPanUpdate,
                 child: Container(
@@ -72,21 +80,20 @@ class _CustomToolBarState extends State<CustomToolBar> {
                     color: Colors.blue,
                 ),
             ),
+          //)
         );
     }
 
     @override
     Widget build(BuildContext context) {
-      double width = widget.screenWidth * 0.1;
-      double height = widget.screenHeight * 0.5;
 
-      final double minWidth = widget.screenWidth * 0.05; 
+      final double minWidth = widget.screenWidth * 0.05;// Minimum width
       final double maxWidth = widget.screenWidth * 0.2; // Maximum width
       final double minHeight = widget.screenHeight * 0.3; // Minimum height
       final double maxHeight = widget.screenHeight * 0.8; // Maximum height
 
       double threshold = widget.screenHeight * 0.05;
-      double lowerThreshold = widget.screenHeight - threshold - height;
+      double lowerThreshold = widget.screenHeight - threshold - toolbarHeight;
 
       if(toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold)
       {
@@ -125,8 +132,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
                   });
                 },
               child: Container(
-                  width: width,
-                  height: height,
+                  width: toolbarWidth,
+                  height: toolbarHeight,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.0),
                       color: Colors.grey[400],
@@ -157,13 +164,14 @@ class _CustomToolBarState extends State<CustomToolBar> {
             left: toolbarPosition.dx, 
             onPanUpdate:(details) {
               setState(() {
-                  double newWidth = width + details.delta.dx;
-                  width = newWidth.clamp(minWidth, maxWidth);
+                double newWidth = toolbarWidth - details.delta.dx; //get difference
+                toolbarWidth = newWidth.clamp(minWidth, maxWidth); 
+                toolbarPosition = Offset(toolbarPosition.dx + details.delta.dx, toolbarPosition.dy);
               });
             },
             vertical: true, 
-            toolbarWidth: width, 
-            toolbarHeight: height)
+            toolbarWidth: toolbarWidth, 
+            toolbarHeight: toolbarHeight)
         ],
       );        
     }
