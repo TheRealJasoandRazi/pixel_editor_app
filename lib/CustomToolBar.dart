@@ -69,18 +69,14 @@ class _CustomToolBarState extends State<CustomToolBar> {
         return Positioned(
           top: top,
           left: left,
-          //child: AnimatedRotation(
-           // turns: rotatingBar ? 0.25 : 0,
-            //duration: Duration(milliseconds: 300),
-            child: GestureDetector(
-                onPanUpdate: onPanUpdate,
-                child: Container(
-                    width: vertical ? 10 : toolbarWidth,
-                    height: vertical ? toolbarHeight : 10,
-                    color: Colors.blue,
-                ),
+          child: GestureDetector(
+            onPanUpdate: onPanUpdate,
+            child: Container(
+                width: vertical ? 10 : toolbarWidth,
+                height: vertical ? toolbarHeight : 10,
+                color: Colors.blue,
             ),
-          //)
+          ),
         );
     }
 
@@ -102,77 +98,77 @@ class _CustomToolBarState extends State<CustomToolBar> {
         rotatingBar = false;
       }
       
-      return Stack(
-        children: [
-          Positioned(
-            left: toolbarPosition.dx,
-            top: toolbarPosition.dy,
-            child: AnimatedRotation(
-              turns: rotatingBar ? 0.25 : 0,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              onEnd: () {
-                setState(() {
-                  rotationComplete = !rotationComplete;
-                });
-              },
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  setState(() {
-                      _handleToolBarUpdate(details);
-                  });
-                },
-                onPanEnd: (details) {
-                  setState(() {
-                    if(rotationComplete){ //fixes transitioning into rotation
-                      draggable = true;
-                    } else {
-                      draggable = false;
-                    }
-                  });
-                },
-              child: Container(
-                  width: toolbarWidth,
-                  height: toolbarHeight,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Colors.grey[400],
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                              ...widget.toolList.map((tool) {
-                              return AnimatedRotation(
-                                turns: rotatingBar ? -0.25 : 0,
-                                duration: Duration(milliseconds: 600),
-                                curve: Curves.easeInOut,
-                                child: tool,
-                              );
-                            }).toList(),
-                          ],
-                      ),
-                  ),
-                ),
-              )
-            )
-          ),
-          _buildResizeHandle( //left side
-            top: toolbarPosition.dy,
-            left: toolbarPosition.dx, 
-            onPanUpdate:(details) {
+
+      return Positioned(
+        left: toolbarPosition.dx,
+        top: toolbarPosition.dy,
+        child: AnimatedRotation(
+          turns: rotatingBar ? 0.25 : 0,
+          duration: Duration(milliseconds: 300),
+          alignment: Alignment.center,
+          curve: Curves.easeInOut,
+          onEnd: () {
+            setState(() {
+              rotationComplete = !rotationComplete;
+            });
+          },
+          child: GestureDetector(
+            onPanUpdate: (details) {
               setState(() {
-                double newWidth = toolbarWidth - details.delta.dx; //get difference
-                toolbarWidth = newWidth.clamp(minWidth, maxWidth); 
-                toolbarPosition = Offset(toolbarPosition.dx + details.delta.dx, toolbarPosition.dy);
+                  _handleToolBarUpdate(details);
               });
             },
-            vertical: true, 
-            toolbarWidth: toolbarWidth, 
-            toolbarHeight: toolbarHeight)
-        ],
-      );        
+            onPanEnd: (details) {
+              setState(() {
+                if(rotationComplete){ //fixes transitioning into rotation
+                  draggable = true;
+                } else {
+                  draggable = false;
+                }
+              });
+            },
+          child: Container( //the toolbar itself
+              width: toolbarWidth,
+              height: toolbarHeight,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.grey[400],
+              ),
+              child: Stack(children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                          ...widget.toolList.map((tool) {
+                          return AnimatedRotation(
+                            turns: rotatingBar ? -0.25 : 0,
+                            duration: Duration(milliseconds: 600),
+                            curve: Curves.easeInOut,
+                            child: tool,
+                          );
+                        }).toList(),
+                      ],
+                  ),
+                ),
+                _buildResizeHandle( //left side
+                top: 0,
+                left: 0, 
+                onPanUpdate:(details) {
+                  setState(() {
+                    double newWidth = toolbarWidth - details.delta.dx; //get difference
+                    toolbarWidth = newWidth.clamp(minWidth, maxWidth); 
+                    toolbarPosition = Offset(toolbarPosition.dx + details.delta.dx, toolbarPosition.dy);
+                  });
+                },
+                vertical: true, 
+                toolbarWidth: toolbarWidth, 
+                toolbarHeight: toolbarHeight)
+              ],)
+            ),
+          )
+        )
+      );       
     }
 }
