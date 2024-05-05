@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 mixin ToolBarButtons {
   Widget toolBarButton(IconData icon, Function() action, Color color) {
-    return SizedBox(
-      width: 75.0,
-      height: 75.0,
+      return FractionallySizedBox(
+      widthFactor: 0.8,
+      heightFactor: 0.4,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(

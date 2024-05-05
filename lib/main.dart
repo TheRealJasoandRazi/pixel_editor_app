@@ -74,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //add buttons to custom toolbar
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
+    
 
     return Scaffold(
       body: Stack(

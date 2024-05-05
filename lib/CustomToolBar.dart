@@ -74,7 +74,10 @@ class _CustomToolBarState extends State<CustomToolBar> {
             child: Container(
                 width: vertical ? 10 : toolbarWidth,
                 height: vertical ? toolbarHeight : 10,
-                color: Colors.blue,
+                 decoration: BoxDecoration(     
+                  color: Colors.grey.shade400, //makes it invisible
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
             ),
           ),
         );
@@ -86,7 +89,7 @@ class _CustomToolBarState extends State<CustomToolBar> {
       final double minWidth = widget.screenWidth * 0.05;// Minimum width
       final double maxWidth = widget.screenWidth * 0.2; // Maximum width
       final double minHeight = widget.screenHeight * 0.3; // Minimum height
-      final double maxHeight = widget.screenHeight * 0.8; // Maximum height
+      final double maxHeight = widget.screenHeight * 0.6; // Maximum height
 
       double threshold = widget.screenHeight * 0.05;
       double lowerThreshold = widget.screenHeight - threshold - toolbarHeight;
@@ -134,37 +137,85 @@ class _CustomToolBarState extends State<CustomToolBar> {
                   borderRadius: BorderRadius.circular(16.0),
                   color: Colors.grey[400],
               ),
-              child: Stack(children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                 Padding(
+                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                           ...widget.toolList.map((tool) {
-                          return AnimatedRotation(
-                            turns: rotatingBar ? -0.25 : 0,
-                            duration: Duration(milliseconds: 600),
-                            curve: Curves.easeInOut,
-                            child: tool,
+                          return Flexible(
+                            flex: 1,
+                            child: AnimatedRotation(
+                              turns: rotatingBar ? -0.25 : 0,
+                              duration: Duration(milliseconds: 600),
+                              curve: Curves.easeInOut,
+                              child: tool,
+                            )
                           );
                         }).toList(),
                       ],
                   ),
                 ),
                 _buildResizeHandle( //left side
-                top: 0,
-                left: 0, 
-                onPanUpdate:(details) {
-                  setState(() {
-                    double newWidth = toolbarWidth - details.delta.dx; //get difference
-                    toolbarWidth = newWidth.clamp(minWidth, maxWidth); 
-                    toolbarPosition = Offset(toolbarPosition.dx + details.delta.dx, toolbarPosition.dy);
-                  });
-                },
-                vertical: true, 
-                toolbarWidth: toolbarWidth, 
-                toolbarHeight: toolbarHeight)
+                  top: 0,
+                  left: 0, 
+                  onPanUpdate:(details) {
+                    setState(() {
+                      double newWidth = toolbarWidth - details.delta.dx; //get difference
+                      toolbarWidth = newWidth.clamp(minWidth, maxWidth); 
+                      toolbarPosition = Offset(toolbarPosition.dx + details.delta.dx, toolbarPosition.dy);
+                    });
+                  },
+                  vertical: true, 
+                  toolbarWidth: toolbarWidth, 
+                  toolbarHeight: toolbarHeight),
+                
+                _buildResizeHandle( // right side 
+                  top: 0,
+                  left: toolbarWidth - 10, // Place it at the right side
+                  onPanUpdate: (details) {
+                      setState(() {
+                          double newWidth = toolbarWidth + details.delta.dx;
+                          toolbarWidth = newWidth.clamp(minWidth, maxWidth);
+                      });
+                  },
+                  vertical: true,
+                  toolbarWidth: toolbarWidth,
+                  toolbarHeight: toolbarHeight,
+                ),
+                // Top resize handle
+                _buildResizeHandle(
+                  top: 0,
+                  left: 0,
+                  onPanUpdate: (details) {
+                      setState(() {
+                          double newHeight = toolbarHeight - details.delta.dy;
+                          toolbarHeight = newHeight.clamp(minHeight, maxHeight);
+                          toolbarPosition += Offset(0, details.delta.dy);
+                      });
+                  },
+                  vertical: false,
+                  toolbarWidth: toolbarWidth,
+                  toolbarHeight: toolbarHeight,
+                ),
+                // Bottom resize handle
+                _buildResizeHandle(
+                  top: toolbarHeight - 10, // Place at bottom of toolbar
+                  left: 0,
+                  onPanUpdate: (details) {
+                      setState(() {
+                          double newHeight = toolbarHeight + details.delta.dy;
+                          toolbarHeight = newHeight.clamp(minHeight, maxHeight);
+                      });
+                  },
+                  vertical: false,
+                  toolbarWidth: toolbarWidth,
+                  toolbarHeight: toolbarHeight,
+                ),
               ],)
             ),
           )
