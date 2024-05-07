@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'toolBarButtons.dart';
 
 class PaintTool extends StatefulWidget with ToolBarButtons {
-
+  bool _paintSelected = false; //leave variable outside, it needs to be accessable from outside
+  bool get paintSelected => _paintSelected;
+  
   @override
   _PaintToolState createState() => _PaintToolState();
 }
 
 class _PaintToolState extends State<PaintTool> {
-  bool paintSelected = false;
   Color buttonColor = Colors.grey.shade300;
 
   // changes icon colour to signify to user if its active or not
   void _togglePaintButton() {
     setState(() {
-      paintSelected = !paintSelected;
-      buttonColor = paintSelected ? Colors.blue.shade300 : Colors.grey.shade300;
+      widget._paintSelected = !widget._paintSelected;
+      buttonColor = widget._paintSelected ? Colors.blue.shade300 : Colors.grey.shade300;
     });
   }
 

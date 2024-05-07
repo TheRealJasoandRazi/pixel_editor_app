@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_box_transform/flutter_box_transform.dart'; //leave for later
+import 'package:pixel_editor_app/CreateGrid.dart';
 import 'package:pixel_editor_app/GridTool.dart';
 import 'package:pixel_editor_app/PaintTool.dart';
 
@@ -74,8 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
     //add buttons to custom toolbar
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
-    
 
+    CreateGrid grid = CreateGrid(width: 20, height: 20, paintTool: paintTool);
+    
     return Scaffold(
       body: Stack(
         children: [
@@ -87,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           // display movable toolbar
           customToolBar,
+          grid,
           //add movable form
           if (formVisibility)
             gridForm
