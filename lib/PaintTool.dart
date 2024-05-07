@@ -5,6 +5,10 @@ class PaintTool extends StatefulWidget with ToolBarButtons {
   bool _paintSelected = false; //leave variable outside, it needs to be accessable from outside
   bool get paintSelected => _paintSelected;
   
+  PaintTool({
+    Key? key, 
+  }) : super(key: key);
+
   @override
   _PaintToolState createState() => _PaintToolState();
 }

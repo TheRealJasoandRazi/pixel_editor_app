@@ -39,12 +39,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<CreateGrid> gridList = []; //list of grids
+
   bool formVisibility = false; //grid form variable and method
   void changeVisibility(){
     setState(() {
       formVisibility = !formVisibility;
     });
   }
+  void _handleGridFormSubmission(int width, int height) {
+    setState(() {
+        CreateGrid grid = CreateGrid(width: width, height: height, paintTool: paintTool);
+        gridList.add(grid);
+    });
+  }
+
 
   //declare an instance of all classes
   late CustomToolBar customToolBar;
@@ -55,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState(); //instantiate buttons
-    gridForm = GridForm(changeVisibility: changeVisibility);
+    gridForm = GridForm(changeVisibility: changeVisibility, onFormSubmission: _handleGridFormSubmission);
     gridTool = GridTool(changeVisibility: changeVisibility);
     paintTool = PaintTool();
   }
@@ -76,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
 
-    CreateGrid grid = CreateGrid(width: 20, height: 20, paintTool: paintTool);
+    //CreateGrid grid = CreateGrid(width: 20, height: 20, paintTool: paintTool);
     
     return Scaffold(
       body: Stack(
@@ -89,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           // display movable toolbar
           customToolBar,
-          grid,
+          for (var widget in gridList) widget, //renders all grids
           //add movable form
           if (formVisibility)
             gridForm

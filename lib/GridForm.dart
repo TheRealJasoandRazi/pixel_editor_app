@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class GridForm extends StatefulWidget {
   final Function() changeVisibility;
+  final Function(int, int) onFormSubmission;
 
   GridForm({ //pass in the homepage method to change visibility of form
     required this.changeVisibility,
+    required this.onFormSubmission
   });
 
   @override
@@ -115,9 +117,15 @@ class _GridFormState extends State<GridForm> {
                       final String widthInput = _widthController.text;
                       final String heightInput = _heightController.text;
 
-                      // Print the input values for testing purposes
-                      print('Width: $widthInput');
-                      print('Height: $heightInput');
+                      int? width = int.tryParse(widthInput);
+                      int? height = int.tryParse(heightInput);
+
+                      // Check if the conversions were successful
+                      if (width != null && height != null) {
+                        widget.onFormSubmission(width, height);
+                      } else {
+                        print("aint work");
+                      }
 
                       widget.changeVisibility();
                       },

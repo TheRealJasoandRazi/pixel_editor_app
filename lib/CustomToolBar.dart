@@ -75,8 +75,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
                 width: vertical ? 10 : toolbarWidth,
                 height: vertical ? toolbarHeight : 10,
                  decoration: BoxDecoration(     
-                  color: Colors.grey.shade400, //makes it invisible
-                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.transparent, //makes it invisible
+                  //borderRadius: BorderRadius.circular(16.0),
                 ),
             ),
           ),
