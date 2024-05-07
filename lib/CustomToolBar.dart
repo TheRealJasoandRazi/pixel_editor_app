@@ -100,7 +100,6 @@ class _CustomToolBarState extends State<CustomToolBar> {
       } else {
         rotatingBar = false;
       }
-      
 
       return Positioned(
         left: toolbarPosition.dx,
@@ -112,7 +111,14 @@ class _CustomToolBarState extends State<CustomToolBar> {
           curve: Curves.easeInOut,
           onEnd: () {
             setState(() {
-              rotationComplete = !rotationComplete;
+              if(rotatingBar)
+              {
+                rotationComplete = true;
+              }
+              else
+              {
+                rotationComplete = false;
+              }
             });
           },
           child: GestureDetector(
@@ -146,7 +152,7 @@ class _CustomToolBarState extends State<CustomToolBar> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                          ...widget.toolList.map((tool) {
+                        ...widget.toolList.map((tool) {
                           return Flexible(
                             flex: 1,
                             child: AnimatedRotation(

@@ -6,7 +6,7 @@ mixin ToolBarButtons {
       widthFactor: 0.8,
       heightFactor: 0.4,
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(8.0),
         child: GestureDetector(
           onTap: action, // Wrap the entire container with GestureDetector
           child: Container(
