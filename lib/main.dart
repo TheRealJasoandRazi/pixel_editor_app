@@ -70,14 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
   late PaintTool paintTool; 
   late GridForm gridForm;
   late ColorWheelTool colorWheelTool;
-  late ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp();
+  late ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp(); //initialised
 
   @override
   void initState() {
     super.initState(); //instantiate buttons
     gridForm = GridForm(changeVisibility: changeVisibility, onFormSubmission: _handleGridFormSubmission);
     gridTool = GridTool(changeVisibility: changeVisibility);
-    paintTool = PaintTool();
+    paintTool = PaintTool(colorWheel: colorWheelPopUp);
     colorWheelTool = ColorWheelTool(changeColorWheelVisibility: changeColorWheelVisibility);
   }
   

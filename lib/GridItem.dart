@@ -17,7 +17,6 @@ class GridItem extends StatefulWidget {
 
 class _GridItemState extends State<GridItem> {
   Color defaultColor = Colors.transparent;
-  Color clickedColor = Colors.red;
 
   late Color currentColor;
 
@@ -29,7 +28,11 @@ class _GridItemState extends State<GridItem> {
 
   void _handleClick() {
     setState(() {
-      currentColor = currentColor == defaultColor ? clickedColor : defaultColor;
+      if(widget.paintTool.colorWheel.getScreenPickerColor == currentColor){
+        currentColor = Colors.transparent;
+      } else {
+        currentColor = widget.paintTool.colorWheel.getScreenPickerColor;
+      }
     });
   }
 

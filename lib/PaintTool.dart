@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'toolBarButtons.dart';
+import 'ColorWheelPopUp.dart';
 
 class PaintTool extends StatefulWidget with ToolBarButtons {
   bool _paintSelected = false; //leave variable outside, it needs to be accessable from outside
   bool get paintSelected => _paintSelected;
+  ColorWheelPopUp colorWheel;
   
   PaintTool({
     Key? key, 
+    required ColorWheelPopUp this.colorWheel
   }) : super(key: key);
 
   @override
