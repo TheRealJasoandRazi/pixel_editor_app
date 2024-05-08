@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_box_transform/flutter_box_transform.dart'; //leave for later
+
 import 'package:pixel_editor_app/ColorWheelTool.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
 import 'package:pixel_editor_app/GridTool.dart';
@@ -8,6 +8,7 @@ import 'package:pixel_editor_app/PaintTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
+import 'ColorWheelPopUp.dart';
 
 void main() {
   runApp(const MyApp());
@@ -69,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late PaintTool paintTool; 
   late GridForm gridForm;
   late ColorWheelTool colorWheelTool;
+  late ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp();
 
   @override
   void initState() {
@@ -110,6 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // display movable toolbar
           customToolBar,
           for (var widget in gridList) widget, //renders all grids
+          if(colorWheelVisibility)
+            colorWheelPopUp, //color wheel pop up
           //add movable form
           if (formVisibility)
             gridForm
