@@ -40,8 +40,8 @@ class _CreateGridState extends State<CreateGrid> {
       top: gridPosition.dy,
       child: GestureDetector(
         onPanUpdate:(details) {
-          if(!widget.paintTool.paintSelected)
-          _handleGridUpdate(details);
+          if(!widget.paintTool.paintSelected) 
+            _handleGridUpdate(details);
         },
           child: Container(
           width: screenWidth / 2,
@@ -52,7 +52,7 @@ class _CreateGridState extends State<CreateGrid> {
                 childAspectRatio: 1, // Aspect ratio of each grid item (square boxes)
             ),
             itemCount: widget.height * widget.width,
-             physics: NeverScrollableScrollPhysics(), //prevents scrolling
+            physics: NeverScrollableScrollPhysics(), //prevents scrolling
             itemBuilder: (context, index) {
               return GridItem(index: index, paintTool: widget.paintTool);
             },

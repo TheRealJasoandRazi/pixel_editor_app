@@ -12,8 +12,6 @@ class ColorWheelPopUp extends StatefulWidget {
 
 class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
   Offset colorWheelPosition = Offset(0,0);
-  late Color dialogPickerColor; //unused
-  late Color dialogSelectColor; //unused
 
   void _handleColorWheelUpdate(DragUpdateDetails details) {
     setState(() {
@@ -24,8 +22,6 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
   @override
   void initState() {
     super.initState();
-    dialogPickerColor = Colors.red;  
-    dialogSelectColor = const Color(0xFFA239CA); 
   }
 
   @override

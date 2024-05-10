@@ -17,7 +17,6 @@ class GridItem extends StatefulWidget {
 
 class _GridItemState extends State<GridItem> {
   Color defaultColor = Colors.transparent;
-
   late Color currentColor;
 
   @override

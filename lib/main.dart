@@ -8,7 +8,6 @@ import 'package:pixel_editor_app/PaintTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
-import 'ColorWheelPopUp.dart';
 
 void main() {
   runApp(const MyApp());
@@ -50,10 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  bool colorWheelVisibility = false; //handles visibility for color wheel
-  void changeColorWheelVisibility(){
+  void reload(){
     setState(() {
-      colorWheelVisibility = !colorWheelVisibility;
     });
   }
 
@@ -69,16 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
   late GridTool gridTool;
   late PaintTool paintTool; 
   late GridForm gridForm;
-  late ColorWheelTool colorWheelTool;
-  late ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp(); //initialised
+  late ColorWheelTool colorWheelTool = ColorWheelTool(reload: reload); //instantiated
 
   @override
   void initState() {
     super.initState(); //instantiate buttons
     gridForm = GridForm(changeVisibility: changeVisibility, onFormSubmission: _handleGridFormSubmission);
     gridTool = GridTool(changeVisibility: changeVisibility);
-    paintTool = PaintTool(colorWheel: colorWheelPopUp);
-    colorWheelTool = ColorWheelTool(changeColorWheelVisibility: changeColorWheelVisibility);
+    paintTool = PaintTool(colorWheel: colorWheelTool.colorWheelPopUp);
   }
   
   @override
@@ -97,8 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
     customToolBar.add(colorWheelTool);
-
-    //CreateGrid grid = CreateGrid(width: 20, height: 20, paintTool: paintTool);
     
     return Scaffold(
       body: Stack(
@@ -112,8 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // display movable toolbar
           customToolBar,
           for (var widget in gridList) widget, //renders all grids
-          if(colorWheelVisibility)
-            colorWheelPopUp, //color wheel pop up
+          if(colorWheelTool.colorWheelVisibility)
+            colorWheelTool.colorWheelPopUp, //color wheel pop up
           //add movable form
           if (formVisibility)
             gridForm

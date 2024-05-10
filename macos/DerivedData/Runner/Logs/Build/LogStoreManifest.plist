@@ -6,7 +6,7 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
-		<key>EC3C3EE8-2CA5-47FF-BA32-A2FAC292DF06</key>
+		<key>55C789A8-7455-4A60-A142-EA14A422A136</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,49 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>EC3C3EE8-2CA5-47FF-BA32-A2FAC292DF06.xcactivitylog</string>
+			<string>55C789A8-7455-4A60-A142-EA14A422A136.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>S</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Runner project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Runner</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Cleaning workspace Runner with scheme Runner</string>
+			<key>timeStartedRecording</key>
+			<real>737013260.93493795</real>
+			<key>timeStoppedRecording</key>
+			<real>737013261.90215397</real>
+			<key>title</key>
+			<string>Cleaning workspace Runner with scheme Runner</string>
+			<key>uniqueIdentifier</key>
+			<string>55C789A8-7455-4A60-A142-EA14A422A136</string>
+		</dict>
+		<key>E62D0D13-D7B4-4D40-B9DA-3ABD8ED27A9C</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>E62D0D13-D7B4-4D40-B9DA-3ABD8ED27A9C.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -40,13 +82,13 @@
 			<key>signature</key>
 			<string>Cleaning workspace Runner with scheme Flutter Assemble</string>
 			<key>timeStartedRecording</key>
-			<real>736769860.41843402</real>
+			<real>737013256.81473005</real>
 			<key>timeStoppedRecording</key>
-			<real>736769861.06281698</real>
+			<real>737013257.75350201</real>
 			<key>title</key>
 			<string>Cleaning workspace Runner with scheme Flutter Assemble</string>
 			<key>uniqueIdentifier</key>
-			<string>EC3C3EE8-2CA5-47FF-BA32-A2FAC292DF06</string>
+			<string>E62D0D13-D7B4-4D40-B9DA-3ABD8ED27A9C</string>
 		</dict>
 	</dict>
 </dict>
