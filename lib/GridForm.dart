@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'Cubit/Form_State.dart';
 
 class GridForm extends StatefulWidget {
-  final Function() changeVisibility;
   final Function(int, int) onFormSubmission;
 
   GridForm({ //pass in the homepage method to change visibility of form
-    required this.changeVisibility,
     required this.onFormSubmission
   });
 
@@ -24,6 +25,8 @@ class _GridFormState extends State<GridForm> {
 
   @override
   Widget build(BuildContext context) {
+    final formCubit = BlocProvider.of<FormCubit>(context); //retieve form state
+
     //grabs values entered into the form
     final TextEditingController _widthController = TextEditingController();
     final TextEditingController _heightController = TextEditingController();
@@ -127,7 +130,7 @@ class _GridFormState extends State<GridForm> {
                         print("aint work");
                       }
 
-                      widget.changeVisibility();
+                      formCubit.changeFormVisibility();
                       },
                       child: Center(
                           // Center the text within the container

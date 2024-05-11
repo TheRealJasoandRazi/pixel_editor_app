@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pixel_editor_app/ColorWheelTool.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
@@ -8,6 +9,7 @@ import 'package:pixel_editor_app/PaintTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
+import 'Cubit/Form_State.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,13 +21,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return BlocProvider(
+      create: (context) => FormCubit(), //gives access to form state to all descendants
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      )
     );
   }
 }
@@ -41,13 +46,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<CreateGrid> gridList = []; //list of grids
-
-  bool formVisibility = false; //grid form variable and method
-  void changeVisibility(){
-    setState(() {
-      formVisibility = !formVisibility;
-    });
-  }
 
   void reload(){
     setState(() {
@@ -69,10 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
   late ColorWheelTool colorWheelTool = ColorWheelTool(reload: reload); //instantiated
 
   @override
-  void initState() {
+  void initState() { //only runs once
     super.initState(); //instantiate buttons
-    gridForm = GridForm(changeVisibility: changeVisibility, onFormSubmission: _handleGridFormSubmission);
-    gridTool = GridTool(changeVisibility: changeVisibility);
+    gridForm = GridForm(onFormSubmission: _handleGridFormSubmission);
+    gridTool = GridTool();
     paintTool = PaintTool(colorWheel: colorWheelTool.colorWheelPopUp);
   }
   
@@ -80,8 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
-    //instantiate toolbar     
     customToolBar = CustomToolBar(
       screenHeight: screenHeight,
       screenWidth: screenWidth,
@@ -108,8 +104,15 @@ class _MyHomePageState extends State<MyHomePage> {
           if(colorWheelTool.colorWheelVisibility)
             colorWheelTool.colorWheelPopUp, //color wheel pop up
           //add movable form
-          if (formVisibility)
-            gridForm
+          BlocBuilder<FormCubit, bool>(
+            builder: (context, state) {
+              if (state == true) {
+                return gridForm;
+              } else {
+                return Container();
+              }
+            }
+          )
         ],
       ),
     );
