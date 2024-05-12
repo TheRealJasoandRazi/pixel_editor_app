@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/ColorWheelPopUp.dart';
 
 import 'package:pixel_editor_app/ColorWheelTool.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
@@ -9,7 +10,10 @@ import 'package:pixel_editor_app/PaintTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
-import 'Cubit/Form_State.dart';
+
+import 'Cubit/FormState.dart';
+import 'Cubit/ColorState.dart';
+import 'Cubit/PaintState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +25,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FormCubit(), //gives access to form state to all descendants
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FormCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ColorCubit(),
+        ),
+        BlocProvider(
+          create: (context) => PaintCubit(),
+        )
+      ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -54,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _handleGridFormSubmission(int width, int height) {
     setState(() {
-        CreateGrid grid = CreateGrid(width: width, height: height, paintTool: paintTool);
+        CreateGrid grid = CreateGrid(width: width, height: height);
         gridList.add(grid);
     });
   }
@@ -65,13 +79,14 @@ class _MyHomePageState extends State<MyHomePage> {
   late PaintTool paintTool; 
   late GridForm gridForm;
   late ColorWheelTool colorWheelTool = ColorWheelTool(reload: reload); //instantiated
+  ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp();
 
   @override
   void initState() { //only runs once
     super.initState(); //instantiate buttons
     gridForm = GridForm(onFormSubmission: _handleGridFormSubmission);
     gridTool = GridTool();
-    paintTool = PaintTool(colorWheel: colorWheelTool.colorWheelPopUp);
+    paintTool = PaintTool();
   }
   
   @override
@@ -102,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
           customToolBar,
           for (var widget in gridList) widget, //renders all grids
           if(colorWheelTool.colorWheelVisibility)
-            colorWheelTool.colorWheelPopUp, //color wheel pop up
+            colorWheelPopUp, //color wheel pop up
           //add movable form
           BlocBuilder<FormCubit, bool>(
             builder: (context, state) {

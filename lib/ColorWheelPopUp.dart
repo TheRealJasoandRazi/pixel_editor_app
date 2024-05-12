@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'Cubit/ColorState.dart';
 
 class ColorWheelPopUp extends StatefulWidget {
 
@@ -26,6 +28,8 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
 
   @override
   Widget build(BuildContext context) {
+    final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -47,8 +51,12 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
                   final colorPickerHeight = constraints.maxHeight * 0.1; //portion of card/sizedbox height
                   return ColorPicker(
                     color: widget.screenPickerColor,
-                    onColorChanged: (Color color) =>
-                        setState(() => widget.screenPickerColor = color),
+                    onColorChanged: (Color color) {
+                      setState(() {
+                        widget.screenPickerColor = color;
+                        colorCubit.changeColor(color);
+                      });
+                    },
                     width: colorPickerWidth,
                     height: colorPickerHeight,
                     borderRadius: colorPickerWidth / 2,

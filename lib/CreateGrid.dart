@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'GridItem.dart';
-import 'PaintTool.dart';
+
+import 'Cubit/PaintState.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class CreateGrid extends StatefulWidget {
   int width;
   int height;
-  PaintTool paintTool;
 
   CreateGrid({
     required this.width,
     required this.height,
-    required this.paintTool
   });
 
   @override
@@ -35,12 +36,14 @@ class _CreateGridState extends State<CreateGrid> {
       gridPosition = Offset(screenWidth/2, screenWidth/2);
     }
 
+    final paintCubit = BlocProvider.of<PaintCubit>(context); //retieve form state
+
     return Positioned(
       left: gridPosition.dx,
       top: gridPosition.dy,
       child: GestureDetector(
         onPanUpdate:(details) {
-          if(!widget.paintTool.paintSelected) 
+          if(!paintCubit.state) 
             _handleGridUpdate(details);
         },
           child: Container(
@@ -54,7 +57,7 @@ class _CreateGridState extends State<CreateGrid> {
             itemCount: widget.height * widget.width,
             physics: NeverScrollableScrollPhysics(), //prevents scrolling
             itemBuilder: (context, index) {
-              return GridItem(index: index, paintTool: widget.paintTool);
+              return GridItem(index: index);
             },
           ),
         ),

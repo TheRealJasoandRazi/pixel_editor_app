@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'PaintTool.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'Cubit/ColorState.dart';
+import 'Cubit/PaintState.dart';
 
 class GridItem extends StatefulWidget {
   final int index;
-  final PaintTool paintTool;
 
   const GridItem({
     Key? key, 
     required this.index,
-    required this.paintTool,
   }) : super(key: key);
 
   @override
@@ -25,22 +26,25 @@ class _GridItemState extends State<GridItem> {
     currentColor = defaultColor;
   }
 
-  void _handleClick() {
+  void _handleClick(ColorCubit colorCubit) {
     setState(() {
-      if(widget.paintTool.colorWheel.getScreenPickerColor == currentColor){
+      if(colorCubit.state == currentColor){
         currentColor = Colors.transparent;
       } else {
-        currentColor = widget.paintTool.colorWheel.getScreenPickerColor;
+        currentColor = colorCubit.state;
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
+    final paintCubit = BlocProvider.of<PaintCubit>(context); //retieve form state
+
     return GestureDetector(
       onTap:() {
-        if(widget.paintTool.paintSelected)
-          _handleClick();
+        if(paintCubit.state)
+          _handleClick(colorCubit);
       },
       child: Container(
         decoration: BoxDecoration(
