@@ -11,10 +11,12 @@ import 'package:pixel_editor_app/PaintTool.dart';
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
 
+//state imports
 import 'Cubit/FormState.dart';
 import 'Cubit/ColorState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorWheelState.dart';
+import 'Cubit/GridListState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +42,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ColorWheelCubit(),
         ),
+        BlocProvider(
+          create: (context) => GridListCubit(),
+        )
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -108,14 +113,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Pixel editor canvas
-          Container(
-            color: Colors.white,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          // display movable toolbar
-          customToolBar,
+        customToolBar,
+         /*BlocBuilder<GridListCubit, List<CreateGrid>>(
+            builder: (context, state) {
+              if (state.isNotEmpty) {
+                for (var widget in state) {
+                  return widget;
+                }
+              }else {
+                return Container();
+              }
+            }
+          ),*/
           for (var widget in gridList) widget, //renders all grids
           BlocBuilder<ColorWheelCubit, bool>(
             builder: (contex, state) {

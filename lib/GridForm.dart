@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/CreateGrid.dart';
 
 import 'Cubit/FormState.dart';
+import 'Cubit/GridListState.dart';
 
 class GridForm extends StatefulWidget {
   final Function(int, int) onFormSubmission;
@@ -26,6 +28,7 @@ class _GridFormState extends State<GridForm> {
   @override
   Widget build(BuildContext context) {
     final formCubit = BlocProvider.of<FormCubit>(context); //retieve form state
+    final gridListCubit = BlocProvider.of<GridListCubit>(context);
 
     //grabs values entered into the form
     final TextEditingController _widthController = TextEditingController();
@@ -125,6 +128,7 @@ class _GridFormState extends State<GridForm> {
 
                       // Check if the conversions were successful
                       if (width != null && height != null) {
+                        gridListCubit.addGrid(CreateGrid(width: width, height: height)); //state works, just can't find a way to blocprovider to return a list
                         widget.onFormSubmission(width, height);
                       } else {
                         print("aint work");
