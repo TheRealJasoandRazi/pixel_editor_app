@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_editor_app/Cubit/ColorWheelState.dart';
 import 'toolBarButtons.dart';
 import 'ColorWheelPopUp.dart';
 
-class ColorWheelTool extends StatefulWidget with ToolBarButtons {
-  final Function() reload;
-  final ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp(); //initialise popup here
-  bool colorWheelVisibility = false;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-  ColorWheelTool({
-    required this.reload,
-  });
+class ColorWheelTool extends StatefulWidget with ToolBarButtons {
 
   @override
   State<ColorWheelTool> createState() => _ColorWheelToolState();
 }
 
 class _ColorWheelToolState extends State<ColorWheelTool> {
-  void changeColorWheelVisibility(){
-    setState(() {
-      widget.colorWheelVisibility = !widget.colorWheelVisibility;
-    });
-    widget.reload();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final colorWheelCubit = BlocProvider.of<ColorWheelCubit>(context); //retieve form state
+
     return widget.toolBarButton(
       Icons.portrait_outlined,
-      changeColorWheelVisibility,
+      (){
+        colorWheelCubit.changeColorWheelVisibility();
+      },
       Colors.grey.shade300,
     );
   }

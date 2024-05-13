@@ -14,6 +14,7 @@ import 'GridForm.dart';
 import 'Cubit/FormState.dart';
 import 'Cubit/ColorState.dart';
 import 'Cubit/PaintState.dart';
+import 'Cubit/ColorWheelState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +36,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => PaintCubit(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => ColorWheelCubit(),
+        ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -61,15 +65,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<CreateGrid> gridList = []; //list of grids
 
-  void reload(){
-    setState(() {
-    });
-  }
-
   void _handleGridFormSubmission(int width, int height) {
     setState(() {
-        CreateGrid grid = CreateGrid(width: width, height: height);
-        gridList.add(grid);
+        gridList.add(CreateGrid(width: width, height: height));
     });
   }
 
@@ -78,8 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late GridTool gridTool;
   late PaintTool paintTool; 
   late GridForm gridForm;
-  late ColorWheelTool colorWheelTool = ColorWheelTool(reload: reload); //instantiated
-  ColorWheelPopUp colorWheelPopUp = ColorWheelPopUp();
+  late ColorWheelTool colorWheelTool;
+  late ColorWheelPopUp colorWheelPopUp;
 
   @override
   void initState() { //only runs once
@@ -87,12 +85,15 @@ class _MyHomePageState extends State<MyHomePage> {
     gridForm = GridForm(onFormSubmission: _handleGridFormSubmission);
     gridTool = GridTool();
     paintTool = PaintTool();
+    colorWheelTool = ColorWheelTool();
+    colorWheelPopUp = ColorWheelPopUp();
   }
   
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
     customToolBar = CustomToolBar(
       screenHeight: screenHeight,
       screenWidth: screenWidth,
@@ -116,8 +117,15 @@ class _MyHomePageState extends State<MyHomePage> {
           // display movable toolbar
           customToolBar,
           for (var widget in gridList) widget, //renders all grids
-          if(colorWheelTool.colorWheelVisibility)
-            colorWheelPopUp, //color wheel pop up
+          BlocBuilder<ColorWheelCubit, bool>(
+            builder: (contex, state) {
+              if(state == true) {
+                return colorWheelPopUp; //color wheel pop up
+              } else {
+                return Container();
+              }
+            }
+          ),
           //add movable form
           BlocBuilder<FormCubit, bool>(
             builder: (context, state) {
