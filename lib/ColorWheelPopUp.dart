@@ -10,7 +10,7 @@ class ColorWheelPopUp extends StatefulWidget {
 }
 
 class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
-  Offset colorWheelPosition = Offset(0,0);
+  late Offset colorWheelPosition = Offset(0,0);
 
   void _handleColorWheelUpdate(DragUpdateDetails details) {
     setState(() {
@@ -35,41 +35,32 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
       top: colorWheelPosition.dy,
       child: GestureDetector(
         onPanUpdate: _handleColorWheelUpdate,
-        child: SizedBox(
-          width: screenWidth * 0.35,
-          height: screenHeight * 0.35,
-          child: Padding(
-            padding: const EdgeInsets.all(6),
-            child: Card( //might change to container
-              elevation: 1,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final colorPickerWidth = constraints.maxWidth * 0.1; //portion of card/sizedbox width
-                  final colorPickerHeight = constraints.maxHeight * 0.1; //portion of card/sizedbox height
-                  return ColorPicker(
-                    onColorChanged: (Color color) {
-                      setState(() {
-                        colorCubit.changeColor(color);
-                      });
-                    },
-                    width: colorPickerWidth,
-                    height: colorPickerHeight,
-                    borderRadius: colorPickerWidth / 2,
-                    heading: Text(
-                      'Select color',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    subheading: Text(
-                      'Select color shade',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  );
-                },
-              ),
-            ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(12.0),
           ),
-        ),
-      ),
+          width: screenWidth * 0.25,
+          child: ColorPicker(
+            onColorChanged: (Color color) {
+              setState(() {
+                colorCubit.changeColor(color);
+              });
+            },
+            width: 20, //in dp
+            height: 20,
+            borderRadius: 12,
+            heading: Text(
+              'Select color',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            subheading: Text(
+              'Select color shade',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          )
+        )
+      )
     );
   }
 }
