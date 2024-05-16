@@ -5,9 +5,6 @@ import 'Cubit/ColorState.dart';
 
 class ColorWheelPopUp extends StatefulWidget {
 
-  late Color screenPickerColor = Colors.blue;
-  Color get getScreenPickerColor => screenPickerColor;
-
   @override
   State<ColorWheelPopUp> createState() => _ColorWheelPopUpState();
 }
@@ -50,10 +47,8 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
                   final colorPickerWidth = constraints.maxWidth * 0.1; //portion of card/sizedbox width
                   final colorPickerHeight = constraints.maxHeight * 0.1; //portion of card/sizedbox height
                   return ColorPicker(
-                    color: widget.screenPickerColor,
                     onColorChanged: (Color color) {
                       setState(() {
-                        widget.screenPickerColor = color;
                         colorCubit.changeColor(color);
                       });
                     },
