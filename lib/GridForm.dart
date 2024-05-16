@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
+import 'package:flutter/services.dart';
 
 import 'Cubit/FormState.dart';
 import 'Cubit/GridListState.dart';
@@ -72,6 +73,8 @@ class _GridFormState extends State<GridForm> {
                   child: SizedBox(
                     width: height * 0.8,
                     child: TextField(
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      keyboardType: TextInputType.number,
                       controller: _widthController,
                       decoration: InputDecoration(
                         labelText: 'Width',
@@ -89,6 +92,8 @@ class _GridFormState extends State<GridForm> {
                   child: SizedBox(
                     width: height * 0.8,
                     child: TextField(
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      keyboardType: TextInputType.number,
                       controller: _heightController,
                       decoration: InputDecoration(
                         labelText: 'Height',
@@ -128,8 +133,10 @@ class _GridFormState extends State<GridForm> {
 
                       // Check if the conversions were successful
                       if (width != null && height != null) {
-                        gridListCubit.addGrid(CreateGrid(width: width, height: height)); //state works, just can't find a way to blocprovider to return a list
-                        widget.onFormSubmission(width, height);
+                        if(width <= 50 && height <= 50){
+                          gridListCubit.addGrid(CreateGrid(width: width, height: height)); //state works, just can't find a way to blocprovider to return a list
+                          widget.onFormSubmission(width, height);
+                        }
                       } else {
                         print("aint work");
                       }
