@@ -7,11 +7,6 @@ import 'Cubit/FormState.dart';
 import 'Cubit/GridListState.dart';
 
 class GridForm extends StatefulWidget {
-  final Function(int, int) onFormSubmission;
-
-  GridForm({ //pass in the homepage method to change visibility of form
-    required this.onFormSubmission
-  });
 
   @override
   State<GridForm> createState() => _GridFormState();
@@ -134,8 +129,7 @@ class _GridFormState extends State<GridForm> {
                       // Check if the conversions were successful
                       if (width != null && height != null) {
                         if(width <= 50 && height <= 50){
-                          gridListCubit.addGrid(CreateGrid(width: width, height: height)); //state works, just can't find a way to blocprovider to return a list
-                          widget.onFormSubmission(width, height);
+                          gridListCubit.addGrid(CreateGrid(width: width, height: height));
                         }
                       } else {
                         print("aint work");

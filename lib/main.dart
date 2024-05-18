@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/BinTool.dart';
 import 'package:pixel_editor_app/ColorWheelPopUp.dart';
 
 import 'package:pixel_editor_app/ColorWheelTool.dart';
@@ -17,7 +18,6 @@ import 'Cubit/ColorState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorWheelState.dart';
 import 'Cubit/GridListState.dart';
-import 'Cubit/GridSelectedState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,11 +44,8 @@ class MyApp extends StatelessWidget {
           create: (context) => ColorWheelCubit(),
         ),
         BlocProvider(
-          create: (context) => GridListCubit(), //not working
+          create: (context) => GridListCubit(),
         ),
-        BlocProvider(
-          create: (context) => GridSelectedCubit(), //not working
-        )
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -87,15 +84,17 @@ class _MyHomePageState extends State<MyHomePage> {
   late GridForm gridForm;
   late ColorWheelTool colorWheelTool;
   late ColorWheelPopUp colorWheelPopUp;
+  late BinTool binTool;
 
   @override
   void initState() { //only runs once
     super.initState(); //instantiate buttons
-    gridForm = GridForm(onFormSubmission: _handleGridFormSubmission);
+    gridForm = GridForm();
     gridTool = GridTool();
     paintTool = PaintTool();
     colorWheelTool = ColorWheelTool();
     colorWheelPopUp = ColorWheelPopUp();
+    binTool = BinTool();
   }
   
   @override
@@ -113,23 +112,34 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
     customToolBar.add(colorWheelTool);
+    customToolBar.add(binTool);
     
     return Scaffold(
       body: Stack(
         children: [
-        customToolBar,
-         /*BlocBuilder<GridListCubit, List<CreateGrid>>(
+          customToolBar,
+          BlocBuilder<GridListCubit, List<CreateGrid>>( //still buggy as shit
             builder: (context, state) {
               if (state.isNotEmpty) {
-                for (var widget in state) {
-                  return widget;
-                }
-              }else {
-                return Container();
+                print("Building stack with ${state.length} items");
+                return Stack(
+                  children: state.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    CreateGrid widget = entry.value;
+                    print("Index: $index, Widget: $widget");
+                    if (index < state.length) {
+                      return widget;
+                    } else {
+                      print("Index out of range: $index for state length ${state.length}");
+                      return Container();
+                    }
+                  }).toList(),
+                );
               }
-            }
-          ),*/
-          for (var widget in gridList) widget, //renders all grids
+              return Container(); 
+            },
+          ),
+          //for (var widget in gridList) widget, //renders all grids
           BlocBuilder<ColorWheelCubit, bool>(
             builder: (contex, state) {
               if(state == true) {

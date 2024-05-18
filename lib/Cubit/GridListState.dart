@@ -8,4 +8,15 @@ class GridListCubit extends Cubit<List<CreateGrid>> {
   void addGrid(CreateGrid grid){
     emit([...state, grid]); //"...state" creates a new list and adds grid to it
   }
+
+  void removeSelectedGrids() { //create new list without the selected grids
+    List<CreateGrid> newList = [];
+    for(var widget in state){
+      if(!widget.selected){
+        newList.add(widget);
+      }
+    }
+    print("New list length: ${newList.length}");
+    emit(newList);
+  }
 }

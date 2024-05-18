@@ -3,11 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
-import 'Cubit/GridSelectedState.dart';
 
 class CreateGrid extends StatefulWidget {
   final int width;
   final int height;
+
+  //duplicate of selected in state widget
+  bool _selected = false;
+  bool get selected => _selected;
 
   CreateGrid({
     required this.width,
@@ -75,7 +78,6 @@ class _CreateGridState extends State<CreateGrid> {
 
     final paintCubit = BlocProvider.of<PaintCubit>(context);
     final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
-    final gridSelectedCubit = BlocProvider.of<GridSelectedCubit>(context);
 
     return Stack( //stack to add future widgets on top
       children: [
@@ -91,14 +93,18 @@ class _CreateGridState extends State<CreateGrid> {
               }
             },
             onDoubleTap: (){
-              gridSelectedCubit.changeGridVisibility();
-              print(gridSelectedCubit.state);
+              if(!paintCubit.state){ //has no bloc provider to automatically rebuild itself
+                setState(() {
+                  selected = !selected;
+                  widget._selected = selected; //create a copy in the widget for others to access
+                });
+              }
             },
             child: Container(
               width: size,
               height: size,
               decoration: BoxDecoration(
-                border: gridSelectedCubit.state ? Border.all(color: Colors.blue, width: 2.0) : null,
+                border: selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
               ),
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -112,7 +118,7 @@ class _CreateGridState extends State<CreateGrid> {
                   Color color = pixelColors[rowIndex][columnIndex];
 
                   return GestureDetector(
-                    onTap: () {
+                    onTapDown: (details) {
                       if (paintCubit.state) {
                         _handleClick(rowIndex, columnIndex, colorCubit);
                       }
