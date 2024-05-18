@@ -6,8 +6,14 @@ import 'Cubit/PaintState.dart';
 
 class GridItem extends StatefulWidget {
   final int index;
+  bool draggedOverIndex = false;
 
-  const GridItem({
+  void draggedOver(){
+    draggedOverIndex = !draggedOverIndex;
+    print("in griditem");
+  }
+
+  GridItem({
     Key? key, 
     required this.index,
   }) : super(key: key);
