@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
+import 'Cubit/GridSelectedState.dart';
 
 class CreateGrid extends StatefulWidget {
   final int width;
@@ -21,6 +22,8 @@ class _CreateGridState extends State<CreateGrid> {
   Offset gridPosition = Offset(0, 0);
   List<List<Color>> pixelColors = []; //grid is a multidimensional array
   Color defaultColor = Colors.transparent;
+
+  bool selected = false;
 
   @override
   void initState() {
@@ -72,49 +75,61 @@ class _CreateGridState extends State<CreateGrid> {
 
     final paintCubit = BlocProvider.of<PaintCubit>(context);
     final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
+    final gridSelectedCubit = BlocProvider.of<GridSelectedCubit>(context);
 
-    return Positioned(
-      left: gridPosition.dx,
-      top: gridPosition.dy,
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          if (paintCubit.state) {
-            _calculateGridIndex(details.localPosition, size, colorCubit.state);
-          } else {
-            _handleGridUpdate(details);
-          }
-        },
-        child: Container(
-          width: size,
-          height: size,
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: widget.width,
-            ),
-            itemCount: widget.width * widget.height,
-            itemBuilder: (context, index) {
-              int rowIndex = index ~/ widget.width;
-              int columnIndex = index % widget.width;
-
-              Color color = pixelColors[rowIndex][columnIndex];
-
-              return GestureDetector(
-                onTap: () {
-                  if (paintCubit.state) {
-                    _handleClick(rowIndex, columnIndex, colorCubit);
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    color: color,
-                  ),
-                ),
-              );
+    return Stack( //stack to add future widgets on top
+      children: [
+        Positioned(
+        left: gridPosition.dx,
+        top: gridPosition.dy,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              if (paintCubit.state) {
+                _calculateGridIndex(details.localPosition, size, colorCubit.state);
+              } else {
+                _handleGridUpdate(details);
+              }
             },
+            onDoubleTap: (){
+              gridSelectedCubit.changeGridVisibility();
+              print(gridSelectedCubit.state);
+            },
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                border: gridSelectedCubit.state ? Border.all(color: Colors.blue, width: 2.0) : null,
+              ),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: widget.width,
+                ),
+                itemCount: widget.width * widget.height,
+                itemBuilder: (context, index) {
+                  int rowIndex = index ~/ widget.width;
+                  int columnIndex = index % widget.width;
+
+                  Color color = pixelColors[rowIndex][columnIndex];
+
+                  return GestureDetector(
+                    onTap: () {
+                      if (paintCubit.state) {
+                        _handleClick(rowIndex, columnIndex, colorCubit);
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        color: color,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
-      ),
+        )
+      ]
     );
   }
 }
