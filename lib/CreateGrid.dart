@@ -79,9 +79,7 @@ class _CreateGridState extends State<CreateGrid> {
       child: GestureDetector(
         onPanUpdate: (details) {
           if (paintCubit.state) {
-            RenderBox renderBox = context.findRenderObject() as RenderBox;
-            Offset localPosition = renderBox.globalToLocal(details.globalPosition);
-            _calculateGridIndex(localPosition, size, colorCubit.state);
+            _calculateGridIndex(details.localPosition, size, colorCubit.state);
           } else {
             _handleGridUpdate(details);
           }
