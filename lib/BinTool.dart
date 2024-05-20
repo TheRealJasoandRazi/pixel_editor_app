@@ -21,6 +21,7 @@ class _BinToolState extends State<BinTool> {
         gridListCubit.removeSelectedGrids();
       },
       Colors.grey.shade300,
+      context
     );
   }
 }

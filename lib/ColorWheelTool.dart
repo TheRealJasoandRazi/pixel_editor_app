@@ -23,6 +23,7 @@ class _ColorWheelToolState extends State<ColorWheelTool> {
         colorWheelCubit.changeColorWheelVisibility();
       },
       Colors.grey.shade300,
+      context
     );
   }
 }

@@ -23,6 +23,7 @@ class _PaintToolState extends State<PaintTool> {
   @override
   Widget build(BuildContext context) {
     final paintCubit = BlocProvider.of<PaintCubit>(context); //retieve form state
+    
     return widget.toolBarButton(
       Icons.format_paint,
       (){
@@ -30,6 +31,7 @@ class _PaintToolState extends State<PaintTool> {
         _togglePaintButton(paintCubit.state);
       },
       buttonColor,
+      context
     );
   }
 }

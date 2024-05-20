@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:pixel_editor_app/Cubit/RotatedToolBarState.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 class CustomToolBar extends StatefulWidget {
   final double screenWidth;
   final double screenHeight;
@@ -25,7 +28,6 @@ class _CustomToolBarState extends State<CustomToolBar> {
   late double toolbarWidth;
   late double toolbarHeight;
   Offset toolbarPosition = Offset.zero;
-  bool rotatingBar = false; // in thresholds
   bool rotationComplete = false; // done the rotations
   bool draggable = false; // only true when its been rotated and the user stops dragging
 
@@ -87,23 +89,25 @@ class _CustomToolBarState extends State<CustomToolBar> {
     double threshold = widget.screenHeight * 0.05;
     double lowerThreshold = widget.screenHeight - threshold - toolbarHeight;
 
-    if (toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold) {
-      rotatingBar = true;
-    } else {
-      rotatingBar = false;
+    final rotatedToolBarCubit = BlocProvider.of<RotatedToolBarCubit>(context);
+
+    bool shouldRotateBar = toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold;
+
+    if (shouldRotateBar != rotatedToolBarCubit.state) {
+      rotatedToolBarCubit.changeState(shouldRotateBar);
     }
 
     return Positioned(
       left: toolbarPosition.dx,
       top: toolbarPosition.dy,
       child: AnimatedRotation(
-        turns: rotatingBar ? 0.25 : 0,
+        turns: rotatedToolBarCubit.state ? 0.25 : 0,
         duration: Duration(milliseconds: 300),
         alignment: Alignment.center,
         curve: Curves.easeInOut,
         onEnd: () {
           setState(() {
-            if (rotatingBar) {
+            if (rotatedToolBarCubit.state) {
               rotationComplete = true;
             } else {
               rotationComplete = false;
@@ -146,16 +150,11 @@ class _CustomToolBarState extends State<CustomToolBar> {
                         ...widget.toolList.map((tool) {
                           return Flexible(
                             flex: 1,
-                            child: AnimatedRotation(
-                              turns: rotatingBar ? -0.25 : 0,
-                              duration: Duration(milliseconds: 600),
-                              curve: Curves.easeInOut,
-                              child: tool,
-                            ),
+                            child: tool,
                           );
                         }).toList(),
                       ],
-                    ),
+                    )
                   ),
                   _buildResizeHandle(
                     top: 0,

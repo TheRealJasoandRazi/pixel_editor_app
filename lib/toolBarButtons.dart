@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'Cubit/RotatedToolBarState.dart';
 
 mixin ToolBarButtons {
-  Widget toolBarButton(IconData icon, Function() action, Color color) {
-      return FractionallySizedBox(
+  Widget toolBarButton(IconData icon, Function() action, Color color, BuildContext context) {
+    final rotatedToolBarCubit = BlocProvider.of<RotatedToolBarCubit>(context);
+
+    return FractionallySizedBox(
       widthFactor: 1,
       heightFactor: 0.7,
       child: Padding(
@@ -22,9 +26,17 @@ mixin ToolBarButtons {
                 ),
               ],
             ),
-            child: Icon(
-              icon,
-            ),
+            child: BlocBuilder<RotatedToolBarCubit, bool>( //rebuilds the icon based on cubit state
+              builder: (context, state) {
+                return AnimatedRotation(
+                  turns: rotatedToolBarCubit.state ? 0.75 : 0,
+                  duration: Duration(milliseconds: 300),
+                  child: Icon(
+                    icon,
+                  ),
+                );
+              }
+            )
           ),
         ),
       ),

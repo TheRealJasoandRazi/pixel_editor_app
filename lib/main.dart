@@ -18,6 +18,7 @@ import 'Cubit/ColorState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorWheelState.dart';
 import 'Cubit/GridListState.dart';
+import 'Cubit/RotatedToolBarState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,6 +46,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => GridListCubit(),
+        ),
+        BlocProvider(
+          create: (context) => RotatedToolBarCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
