@@ -10,13 +10,17 @@ class GridTool extends StatelessWidget with ToolBarButtons {
   Widget build(BuildContext context) {
     final formCubit = BlocProvider.of<FormCubit>(context); //retieve form state
 
-    return toolBarButton(
-      Icons.grid_on,
-      () {
-        formCubit.changeFormVisibility();
-      },
-      Colors.grey.shade300,
-      context
+    return BlocBuilder<FormCubit, bool>(
+      builder: (context, state) {
+        return toolBarButton(
+          Icons.grid_on,
+          () {
+            formCubit.changeFormVisibility();
+          },
+          state ? Colors.blue.shade300 : Colors.grey.shade300,
+          context
+        );
+      }
     );
   }
 }

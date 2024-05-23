@@ -10,13 +10,17 @@ class ColorWheelTool extends StatelessWidget with ToolBarButtons{
   Widget build(BuildContext context) {
     final colorWheelCubit = BlocProvider.of<ColorWheelCubit>(context); //retieve form state
 
-    return toolBarButton(
-      Icons.portrait_outlined,
-      (){
-        colorWheelCubit.changeColorWheelVisibility();
-      },
-      Colors.grey.shade300,
-      context
+    return BlocBuilder<ColorWheelCubit, bool>(
+      builder: (context, state) {
+        return toolBarButton(
+          Icons.portrait_outlined,
+          (){
+            colorWheelCubit.changeColorWheelVisibility();
+          },
+          state ? Colors.blue.shade300 : Colors.grey.shade300,
+          context
+        );
+      }
     );
   }
 }
