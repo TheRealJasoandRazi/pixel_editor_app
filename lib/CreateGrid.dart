@@ -8,9 +8,7 @@ class CreateGrid extends StatefulWidget {
   final int width;
   final int height;
 
-  //duplicate of selected in state widget
-  bool _selected = false;
-  bool get selected => _selected;
+  bool selected = false;
 
   CreateGrid({
     required this.width,
@@ -26,12 +24,15 @@ class _CreateGridState extends State<CreateGrid> {
   List<List<Color>> pixelColors = []; //grid is a multidimensional array
   Color defaultColor = Colors.transparent;
 
-  bool selected = false;
-
   @override
   void initState() {
     super.initState();
     pixelColors = List.generate(widget.height, (_) => List.filled(widget.width, defaultColor));
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
   }
 
   void _handleGridUpdate(DragUpdateDetails details) {
@@ -88,15 +89,15 @@ class _CreateGridState extends State<CreateGrid> {
             onPanUpdate: (details) {
               if (paintCubit.state) {
                 _calculateGridIndex(details.localPosition, size, colorCubit.state);
-              } else {
+              } else if(!widget.selected){
                 _handleGridUpdate(details);
               }
             },
             onDoubleTap: (){
               if(!paintCubit.state){ //has no bloc provider to automatically rebuild itself
                 setState(() {
-                  selected = !selected;
-                  widget._selected = selected; //create a copy in the widget for others to access
+                  widget.selected = !widget.selected;
+                  print(widget.selected);
                 });
               }
             },
@@ -104,7 +105,7 @@ class _CreateGridState extends State<CreateGrid> {
               width: size,
               height: size,
               decoration: BoxDecoration(
-                border: selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
+                border: widget.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
               ),
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

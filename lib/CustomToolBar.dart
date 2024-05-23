@@ -56,12 +56,10 @@ class _CustomToolBarState extends State<CustomToolBar> {
   }
 
   Widget _buildResizeHandle({
-    required double top,
-    required double left,
+    required double top, //position of the handle
+    required double left, //position of the handle
     required void Function(DragUpdateDetails) onPanUpdate,
     required bool vertical,
-    required double toolbarWidth,
-    required double toolbarHeight,
   }) {
     return Positioned(
       top: top,
@@ -74,6 +72,40 @@ class _CustomToolBarState extends State<CustomToolBar> {
           decoration: BoxDecoration(
             color: Colors.transparent, // makes it invisible
           ),
+          child: vertical
+            ? Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+                // If vertical is true, use Column
+                children: [
+                  Expanded(
+                    child: FractionallySizedBox(
+                      widthFactor: 0.3,
+                      heightFactor: 0.9,
+                      child: Container(
+                        color: Colors.black,
+                    
+                      )
+                    ),
+                  )            
+                ],
+              )
+            : Row(
+                // If vertical is false, use Row
+                children: [
+                  Expanded(    
+                    child: FractionallySizedBox(
+                      widthFactor: 0.8,
+                      heightFactor: 0.3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                          color: Colors.black, 
+                        ),
+                      ),
+                    )
+                  )
+                ],
+              ),
         ),
       ),
     );
@@ -129,8 +161,7 @@ class _CustomToolBarState extends State<CustomToolBar> {
               }
             });
           },
-          child: AnimatedContainer( //gives smoothness when changing sizes
-            duration: Duration(milliseconds: 300),
+          child: Container( //gives smoothness when changing sizes
             width: toolbarWidth,
             height: toolbarHeight,
             decoration: BoxDecoration(
@@ -156,21 +187,19 @@ class _CustomToolBarState extends State<CustomToolBar> {
                       ],
                     )
                   ),
-                  _buildResizeHandle(
+                  /*_buildResizeHandle( //left vertical
                     top: 0,
                     left: 0,
                     onPanUpdate: (details) {
                       setState(() {
                         double newWidth = toolbarWidth - details.delta.dx;
-                        toolbarWidth = newWidth.clamp(minWidth, maxWidth);
+                        toolbarWidth = newWidth.clamp(minWidth, maxWidth); //ensure it stays within the constraints
                         toolbarPosition = Offset(toolbarPosition.dx + details.delta.dx, toolbarPosition.dy);
                       });
                     },
                     vertical: true,
-                    toolbarWidth: toolbarWidth,
-                    toolbarHeight: toolbarHeight,
-                  ),
-                  _buildResizeHandle(
+                  ),*/
+                  _buildResizeHandle( //right vertical
                     top: 0,
                     left: toolbarWidth - 10,
                     onPanUpdate: (details) {
@@ -180,10 +209,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
                       });
                     },
                     vertical: true,
-                    toolbarWidth: toolbarWidth,
-                    toolbarHeight: toolbarHeight,
                   ),
-                  _buildResizeHandle(
+                  /*_buildResizeHandle( //top of toolbar
                     top: 0,
                     left: 0,
                     onPanUpdate: (details) {
@@ -194,10 +221,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
                       });
                     },
                     vertical: false,
-                    toolbarWidth: toolbarWidth,
-                    toolbarHeight: toolbarHeight,
-                  ),
-                  _buildResizeHandle(
+                  ),*/
+                  _buildResizeHandle( //bottom of toolbar
                     top: toolbarHeight - 10,
                     left: 0,
                     onPanUpdate: (details) {
@@ -207,8 +232,6 @@ class _CustomToolBarState extends State<CustomToolBar> {
                       });
                     },
                     vertical: false,
-                    toolbarWidth: toolbarWidth,
-                    toolbarHeight: toolbarHeight,
                   ),
                 ],
               ),

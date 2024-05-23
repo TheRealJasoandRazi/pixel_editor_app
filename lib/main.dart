@@ -73,14 +73,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<CreateGrid> gridList = []; //list of grids
-
-  void _handleGridFormSubmission(int width, int height) {
-    setState(() {
-        gridList.add(CreateGrid(width: width, height: height));
-    });
-  }
-
+  
   //declare an instance of all classes
   late CustomToolBar customToolBar;
   late GridTool gridTool;
@@ -122,25 +115,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: [
           customToolBar,
-          BlocBuilder<GridListCubit, List<CreateGrid>>( //still buggy as shit
+          BlocBuilder<GridListCubit, List<CreateGrid>>(
             builder: (context, state) {
-              if (state.isNotEmpty) {
-                print("Building stack with ${state.length} items");
-                return Stack(
-                  children: state.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    CreateGrid widget = entry.value;
-                    print("Index: $index, Widget: $widget");
-                    if (index < state.length) {
-                      return widget;
-                    } else {
-                      print("Index out of range: $index for state length ${state.length}");
-                      return Container();
-                    }
-                  }).toList(),
-                );
-              }
-              return Container(); 
+              return Stack(
+                children: state,
+              );
             },
           ),
           //for (var widget in gridList) widget, //renders all grids

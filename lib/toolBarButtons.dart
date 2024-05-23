@@ -29,7 +29,7 @@ mixin ToolBarButtons {
             child: BlocBuilder<RotatedToolBarCubit, bool>( //rebuilds the icon based on cubit state
               builder: (context, state) {
                 return AnimatedRotation(
-                  turns: rotatedToolBarCubit.state ? 0.75 : 0,
+                  turns: rotatedToolBarCubit.state ? -0.25 : 0,
                   duration: Duration(milliseconds: 300),
                   child: Icon(
                     icon,
