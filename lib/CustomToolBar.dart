@@ -39,18 +39,19 @@ class _CustomToolBarState extends State<CustomToolBar> {
     toolbarPosition = Offset(0, widget.ypos);
   }
 
-  void _handleToolBarUpdate(DragUpdateDetails details) {
+  void _handleToolBarUpdate(DragUpdateDetails details) { //temporarily made it so it only moves vertically
     setState(() {
       if (draggable) {
         double angle = 0.25; // Determine the angle of rotation
         double angleInRadians = angle * 2 * pi;
-        double rotatedDeltaX = details.delta.dx * cos(angleInRadians) -
-            details.delta.dy * sin(angleInRadians);
-        double rotatedDeltaY = details.delta.dx * sin(angleInRadians) +
-            details.delta.dy * cos(angleInRadians);
+        double rotatedDeltaX = details.delta.dx * cos(angleInRadians) - details.delta.dy * sin(angleInRadians);
+        double rotatedDeltaY = details.delta.dx * sin(angleInRadians) + details.delta.dy * cos(angleInRadians);
         toolbarPosition += Offset(rotatedDeltaX, rotatedDeltaY);
       } else {
-        toolbarPosition += details.delta;
+        Offset newToolBarPosition = (toolbarPosition + Offset(0, details.delta.dy));
+        if(newToolBarPosition.dy > 0 && newToolBarPosition.dy < (widget.screenHeight - toolbarHeight)){
+          toolbarPosition += Offset(0, details.delta.dy);
+        }
       }
     });
   }
@@ -126,7 +127,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
     bool shouldRotateBar = toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold;
 
     if (shouldRotateBar != rotatedToolBarCubit.state) {
-      rotatedToolBarCubit.changeState(shouldRotateBar);
+      //temporarily made it move only vertically
+      //rotatedToolBarCubit.changeState(shouldRotateBar); 
     }
 
     return Positioned(
