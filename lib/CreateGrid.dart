@@ -25,6 +25,8 @@ class _CreateGridState extends State<CreateGrid> {
   List<List<Color>> pixelColors = []; //grid is a multidimensional array
   Color defaultColor = Colors.transparent;
 
+  double size = 0;
+
   @override
   void initState() {
     super.initState();
@@ -72,7 +74,9 @@ class _CreateGridState extends State<CreateGrid> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final size = screenWidth / 2;
+    if(size == 0){
+       size = screenWidth / 2;
+    }
 
     if (gridPosition == Offset(0, 0)) {
       gridPosition = Offset(screenWidth / 2, screenHeight / 2);
@@ -84,6 +88,20 @@ class _CreateGridState extends State<CreateGrid> {
 
     return Stack( //stack to add future widgets on top
       children: [
+        Positioned(
+          left: gridPosition.dx + size,
+          top: gridPosition.dy - 10,
+          child: GestureDetector( //adjusts size of grid
+            onPanUpdate: (details) {
+              setState(() { 
+                size += details.delta.dx; 
+              }); 
+            },
+            child: Icon(
+              Icons.arrow_outward
+            ),
+          )
+        ),
         Positioned(
         left: gridPosition.dx,
         top: gridPosition.dy,
