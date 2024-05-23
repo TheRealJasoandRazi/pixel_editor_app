@@ -95,6 +95,7 @@ class _CreateGridState extends State<CreateGrid> {
             onPanUpdate: (details) {
               setState(() { 
                 size += details.delta.dx; 
+                size = size.clamp(screenWidth * 0.15, screenWidth * 0.80); //add constraints
               }); 
             },
             child: Icon(
