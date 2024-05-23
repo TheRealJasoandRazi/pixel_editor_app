@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+//import 'dart:math';
 
-import 'package:pixel_editor_app/Cubit/RotatedToolBarState.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+//import 'package:pixel_editor_app/Cubit/RotatedToolBarState.dart';
+//import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomToolBar extends StatefulWidget {
   final double screenWidth;
@@ -28,31 +28,43 @@ class _CustomToolBarState extends State<CustomToolBar> {
   late double toolbarWidth;
   late double toolbarHeight;
   Offset toolbarPosition = Offset.zero;
-  bool rotationComplete = false; // done the rotations
-  bool draggable = false; // only true when its been rotated and the user stops dragging
+  //bool rotationComplete = false; // done the rotations
+  //bool draggable = false; // only true when its been rotated and the user stops dragging
+
+  //constraints for toolbar size
+  late double minWidth;
+  late double maxWidth;
+  late double minHeight;
+  late double maxHeight;
 
   @override
   initState() {
     super.initState();
+    //beginning size and position
     toolbarWidth = widget.screenWidth * 0.1;
     toolbarHeight = widget.screenHeight * 0.5;
     toolbarPosition = Offset(0, widget.ypos);
+
+    minWidth = widget.screenWidth * 0.05; // Minimum width
+    maxWidth = widget.screenWidth * 0.2; // Maximum width
+    minHeight = widget.screenHeight * 0.3; // Minimum height
+    maxHeight = widget.screenHeight * 0.6; // Maximum height
   }
 
   void _handleToolBarUpdate(DragUpdateDetails details) { //temporarily made it so it only moves vertically
     setState(() {
-      if (draggable) {
+      /*if (draggable) {
         double angle = 0.25; // Determine the angle of rotation
         double angleInRadians = angle * 2 * pi;
         double rotatedDeltaX = details.delta.dx * cos(angleInRadians) - details.delta.dy * sin(angleInRadians);
         double rotatedDeltaY = details.delta.dx * sin(angleInRadians) + details.delta.dy * cos(angleInRadians);
         toolbarPosition += Offset(rotatedDeltaX, rotatedDeltaY);
-      } else {
-        Offset newToolBarPosition = (toolbarPosition + Offset(0, details.delta.dy));
+      } else {*/
+        Offset newToolBarPosition = (toolbarPosition + Offset(0, details.delta.dy)); //temp code to check if it moves vertically inbounds
         if(newToolBarPosition.dy > 0 && newToolBarPosition.dy < (widget.screenHeight - toolbarHeight)){
           toolbarPosition += Offset(0, details.delta.dy);
         }
-      }
+      //}
     });
   }
 
@@ -114,11 +126,9 @@ class _CustomToolBarState extends State<CustomToolBar> {
 
   @override
   Widget build(BuildContext context) {
-    final double minWidth = widget.screenWidth * 0.05; // Minimum width
-    final double maxWidth = widget.screenWidth * 0.2; // Maximum width
-    final double minHeight = widget.screenHeight * 0.3; // Minimum height
-    final double maxHeight = widget.screenHeight * 0.6; // Maximum height
+    //temporarily made it move only vertically
 
+    /* 
     double threshold = widget.screenHeight * 0.05;
     double lowerThreshold = widget.screenHeight - threshold - toolbarHeight;
 
@@ -127,14 +137,13 @@ class _CustomToolBarState extends State<CustomToolBar> {
     bool shouldRotateBar = toolbarPosition.dy <= threshold || toolbarPosition.dy >= lowerThreshold;
 
     if (shouldRotateBar != rotatedToolBarCubit.state) {
-      //temporarily made it move only vertically
       //rotatedToolBarCubit.changeState(shouldRotateBar); 
-    }
+    }*/
 
     return Positioned(
       left: toolbarPosition.dx,
       top: toolbarPosition.dy,
-      child: AnimatedRotation(
+      /*child: AnimatedRotation(
         turns: rotatedToolBarCubit.state ? 0.25 : 0,
         duration: Duration(milliseconds: 300),
         alignment: Alignment.center,
@@ -147,14 +156,14 @@ class _CustomToolBarState extends State<CustomToolBar> {
               rotationComplete = false;
             }
           });
-        },
+        },*/
         child: GestureDetector(
           onPanUpdate: (details) {
             setState(() {
               _handleToolBarUpdate(details);
             });
           },
-          onPanEnd: (details) {
+          /*onPanEnd: (details) {
             setState(() {
               if (rotationComplete) {
                 draggable = true;
@@ -162,7 +171,7 @@ class _CustomToolBarState extends State<CustomToolBar> {
                 draggable = false;
               }
             });
-          },
+          },*/
           child: Container( //gives smoothness when changing sizes
             width: toolbarWidth,
             height: toolbarHeight,
@@ -170,7 +179,6 @@ class _CustomToolBarState extends State<CustomToolBar> {
               borderRadius: BorderRadius.circular(16.0),
               color: Colors.grey[400],
             ),
-            child: ClipRect( //makes it so it doesn't clip through the container
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -239,8 +247,8 @@ class _CustomToolBarState extends State<CustomToolBar> {
               ),
             ),
           ),
-        ),
-      ),
+        
+     // ),
     );
   }
 }

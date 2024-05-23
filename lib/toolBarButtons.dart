@@ -26,6 +26,7 @@ mixin ToolBarButtons {
                 ),
               ],
             ),
+            //Bloc Builder is not being used at the moment due to the toolbar not rotating
             child: BlocBuilder<RotatedToolBarCubit, bool>( //rebuilds the icon based on cubit state
               builder: (context, state) {
                 return AnimatedRotation(

@@ -4,19 +4,13 @@ import 'toolBarButtons.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BinTool extends StatefulWidget with ToolBarButtons {
-
-  @override
-  _BinToolState createState() => _BinToolState();
-}
-
-class _BinToolState extends State<BinTool> {
+class BinTool extends StatelessWidget with ToolBarButtons{
 
   @override
   Widget build(BuildContext context) {
     final gridListCubit = BlocProvider.of<GridListCubit>(context);
-    return widget.toolBarButton(
-      Icons.recycling,
+    return toolBarButton(
+      Icons.delete,
       (){
         gridListCubit.removeSelectedGrids();
       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/Cubit/EraseState.dart';
 
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
@@ -79,6 +80,7 @@ class _CreateGridState extends State<CreateGrid> {
 
     final paintCubit = BlocProvider.of<PaintCubit>(context);
     final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
+    final eraseCubit = BlocProvider.of<EraseCubit>(context); 
 
     return Stack( //stack to add future widgets on top
       children: [
@@ -89,15 +91,18 @@ class _CreateGridState extends State<CreateGrid> {
             onPanUpdate: (details) {
               if (paintCubit.state) {
                 _calculateGridIndex(details.localPosition, size, colorCubit.state);
-              } else if(!widget.selected){
+              }
+              else if(eraseCubit.state){
+                _calculateGridIndex(details.localPosition, size, Colors.transparent);
+              }
+              else if(!widget.selected){
                 _handleGridUpdate(details);
               }
             },
             onDoubleTap: (){
-              if(!paintCubit.state){ //has no bloc provider to automatically rebuild itself
+              if(!paintCubit.state){
                 setState(() {
                   widget.selected = !widget.selected;
-                  print(widget.selected);
                 });
               }
             },

@@ -8,6 +8,7 @@ import 'package:pixel_editor_app/ColorWheelTool.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
 import 'package:pixel_editor_app/GridTool.dart';
 import 'package:pixel_editor_app/PaintTool.dart';
+import 'package:pixel_editor_app/EraseTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
@@ -19,6 +20,7 @@ import 'Cubit/PaintState.dart';
 import 'Cubit/ColorWheelState.dart';
 import 'Cubit/GridListState.dart';
 import 'Cubit/RotatedToolBarState.dart';
+import 'Cubit/EraseState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,6 +51,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => RotatedToolBarCubit(),
+        ),
+        BlocProvider(
+          create: (context) => EraseCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
@@ -82,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late ColorWheelTool colorWheelTool;
   late ColorWheelPopUp colorWheelPopUp;
   late BinTool binTool;
+  late EraseTool eraseTool;
 
   @override
   void initState() { //only runs once
@@ -92,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     colorWheelTool = ColorWheelTool();
     colorWheelPopUp = ColorWheelPopUp();
     binTool = BinTool();
+    eraseTool = EraseTool();
   }
   
   @override
@@ -109,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
     customToolBar.add(colorWheelTool);
+    customToolBar.add(eraseTool);
     customToolBar.add(binTool);
     
     return Scaffold(

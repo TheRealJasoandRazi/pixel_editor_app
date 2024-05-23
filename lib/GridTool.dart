@@ -4,19 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'toolBarButtons.dart';
 import 'Cubit/FormState.dart';
 
-class GridTool extends StatefulWidget with ToolBarButtons {
-
-  @override
-  _GridToolState createState() => _GridToolState();
-}
-
-class _GridToolState extends State<GridTool> {
+class GridTool extends StatelessWidget with ToolBarButtons {
   
   @override
   Widget build(BuildContext context) {
     final formCubit = BlocProvider.of<FormCubit>(context); //retieve form state
 
-    return widget.toolBarButton(
+    return toolBarButton(
       Icons.grid_on,
       () {
         formCubit.changeFormVisibility();
