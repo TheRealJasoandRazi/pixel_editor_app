@@ -37,6 +37,8 @@ class _ExportFormState extends State<ExportForm> {
       formPosition = Offset(screenWidth/2, screenWidth/2);
     }
 
+    int stateLength = gridListCubit.state.length;
+
     return Stack( 
       children: [
         Positioned(
@@ -67,22 +69,31 @@ class _ExportFormState extends State<ExportForm> {
               ),
               child: Column(
                 children: [
-                  SizedBox( //list of selected grids, //add blocBuilder for gridlist
+                  SizedBox(
                     height: size * 0.8,
                     width: size * 0.9,
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, // Number of columns
-                        crossAxisSpacing: 10.0, // Spacing between columns
-                        mainAxisSpacing: 10.0, // Spacing between rows
-                      ),
-                      itemCount: gridListCubit.state.length,
-                      itemBuilder: (context, index) {
-                        var grid = gridListCubit.state[index];
-                        //return replicateGrid(grid);
-                        return ReplicaGrid(grid: grid);
-                      }
-                    ), 
+                    child: stateLength > 0 //if theres grids available
+                      ? ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                          child: GridView.builder(
+                            physics: NeverScrollableScrollPhysics(), // Disable scrolling
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3, // Number of columns
+                              crossAxisSpacing: 10.0, // Spacing between columns
+                              mainAxisSpacing: 10.0, // Spacing between rows
+                            ),
+                            itemCount: gridListCubit.state.length,
+                            itemBuilder: (context, index) {
+                              var grid = gridListCubit.state[index];
+                              return ReplicaGrid(grid: grid);
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            "No Grids Available",
+                          ),
+                        ),
                   ),
                   SizedBox( //export button
                     width: size * 0.6, // Adjust width as needed
