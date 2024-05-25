@@ -48,7 +48,7 @@ class _ExportFormState extends State<ExportForm> {
             onPanUpdate: (details) {
               setState(() { 
                 size += details.delta.dx; 
-                size = size.clamp(screenWidth * 0.15, screenWidth * 0.50); //add constraints
+                size = size.clamp(screenWidth * 0.25, screenWidth * 0.50); //add constraints
               }); 
             },
             child: Icon(
@@ -95,16 +95,23 @@ class _ExportFormState extends State<ExportForm> {
                           ),
                         ),
                   ),
-                  SizedBox( //export button
+                  SizedBox( // export button
                     width: size * 0.6, // Adjust width as needed
                     height: size * 0.2, // Adjust height as needed
                     child: GestureDetector(
                       onTap: () {
                         print("export button clicked");
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade400,
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0), // Adjust padding as needed
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            borderRadius: BorderRadius.circular(15.0), // Adjust border radius as needed
+                          ),
+                          child: Center(
+                            child: Text("Export"),
+                          )
                         ),
                       ),
                     ),
