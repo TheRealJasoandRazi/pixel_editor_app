@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixel_editor_app/BinTool.dart';
+import 'package:pixel_editor_app/Tools/BinTool.dart';
 import 'package:pixel_editor_app/ColorWheelPopUp.dart';
 
-import 'package:pixel_editor_app/ColorWheelTool.dart';
+import 'package:pixel_editor_app/Tools/ColorWheelTool.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
-import 'package:pixel_editor_app/GridTool.dart';
-import 'package:pixel_editor_app/PaintTool.dart';
-import 'package:pixel_editor_app/EraseTool.dart';
+import 'package:pixel_editor_app/Tools/ExportTool.dart';
+import 'package:pixel_editor_app/Tools/GridTool.dart';
+import 'package:pixel_editor_app/Tools/PaintTool.dart';
+import 'package:pixel_editor_app/Tools/EraseTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
@@ -21,6 +22,7 @@ import 'Cubit/ColorWheelState.dart';
 import 'Cubit/GridListState.dart';
 import 'Cubit/RotatedToolBarState.dart';
 import 'Cubit/EraseState.dart';
+import 'Cubit/ExportState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +57,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => EraseCubit(),
         ),
+        BlocProvider(
+          create: (context) => ExportCubit(),
+        )
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -88,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late ColorWheelPopUp colorWheelPopUp;
   late BinTool binTool;
   late EraseTool eraseTool;
+  late ExportTool exportTool;
 
   @override
   void initState() { //only runs once
@@ -99,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
     colorWheelPopUp = ColorWheelPopUp();
     binTool = BinTool();
     eraseTool = EraseTool();
+    exportTool = ExportTool();
   }
   
   @override
@@ -118,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(colorWheelTool);
     customToolBar.add(eraseTool);
     customToolBar.add(binTool);
+    customToolBar.add(exportTool);
     
     return Scaffold(
       body: Stack(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'toolBarButtons.dart';
-import 'Cubit/EraseState.dart';
+import '../toolBarButtons.dart';
+import '../Cubit/EraseState.dart';
 
-import 'Cubit/PaintState.dart';
+import '../Cubit/PaintState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaintTool extends StatelessWidget with ToolBarButtons {

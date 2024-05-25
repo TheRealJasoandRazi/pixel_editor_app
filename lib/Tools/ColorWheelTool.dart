@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/Cubit/ColorWheelState.dart';
-import 'toolBarButtons.dart';
+import '../toolBarButtons.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 

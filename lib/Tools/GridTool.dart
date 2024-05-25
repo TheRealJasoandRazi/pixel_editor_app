@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'toolBarButtons.dart';
-import 'Cubit/FormState.dart';
+import '../toolBarButtons.dart';
+import '../Cubit/FormState.dart';
 
 class GridTool extends StatelessWidget with ToolBarButtons {
   
