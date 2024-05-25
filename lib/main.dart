@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/ExportForm.dart';
 import 'package:pixel_editor_app/Tools/BinTool.dart';
 import 'package:pixel_editor_app/ColorWheelPopUp.dart';
 
@@ -94,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late BinTool binTool;
   late EraseTool eraseTool;
   late ExportTool exportTool;
+  late ExportForm exportForm;
 
   @override
   void initState() { //only runs once
@@ -106,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
     binTool = BinTool();
     eraseTool = EraseTool();
     exportTool = ExportTool();
+    exportForm = ExportForm();
   }
   
   @override
@@ -148,15 +151,24 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             }
           ),
-          //add movable form
+          //add movable grid form
           BlocBuilder<FormCubit, bool>(
             builder: (context, state) {
-              if (state == true) {
+              if (state) {
                 return gridForm;
               } else {
                 return Container();
               }
             }
+          ),
+          BlocBuilder<ExportCubit, bool>(
+            builder: (context, state) {
+              if(state){
+                return exportForm;
+              } else {
+                return Container();
+              }
+            },
           )
         ],
       ),

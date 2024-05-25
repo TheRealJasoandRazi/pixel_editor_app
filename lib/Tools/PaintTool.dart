@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_editor_app/Cubit/ExportState.dart';
 import '../toolBarButtons.dart';
 import '../Cubit/EraseState.dart';
 
@@ -10,15 +11,21 @@ class PaintTool extends StatelessWidget with ToolBarButtons {
   Widget build(BuildContext context) {
     final paintCubit = BlocProvider.of<PaintCubit>(context); //retieve form state
     final eraseCubit = BlocProvider.of<EraseCubit>(context); //retieve form state
-    
+    final exportCubit = BlocProvider.of<ExportCubit>(context);
+  
     return BlocBuilder<PaintCubit, bool>( //rebuilds whenever paint state changes
       builder: (context, state) {
         return toolBarButton(
           Icons.format_paint,
           (){
             paintCubit.changeSelection();
-            if(eraseCubit.state && paintCubit.state){
-              eraseCubit.changeSelection(); //turn off the erase button 
+            if(paintCubit.state) {
+              if(eraseCubit.state){
+                eraseCubit.changeSelection(); //turn off the erase button
+              } 
+              if(exportCubit.state){ //close off export form
+                exportCubit.changeExportFormVisibility();
+              }
             }
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,

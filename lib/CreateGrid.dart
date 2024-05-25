@@ -10,6 +10,7 @@ class CreateGrid extends StatefulWidget {
   final int height;
 
   bool selected = false;
+  List<List<Color>> pixelColors = []; //grid is a multidimensional array
 
   CreateGrid({
     required this.width,
@@ -22,7 +23,7 @@ class CreateGrid extends StatefulWidget {
 
 class _CreateGridState extends State<CreateGrid> {
   Offset gridPosition = Offset(0, 0);
-  List<List<Color>> pixelColors = []; //grid is a multidimensional array
+  //List<List<Color>> widget.pixelColors = []; //grid is a multidimensional array
   Color defaultColor = Colors.transparent;
 
   double size = 0;
@@ -30,7 +31,7 @@ class _CreateGridState extends State<CreateGrid> {
   @override
   void initState() {
     super.initState();
-    pixelColors = List.generate(widget.height, (_) => List.filled(widget.width, defaultColor));
+    widget.pixelColors = List.generate(widget.height, (_) => List.filled(widget.width, defaultColor));
   }
 
   @override
@@ -55,16 +56,16 @@ class _CreateGridState extends State<CreateGrid> {
     final row = (localPosition.dy / cellHeight).floor().clamp(0, rows - 1);
 
     setState(() {
-      pixelColors[row][column] = color;
+      widget.pixelColors[row][column] = color;
     });
   }
 
   void _handleClick(int row, int column, ColorCubit colorCubit) {
     setState(() {
-      if(colorCubit.state == pixelColors[row][column]){
-        pixelColors[row][column] = Colors.transparent;
+      if(colorCubit.state == widget.pixelColors[row][column]){
+        widget.pixelColors[row][column] = Colors.transparent;
       } else {
-        pixelColors[row][column] = colorCubit.state;
+        widget.pixelColors[row][column] = colorCubit.state;
       }
     });
   }
@@ -140,7 +141,7 @@ class _CreateGridState extends State<CreateGrid> {
                   int rowIndex = index ~/ widget.width;
                   int columnIndex = index % widget.width;
 
-                  Color color = pixelColors[rowIndex][columnIndex];
+                  Color color = widget.pixelColors[rowIndex][columnIndex];
 
                   return GestureDetector(
                     onTapDown: (details) {
