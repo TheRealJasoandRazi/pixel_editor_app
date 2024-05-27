@@ -1,5 +1,7 @@
-import 'dart:html';
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
+import 'package:share/share.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 import 'CreateGrid.dart';
 
@@ -14,6 +16,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'dart:io'; //unused
+import 'dart:html' as html;
 
 
 
@@ -67,18 +70,29 @@ Future<Uint8List> captureWidget(GlobalKey globalKey) async { //create image
   }
 }
 
-  Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
-    for (final key in selectedKeys) {
-      try {
-        Uint8List capturedImage = await captureWidget(key);
-        // Here you can do whatever you want with the captured image.
-        // For demonstration, let's print its length.
-        print('Captured image length: ${capturedImage.length}');
-      } catch (e) {
-        print('Failed to capture widget: $e');
-      }
+Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
+  for (final key in selectedKeys) {
+    try {
+      Uint8List capturedImage = await captureWidget(key);
+
+      // Convert the captured image to a data URL
+      final blob = html.Blob([capturedImage]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      
+      // Open the data URL in a new browser tab
+      html.AnchorElement(href: url)
+        ..setAttribute('download', 'captured_image.png')
+        ..click();
+      
+      // Revoke the object URL to release memory
+      html.Url.revokeObjectUrl(url);
+      
+    } catch (e) {
+      print('Failed to capture and share widget: $e');
     }
   }
+}
+
 
   Widget replica(CreateGrid grid, bool selected){
     return Container(
@@ -209,7 +223,7 @@ Future<Uint8List> captureWidget(GlobalKey globalKey) async { //create image
                     width: size * 0.6, // Adjust width as needed
                     height: size * 0.2, // Adjust height as needed
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         print("export button clicked");
                         _saveSelectedWidgets(exportSelectionCubit.state);
                         exportFormCubit.changeExportFormVisibility();
