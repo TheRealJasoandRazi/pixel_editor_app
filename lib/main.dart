@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:pixel_editor_app/ExportForm.dart';
 import 'package:pixel_editor_app/Tools/BinTool.dart';
 import 'package:pixel_editor_app/ColorWheelPopUp.dart';
@@ -60,6 +61,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ExportCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ExportSelectionCubit(),
         )
       ], //gives access to form state to all descendants
       child: MaterialApp(
