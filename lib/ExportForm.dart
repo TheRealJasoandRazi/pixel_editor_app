@@ -151,7 +151,7 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
     return Stack(
       children: [
         Positioned(
-          left: formPosition.dx + size,
+          left: formPosition.dx + (size * 2),
           top: formPosition.dy - 10,
           child: GestureDetector(
             onPanUpdate: (details) {
