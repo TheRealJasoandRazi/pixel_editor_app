@@ -32,6 +32,7 @@ class _ExportFormState extends State<ExportForm> {
   double size = 0;
 
   late final ExportSelectionCubit exportSelectionCubit;
+  List<GlobalKey> keyList = []; //test
 
   void _handleFormUpdate(DragUpdateDetails details) {
     setState(() {
@@ -55,7 +56,7 @@ Future<Uint8List> captureWidget(GlobalKey globalKey) async { //create image
   final RenderRepaintBoundary? boundary = globalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
   if (boundary != null) {
-    final ui.Image image = await boundary.toImage();
+    final ui.Image image = await boundary.toImage(pixelRatio: 10);
   
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
   
@@ -94,10 +95,10 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
 }
 
 
-  Widget replica(CreateGrid grid, bool selected){
+  Widget replica(CreateGrid grid, bool selected, bool exporting){
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(
+          border: exporting ? null : Border.all(
             color: selected ? Colors.blueAccent : Colors.grey.shade400,
             width: 2.0, // Width of the border
           ),
@@ -118,7 +119,7 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
 
               return Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade400),
+                  border: exporting ? null : Border.all(color: Colors.grey.shade400),
                   color: color,
                 ),
               );
@@ -144,110 +145,165 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
       formPosition = Offset(screenWidth/2, screenWidth/2);
     }
 
-    int stateLength = gridListCubit.state.length;
+    int gridstateLength = gridListCubit.state.length;
+    //int selectedstateLength = exportSelectionCubit.state.length;
 
-    return Stack( 
+    return Stack(
       children: [
         Positioned(
           left: formPosition.dx + size,
           top: formPosition.dy - 10,
-          child: GestureDetector( //adjusts size of form
+          child: GestureDetector(
             onPanUpdate: (details) {
-              setState(() { 
-                size += details.delta.dx; 
-                size = size.clamp(screenWidth * 0.25, screenWidth * 0.50); //add constraints
-              }); 
+              setState(() {
+                size += details.delta.dx;
+                size = size.clamp(screenWidth * 0.25, screenWidth * 0.50);
+              });
             },
-            child: Icon(
-              Icons.arrow_outward
-            ),
-          )
+            child: Icon(Icons.arrow_outward),
+          ),
         ),
         Positioned(
           left: formPosition.dx,
           top: formPosition.dy,
           child: GestureDetector(
             onPanUpdate: _handleFormUpdate,
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300
-              ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: size * 0.8,
-                    width: size * 0.9,
-                    child: stateLength > 0 //if theres grids available
-                      ? ScrollConfiguration( //create grids
-                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                          child: GridView.builder(
-                            physics: NeverScrollableScrollPhysics(), // Disable scrolling
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3, // Number of columns
-                              crossAxisSpacing: 10.0, // Spacing between columns
-                              mainAxisSpacing: 10.0, // Spacing between rows
-                            ),
-                            itemCount: gridListCubit.state.length,
-                            itemBuilder: (context, index) {
-                              var grid = gridListCubit.state[index];
-                              GlobalKey key = GlobalKey(); // Create a GlobalKey for each widget
-                              return GestureDetector(
-                                onTap: () {
-                                  if (exportSelectionCubit.containsKey(key)) {
-                                    exportSelectionCubit.removeSelectedKey(key); // Deselect if already selected
-                                  } else {
-                                    exportSelectionCubit.addKey(key); // Select if not selected
-                                  }
-                                },
-                                child: BlocBuilder<ExportSelectionCubit, List<GlobalKey>>( //rebuilds only the replica whenever state changes
-                                  builder: (context, state) {
-                                    return RepaintBoundary( 
-                                      key: key,
-                                      child: replica(grid, state.contains(key)),
+            child: Row(
+              children: [
+                Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: size * 0.8,
+                        width: size * 0.9,
+                        child: gridstateLength > 0
+                            ? ScrollConfiguration(
+                                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                child: GridView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 10.0,
+                                    mainAxisSpacing: 10.0,
+                                  ),
+                                  itemCount: gridListCubit.state.length,
+                                  itemBuilder: (context, index) {
+                                    var grid = gridListCubit.state[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        if (exportSelectionCubit.containsGrid(grid)) {
+                                          exportSelectionCubit.removeSelectedGrid(grid);
+                                        } else {
+                                          exportSelectionCubit.addGrid(grid);
+                                        }
+                                      },
+                                      child: BlocBuilder<ExportSelectionCubit, List<CreateGrid>>(
+                                        builder: (context, state) {
+                                          return replica(grid, state.contains(grid), false);
+                                        },
+                                      ),
                                     );
                                   },
-                                )
-                              );
-                            },
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  "No Grids Available",
+                                ),
+                              ),
+                      ),
+                      SizedBox(
+                        width: size * 0.6,
+                        height: size * 0.2,
+                        child: GestureDetector(
+                          onTap: () async {
+                            print("export button clicked");
+                            print(keyList.length);
+                            print(keyList);
+                            _saveSelectedWidgets(keyList);
+                            exportFormCubit.changeExportFormVisibility();
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: Center(
+                                child: Text("Export"),
+                              ),
+                            ),
                           ),
-                        )
-                      : Center(
-                          child: Text(
-                            "No Grids Available",
-                          ),
-                        ),
-                  ),
-                  SizedBox( // export button
-                    width: size * 0.6, // Adjust width as needed
-                    height: size * 0.2, // Adjust height as needed
-                    child: GestureDetector(
-                      onTap: () async {
-                        print("export button clicked");
-                        _saveSelectedWidgets(exportSelectionCubit.state);
-                        exportFormCubit.changeExportFormVisibility();
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(10.0), // Adjust padding as needed
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(15.0), // Adjust border radius as needed
-                          ),
-                          child: Center(
-                            child: Text("Export"),
-                          )
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              )
-            )
-          )
-        )
-      ]
+                ),
+                Container( // Second container that will show borderless grid
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                  ),
+                  child: BlocBuilder<ExportSelectionCubit, List<CreateGrid>>( // Rebuilds entire grid
+                    builder: (context, state) {
+                      keyList.clear(); // Resets list on every update
+                      return state.length > 0
+                          ? Column(
+                            children: [
+                              SizedBox(
+                                width: size * 0.9,
+                                height: size * 0.2,
+                                child: Center(
+                                  child: Text("Previews")
+                                )
+                              ),
+                              SizedBox(
+                                width: size * 0.9,
+                                height: size * 0.8,
+                                child: ScrollConfiguration(
+                                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                  child: GridView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 10.0,
+                                      mainAxisSpacing: 10.0,
+                                    ),
+                                    itemCount: state.length,
+                                    itemBuilder: (context, index) {
+                                      var grid = state[index];
+                                      GlobalKey key = GlobalKey(); // Creates new keys
+                                      keyList.add(key);
+                                      return RepaintBoundary(
+                                        key: key,
+                                        child: replica(grid, false, true), // Borderless
+                                      );
+                                    },
+                                  ),
+                                )
+                              )
+                            ]
+                          )
+                          : Center(
+                              child: Text(
+                                "No Grids Selected",
+                              ),
+                            );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   } 
 }

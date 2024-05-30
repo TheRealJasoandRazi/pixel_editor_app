@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/CreateGrid.dart';
 
-class ExportSelectionCubit extends Cubit<List<GlobalKey>> {
-  ExportSelectionCubit() : super([]); //initial state
+class ExportSelectionCubit extends Cubit<List<CreateGrid>> {
+  ExportSelectionCubit() : super([]); // Initial state is an empty list
 
-  void addKey(GlobalKey key){
-    emit([...state, key]); //"...state" creates a new list and adds key to it
+  void addGrid(CreateGrid grid) {
+    emit([...state, grid]); // Add the grid to the list
   }
 
-  void removeSelectedKey(GlobalKey inputKey) { //remove selected key
-    List<GlobalKey> newList = state.where((key) => key != inputKey).toList();
-    emit(newList);
+  void removeSelectedGrid(CreateGrid inputGrid) {
+    List<CreateGrid> newList = state.where((grid) => grid != inputGrid).toList();
+    emit(newList); // Remove the specified grid from the list
   }
 
-  bool containsKey(GlobalKey key) {
-    return state.contains(key);
+  bool containsGrid(CreateGrid grid) {
+    return state.contains(grid); // Check if the list contains the specified grid
   }
 
   void clearList() {
