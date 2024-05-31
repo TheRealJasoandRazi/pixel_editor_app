@@ -7,10 +7,10 @@ class ImageListCubit extends Cubit<List<ImageWrapper>> {
   void addImage(ImageWrapper image){
     emit([...state, image]); 
   }
-/*
-  void removeSelectedGrids() { //create new list without the selected grids
-    List<CreateGrid> newList = state.where((grid) => !grid.selected).toList();
+
+  void removeSelectedImages() {
+    List<ImageWrapper> newList = state.where((grid) => !grid.selected).toList();
     emit(newList);
   }
-  */
+  
 }

@@ -4,7 +4,9 @@ import 'dart:typed_data';
 class ImageWrapper extends StatefulWidget {
   final Uint8List? image;
 
-  const ImageWrapper({
+  bool selected = false;
+
+  ImageWrapper({
     required this.image,
     super.key,
   });
@@ -21,6 +23,11 @@ class _ImageWrapperState extends State<ImageWrapper> {
     setState(() {
       wrapperPosition += details.delta;
     });
+  }
+  
+  @override
+  void dispose(){
+    super.dispose();
   }
 
   @override
@@ -59,9 +66,17 @@ class _ImageWrapperState extends State<ImageWrapper> {
           top: wrapperPosition.dy,
           child: GestureDetector(
             onPanUpdate: _handleFormUpdate,
+            onDoubleTap: (){
+              setState(() {
+                widget.selected = !widget.selected;
+              });
+            },
             child: Container(
               width: size,
               height: size,
+              decoration: BoxDecoration(
+                border: widget.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
+              ),
               child: widget.image != null ? Image.memory(widget.image!) : Placeholder(),
             ),
           ),
