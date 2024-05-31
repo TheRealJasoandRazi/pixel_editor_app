@@ -21,7 +21,10 @@ class ImportTool extends StatefulWidget {
 
 class _ImportToolState extends State<ImportTool> with ToolBarButtons {
   Future<Uint8List?> _selectFile() async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles();
+    final FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['png'], // Allow only PNG files
+    );
     if (result != null && result.files.isNotEmpty) {
       return result.files.first.bytes;
     }
@@ -46,9 +49,3 @@ class _ImportToolState extends State<ImportTool> with ToolBarButtons {
     );
   }
 }
-
-
- /*final exportCubit = BlocProvider.of<ExportCubit>(context); //retieve form state
-    final paintCubit = BlocProvider.of<PaintCubit>(context); //retieve form state
-    final formCubit = BlocProvider.of<FormCubit>(context); //retieve form state
-    final eraseCubit = BlocProvider.of<EraseCubit>(context);*/
