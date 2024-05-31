@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:pixel_editor_app/ExportForm.dart';
+import 'package:pixel_editor_app/ImageWrapper.dart';
 import 'package:pixel_editor_app/Tools/BinTool.dart';
 import 'package:pixel_editor_app/ColorWheelPopUp.dart';
 
@@ -12,6 +13,7 @@ import 'package:pixel_editor_app/Tools/ExportTool.dart';
 import 'package:pixel_editor_app/Tools/GridTool.dart';
 import 'package:pixel_editor_app/Tools/PaintTool.dart';
 import 'package:pixel_editor_app/Tools/EraseTool.dart';
+import 'Tools/ImportTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
@@ -25,6 +27,9 @@ import 'Cubit/GridListState.dart';
 import 'Cubit/RotatedToolBarState.dart';
 import 'Cubit/EraseState.dart';
 import 'Cubit/ExportState.dart';
+import 'Cubit/ImageListState.dart';
+
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +69,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ExportSelectionCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ImageListCubit(),
         )
       ], //gives access to form state to all descendants
       child: MaterialApp(
@@ -100,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late EraseTool eraseTool;
   late ExportTool exportTool;
   late ExportForm exportForm;
+  late ImportTool importTool;
 
   @override
   void initState() { //only runs once
@@ -113,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
     eraseTool = EraseTool();
     exportTool = ExportTool();
     exportForm = ExportForm();
+    importTool = ImportTool();
   }
   
   @override
@@ -133,6 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(eraseTool);
     customToolBar.add(binTool);
     customToolBar.add(exportTool);
+    customToolBar.add(importTool);
     
     return Scaffold(
       body: Stack(
@@ -172,6 +183,13 @@ class _MyHomePageState extends State<MyHomePage> {
               } else {
                 return Container();
               }
+            },
+          ),
+          BlocBuilder<ImageListCubit, List<ImageWrapper>>(
+            builder: (context, state) {
+              return Stack(
+                children: state,
+              );
             },
           )
         ],

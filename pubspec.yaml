@@ -39,6 +39,9 @@ dependencies:
   flutter_bloc: ^8.1.5
   share: ^2.0.1
   path_provider: ^2.0.2
+  file_picker: ^8.0.3
+  image_gallery_saver: ^2.0.3
+  image_picker_web: ^4.0.0
 
 dev_dependencies:
   flutter_test:

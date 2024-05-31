@@ -18,7 +18,8 @@ import 'dart:typed_data';
 import 'dart:io'; //unused
 import 'dart:html' as html;
 
-
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ExportForm extends StatefulWidget {
   const ExportForm({super.key});
@@ -52,6 +53,24 @@ class _ExportFormState extends State<ExportForm> {
     exportSelectionCubit.clearList(); //empty list when closing export form
   }
 
+  Future<void> saveImageMobile(Uint8List imageData) async {
+    final result = await ImageGallerySaver.saveImage(imageData);
+    print(result);
+  }
+
+  void saveImageWeb(Uint8List capturedImage) {
+    final blob = html.Blob([capturedImage]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    
+    // Open the data URL in a new browser tab
+    html.AnchorElement(href: url)
+      ..setAttribute('download', 'captured_image.png')
+      ..click();
+      
+      // Revoke the object URL to release memory
+    html.Url.revokeObjectUrl(url);
+  }
+
 Future<Uint8List> captureWidget(GlobalKey globalKey) async { //create image
   final RenderRepaintBoundary? boundary = globalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
@@ -76,18 +95,11 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
     try {
       Uint8List capturedImage = await captureWidget(key);
 
-      // Convert the captured image to a data URL
-      final blob = html.Blob([capturedImage]);
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      
-      // Open the data URL in a new browser tab
-      html.AnchorElement(href: url)
-        ..setAttribute('download', 'captured_image.png')
-        ..click();
-      
-      // Revoke the object URL to release memory
-      html.Url.revokeObjectUrl(url);
-      
+      if (kIsWeb) {
+        saveImageWeb(capturedImage);
+      } else {
+        saveImageMobile(capturedImage);
+      }
     } catch (e) {
       print('Failed to capture and share widget: $e');
     }
