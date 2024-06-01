@@ -41,14 +41,14 @@ class _CustomToolBarState extends State<CustomToolBar> {
   initState() {
     super.initState();
     //beginning size and position
-    toolbarWidth = widget.screenWidth * 0.1;
-    toolbarHeight = widget.screenHeight * 0.5;
+    toolbarWidth = widget.screenWidth * 0.12;
+    toolbarHeight = widget.screenHeight * 0.6;
     toolbarPosition = Offset(0, widget.ypos);
 
     minWidth = widget.screenWidth * 0.05; // Minimum width
     maxWidth = widget.screenWidth * 0.2; // Maximum width
-    minHeight = widget.screenHeight * 0.3; // Minimum height
-    maxHeight = widget.screenHeight * 0.6; // Maximum height
+    minHeight = widget.screenHeight * 0.4; // Minimum height
+    maxHeight = widget.screenHeight * 0.8; // Maximum height
   }
 
   void _handleToolBarUpdate(DragUpdateDetails details) { //temporarily made it so it only moves vertically

@@ -19,6 +19,7 @@ import 'Tools/ImportTool.dart';
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
 import 'PixelateForm.dart';
+import 'Tools/SwitchTool.dart';
 
 //state imports
 import 'Cubit/FormState.dart';
@@ -31,6 +32,7 @@ import 'Cubit/EraseState.dart';
 import 'Cubit/ExportState.dart';
 import 'Cubit/ImageListState.dart';
 import 'Cubit/PixelateState.dart';
+import 'Cubit/SwitchState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,6 +79,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => PixelateCubit(),
         ),
+        BlocProvider(
+          create: (context) => SwitchCubit(),
+        ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -115,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late ImportTool importTool;
   late PixelateTool pixelateTool;
   late PixelateForm pixelateForm;
+  late SwitchTool switchTool;
 
   @override
   void initState() { //only runs once
@@ -131,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
     importTool = ImportTool();
     pixelateTool = PixelateTool();
     pixelateForm = PixelateForm();
+    switchTool = SwitchTool();
   }
   
   @override
@@ -145,6 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ); 
 
     //add buttons to custom toolbar
+    customToolBar.add(switchTool);
     customToolBar.add(gridTool);
     customToolBar.add(paintTool);
     customToolBar.add(colorWheelTool);

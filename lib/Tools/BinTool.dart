@@ -18,7 +18,7 @@ class BinTool extends StatelessWidget with ToolBarButtons{
         imageListCubit.removeSelectedImages();
       },
       Colors.grey.shade300,
-      context
+      "Delete"
     );
   }
 }

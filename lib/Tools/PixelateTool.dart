@@ -18,7 +18,7 @@ class PixelateTool extends StatelessWidget with ToolBarButtons {
             pixelateCubit.changePixelateFormVisibility();
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,
-          context
+          "Pixelate"
         );
       },
     );

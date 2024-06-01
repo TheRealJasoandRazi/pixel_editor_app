@@ -18,7 +18,7 @@ class ColorWheelTool extends StatelessWidget with ToolBarButtons{
             colorWheelCubit.changeColorWheelVisibility();
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,
-          context
+          "Color Wheel"
         );
       }
     );

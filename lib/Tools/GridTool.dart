@@ -28,7 +28,7 @@ class GridTool extends StatelessWidget with ToolBarButtons {
             }
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,
-          context
+          "Create Grid"
         );
       }
     );

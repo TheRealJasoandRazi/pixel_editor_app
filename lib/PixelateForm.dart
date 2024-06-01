@@ -8,6 +8,8 @@ import 'package:pixel_editor_app/ImageWrapper.dart';
 import 'Cubit/ImageListState.dart';
 
 import 'package:image/image.dart' as img;
+import 'package:flutter/foundation.dart';
+
 
 class PixelateForm extends StatefulWidget {
 
@@ -24,40 +26,42 @@ class _PixelateFormState extends State<PixelateForm> {
     });
   }
 
-  //DOES THIS EVEN WORK?
-Future<List<List<Color>>> nearestNeighborInterpolation(Uint8List? imageBytes, int newWidth, int newHeight, int width, int height) async {
-  if(imageBytes != null){
-    img.Image? image = img.decodeImage(imageBytes);
-    // Calculate scaling factors
-    final double scaleX = width / newWidth;
-    final double scaleY = height / newHeight;
+Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> params) async {
+  Uint8List inputimage = params['image'];
+  int newWidth = params['newWidth'];
+  int newHeight = params['newHeight'];
+  int oldWidth = params['oldWidth'];
+  int oldHeight = params['oldHeight'];
 
-    // Create a buffer for the output image pixels
-    final List<List<Color>> pixelColors = List.generate(newHeight, (y) => List.generate(newWidth, (x) => Colors.transparent));
+  img.Image? image = img.decodeImage(inputimage);
+  // Calculate scaling factors
+  final double scaleX = oldWidth / newWidth;
+  final double scaleY = oldHeight / newHeight;
 
-    // Map the pixel data to the new image size
-    for (int yOut = 0; yOut < newHeight; yOut++) {
-      for (int xOut = 0; xOut < newWidth; xOut++) {
-        // Find the nearest pixel in the input image
-        final int xIn = (xOut * scaleX).floor();
-        final int yIn = (yOut * scaleY).floor();
-        //final int inputIndex = (yIn * width + xIn); //something wrong here
+  // Create a buffer for the output image pixels
+  final List<List<Color>> pixelColors = List.generate(newHeight, (y) => List.generate(newWidth, (x) => Colors.transparent));
 
-        // Extract RGB components from input pixel data using img.Image object
-        final pixel = image!.getPixel(xIn, yIn);
-        final int r = img.getRed(pixel);
-        final int g = img.getGreen(pixel);
-        final int b = img.getBlue(pixel);
-        final int a = img.getAlpha(pixel);
+  // Map the pixel data to the new image size
+  for (int yOut = 0; yOut < newHeight; yOut++) {
+    for (int xOut = 0; xOut < newWidth; xOut++) {
+      // Find the nearest pixel in the input image
+      final int xIn = (xOut * scaleX).floor();
+      final int yIn = (yOut * scaleY).floor();
+      //final int inputIndex = (yIn * width + xIn); //something wrong here
 
-        // Store color in the output list
-        pixelColors[yOut][xOut] = Color.fromRGBO(r, g, b, a / 255);
-      }
+      // Extract RGB components from input pixel data using img.Image object
+      final pixel = image!.getPixel(xIn, yIn);
+      final int r = img.getRed(pixel);
+      final int g = img.getGreen(pixel);
+      final int b = img.getBlue(pixel);
+      final int a = img.getAlpha(pixel);
+
+      // Store color in the output list
+      pixelColors[yOut][xOut] = Color.fromRGBO(r, g, b, a / 255);
     }
-
-    return pixelColors;
   }
-    return List.generate(newHeight, (y) => List.generate(newWidth, (x) => Colors.black));
+
+  return pixelColors;
   }
 
 
@@ -197,8 +201,16 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Uint8List? imageBytes, in
                         for(ImageWrapper image in imageListCubit.state){
                           if(image.selected){
                             List<int> dimensions = await checkImageHeader(image.image);
-                            List<List<Color>> newimage = await nearestNeighborInterpolation(image.image, width, height, dimensions[0], dimensions[1]);
-                            gridListCubit.addGrid(CreateGrid(width: newimage.length, height: newimage[0].length, pixelColors: newimage));     
+                            Map<String, dynamic> params = {
+                              'image': image.image,
+                              'newWidth': width,
+                              'newHeight': height,
+                              'oldWidth': dimensions[0],
+                              'oldHeight': dimensions[1]
+                            };
+                            List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
+                            gridListCubit.addGrid(CreateGrid(width: newimage.length, height: newimage[0].length, pixelColors: newimage));    
+                            image.selected = !image.selected;
                           }
                         }
                       } else {
