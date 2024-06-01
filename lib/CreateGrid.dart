@@ -10,12 +10,13 @@ class CreateGrid extends StatefulWidget {
   final int height;
 
   bool selected = false;
-  List<List<Color>> pixelColors = []; //grid is a multidimensional array
+  late List<List<Color>> pixelColors; //grid is a multidimensional array
 
   CreateGrid({
     required this.width,
     required this.height,
-  });
+    List<List<Color>>? pixelColors,
+  }) : pixelColors = pixelColors ?? []; // Initialize pixelColors with an empty list if not provided
 
   @override
   State<CreateGrid> createState() => _CreateGridState();
@@ -31,7 +32,9 @@ class _CreateGridState extends State<CreateGrid> {
   @override
   void initState() {
     super.initState();
-    widget.pixelColors = List.generate(widget.height, (_) => List.filled(widget.width, defaultColor));
+    if (widget.pixelColors.isEmpty) { // Check if pixelColors is empty
+      widget.pixelColors = List.generate(widget.height, (_) => List.filled(widget.width, defaultColor));
+    }
   }
 
   @override

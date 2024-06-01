@@ -13,10 +13,12 @@ import 'package:pixel_editor_app/Tools/ExportTool.dart';
 import 'package:pixel_editor_app/Tools/GridTool.dart';
 import 'package:pixel_editor_app/Tools/PaintTool.dart';
 import 'package:pixel_editor_app/Tools/EraseTool.dart';
+import 'package:pixel_editor_app/Tools/PixelateTool.dart';
 import 'Tools/ImportTool.dart';
 
 import 'CustomToolBar.dart'; //Custome Tool Bar
 import 'GridForm.dart';
+import 'PixelateForm.dart';
 
 //state imports
 import 'Cubit/FormState.dart';
@@ -28,8 +30,7 @@ import 'Cubit/RotatedToolBarState.dart';
 import 'Cubit/EraseState.dart';
 import 'Cubit/ExportState.dart';
 import 'Cubit/ImageListState.dart';
-
-import 'dart:io';
+import 'Cubit/PixelateState.dart';
 
 void main() {
   runApp(const MyApp());
@@ -72,7 +73,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ImageListCubit(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => PixelateCubit(),
+        ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -109,6 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late ExportTool exportTool;
   late ExportForm exportForm;
   late ImportTool importTool;
+  late PixelateTool pixelateTool;
+  late PixelateForm pixelateForm;
 
   @override
   void initState() { //only runs once
@@ -123,6 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
     exportTool = ExportTool();
     exportForm = ExportForm();
     importTool = ImportTool();
+    pixelateTool = PixelateTool();
+    pixelateForm = PixelateForm();
   }
   
   @override
@@ -144,6 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(binTool);
     customToolBar.add(exportTool);
     customToolBar.add(importTool);
+    customToolBar.add(pixelateTool);
+
     
     return Scaffold(
       body: Stack(
@@ -191,7 +201,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: state,
               );
             },
-          )
+          ),
+          BlocBuilder<PixelateCubit, bool>(
+            builder: (context, state) {
+              if(state){
+                return pixelateForm;
+              } else {
+                return Container();
+              }
+            },
+          ),
         ],
       ),
     );
