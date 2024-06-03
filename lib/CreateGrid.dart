@@ -140,7 +140,7 @@ class _CreateGridState extends State<CreateGrid> {
       gridPosition = Offset(screenWidth / 2, screenHeight / 2);
     }
 
-    final progressCubit = BlocProvider.of<ProgressCubit>(context); 
+    //final progressCubit = BlocProvider.of<ProgressCubit>(context); 
 
     return Stack( //stack to add future widgets on top
       children: [
