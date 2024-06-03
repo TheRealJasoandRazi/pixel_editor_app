@@ -30,7 +30,7 @@ class _ImportToolState extends State<ImportTool> with ToolBarButtons {
     final imageListCubit = BlocProvider.of<ImageListCubit>(context);
 
     return toolBarButton(
-      Icons.outbond,
+      Icons.arrow_back_ios,
       () async {
         final image = await _selectFile();
         if (image != null) {

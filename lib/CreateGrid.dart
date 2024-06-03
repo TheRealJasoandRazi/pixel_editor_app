@@ -4,6 +4,9 @@ import 'package:pixel_editor_app/Cubit/EraseState.dart';
 
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
+import 'Cubit/ProgressState.dart';
+
+import 'dart:ui';
 
 class CreateGrid extends StatefulWidget {
   final int width;
@@ -29,8 +32,17 @@ class _CreateGridState extends State<CreateGrid> {
 
   double size = 0;
 
+  bool isCreated = false;
+
+  late PaintCubit paintCubit;
+  late ColorCubit colorCubit;
+  late EraseCubit eraseCubit;
+
   @override
   void initState() {
+    paintCubit = BlocProvider.of<PaintCubit>(context);
+    colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
+    eraseCubit = BlocProvider.of<EraseCubit>(context); 
     super.initState();
     if (widget.pixelColors.isEmpty) { // Check if pixelColors is empty
       widget.pixelColors = List.generate(widget.height, (_) => List.filled(widget.width, defaultColor));
@@ -73,6 +85,48 @@ class _CreateGridState extends State<CreateGrid> {
     });
   }
 
+  Widget grid() {    
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        border: widget.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
+      ),
+      child: GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: widget.width,
+        ),
+        itemCount: widget.width * widget.height,
+        itemBuilder: (context, index) {
+          int rowIndex = index ~/ widget.width;
+          int columnIndex = index % widget.width;
+          //progressCubit.updateProgress(index/(widget.width * widget.height), "Creating Grid...", true); //update progress bar
+          Color color = widget.pixelColors[rowIndex][columnIndex];
+
+          //if(index == widget.width * widget.height - 1){progressCubit.updateProgress(0, "", false);}
+          return GestureDetector(
+            onTap: () {
+              if (paintCubit.state) {
+                _handleClick(rowIndex, columnIndex, colorCubit);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                color: color,
+              ),
+            ),
+          );
+        },
+      )
+    );
+  }
+
+  Future<Widget> futureGrid() async {
+    return grid();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -86,9 +140,7 @@ class _CreateGridState extends State<CreateGrid> {
       gridPosition = Offset(screenWidth / 2, screenHeight / 2);
     }
 
-    final paintCubit = BlocProvider.of<PaintCubit>(context);
-    final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
-    final eraseCubit = BlocProvider.of<EraseCubit>(context); 
+    final progressCubit = BlocProvider.of<ProgressCubit>(context); 
 
     return Stack( //stack to add future widgets on top
       children: [
@@ -108,8 +160,8 @@ class _CreateGridState extends State<CreateGrid> {
           )
         ),
         Positioned(
-        left: gridPosition.dx,
-        top: gridPosition.dy,
+          left: gridPosition.dx,
+          top: gridPosition.dy,
           child: GestureDetector(
             onPanUpdate: (details) {
               if (paintCubit.state) {
@@ -128,39 +180,41 @@ class _CreateGridState extends State<CreateGrid> {
                   widget.selected = !widget.selected;
                 });
               }
-            },
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                border: widget.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
-              ),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: widget.width,
-                ),
-                itemCount: widget.width * widget.height,
-                itemBuilder: (context, index) {
-                  int rowIndex = index ~/ widget.width;
-                  int columnIndex = index % widget.width;
-
-                  Color color = widget.pixelColors[rowIndex][columnIndex];
-
-                  return GestureDetector(
-                    onTapDown: (details) {
-                      if (paintCubit.state) {
-                        _handleClick(rowIndex, columnIndex, colorCubit);
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        color: color,
+            }, 
+            child: isCreated ? grid() 
+            : FutureBuilder<Widget>(
+              future: futureGrid(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    width: size,
+                    height: size,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade400
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Creating Grid",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          CircularProgressIndicator(),
+                        ],
                       ),
                     ),
                   );
-                },
-              ),
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  isCreated = true;
+                  return Container(child: snapshot.data);
+                }
+              },
             ),
           ),
         )

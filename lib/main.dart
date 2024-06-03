@@ -27,12 +27,14 @@ import 'Cubit/ColorState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorWheelState.dart';
 import 'Cubit/GridListState.dart';
-import 'Cubit/RotatedToolBarState.dart';
+
 import 'Cubit/EraseState.dart';
 import 'Cubit/ExportState.dart';
 import 'Cubit/ImageListState.dart';
 import 'Cubit/PixelateState.dart';
 import 'Cubit/SwitchState.dart';
+import 'Cubit/ProgressState.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -62,9 +64,6 @@ class MyApp extends StatelessWidget {
           create: (context) => GridListCubit(),
         ),
         BlocProvider(
-          create: (context) => RotatedToolBarCubit(),
-        ),
-        BlocProvider(
           create: (context) => EraseCubit(),
         ),
         BlocProvider(
@@ -81,6 +80,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SwitchCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SwitchCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ProgressCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
@@ -219,6 +224,27 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             },
           ),
+          BlocBuilder<ProgressCubit, ProgressState>(
+            builder: (context, state) {
+              if(state.visible){
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      state.text,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    LinearProgressIndicator(
+                      value: state.progress, //has to be between 0 and 1
+                      semanticsLabel: 'Linear progress indicator',
+                    )
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            }
+          )
         ],
       ),
     );

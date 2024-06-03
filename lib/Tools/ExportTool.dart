@@ -19,7 +19,7 @@ class ExportTool extends StatelessWidget with ToolBarButtons {
     return BlocBuilder<ExportCubit, bool>(
       builder: (context, state) {
         return toolBarButton(
-          Icons.local_shipping,
+          Icons.outbond,
           () {
             exportCubit.changeExportFormVisibility();
             if(exportCubit.state){ //turns off paint and grid tools

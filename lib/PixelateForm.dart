@@ -44,20 +44,25 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
   // Map the pixel data to the new image size
   for (int yOut = 0; yOut < newHeight; yOut++) {
     for (int xOut = 0; xOut < newWidth; xOut++) {
-      // Find the nearest pixel in the input image
-      final int xIn = (xOut * scaleX).floor();
-      final int yIn = (yOut * scaleY).floor();
-      //final int inputIndex = (yIn * width + xIn); //something wrong here
+      // Find the nearest pixel in the old image
+      final int xIn = (xOut * scaleX).floor().clamp(0, oldWidth - 1); //the clamping doesn't work
+      final int yIn = (yOut * scaleY).floor().clamp(0, oldHeight - 1);
 
-      // Extract RGB components from input pixel data using img.Image object
-      final pixel = image!.getPixel(xIn, yIn);
-      final int r = img.getRed(pixel);
-      final int g = img.getGreen(pixel);
-      final int b = img.getBlue(pixel);
-      final int a = img.getAlpha(pixel);
+      print('xOut: $xOut, yOut: $yOut, xIn: $xIn, yIn: $yIn, oldwidth: $oldWidth');
 
-      // Store color in the output list
-      pixelColors[yOut][xOut] = Color.fromRGBO(r, g, b, a / 255);
+      // Extract RGB components from old image pixel
+      try{
+        final pixel = image!.getPixel(xIn, yIn);
+        final int r = img.getRed(pixel);
+        final int g = img.getGreen(pixel);
+        final int b = img.getBlue(pixel);
+        final int a = img.getAlpha(pixel);
+
+        // Store color in the output list
+        pixelColors[yOut][xOut] = Color.fromRGBO(r, g, b, a / 255);
+      } catch(e){
+        print(e);
+      }
     }
   }
 
@@ -210,7 +215,7 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
                             };
                             List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
                             gridListCubit.addGrid(CreateGrid(width: newimage.length, height: newimage[0].length, pixelColors: newimage));    
-                            image.selected = !image.selected;
+                            //image.selected = !image.selected;
                           }
                         }
                       } else {

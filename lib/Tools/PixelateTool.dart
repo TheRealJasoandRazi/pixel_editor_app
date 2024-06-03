@@ -13,7 +13,7 @@ class PixelateTool extends StatelessWidget with ToolBarButtons {
     return BlocBuilder<PixelateCubit, bool>( //rebuilds whenever paint state changes
       builder: (context, state) {
         return toolBarButton(
-          Icons.pix_outlined,
+          Icons.pix,
           (){
             pixelateCubit.changePixelateFormVisibility();
           },
