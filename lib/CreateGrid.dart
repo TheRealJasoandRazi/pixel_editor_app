@@ -14,12 +14,15 @@ class CreateGrid extends StatefulWidget {
 
   bool selected = false;
   late List<List<Color>> pixelColors; //grid is a multidimensional array
+  late bool export;
 
   CreateGrid({
     required this.width,
     required this.height,
     List<List<Color>>? pixelColors,
-  }) : pixelColors = pixelColors ?? []; // Initialize pixelColors with an empty list if not provided
+    bool? export,
+  }) : pixelColors = pixelColors ?? [],
+        export = export ?? false;
 
   @override
   State<CreateGrid> createState() => _CreateGridState();
@@ -29,7 +32,7 @@ class _CreateGridState extends State<CreateGrid> {
   Offset gridPosition = Offset(0, 0);
   Color defaultColor = Colors.transparent;
   
-  double cellSize = 10;
+  double cellSize = 0;
   bool isCreated = false;
   
   late int columns;
@@ -45,11 +48,11 @@ class _CreateGridState extends State<CreateGrid> {
     columns = widget.width;
     rows = widget.height;
     gridSize = rows * columns;
-    if(columns >= rows){
+   /* if(columns >= rows){
       cellSize = 100 / columns; //default size is 100 pixels
     } else{
       cellSize = 100 / rows;
-    }
+    }*/
     
     print(cellSize);
     paintCubit = BlocProvider.of<PaintCubit>(context);
@@ -97,6 +100,14 @@ class _CreateGridState extends State<CreateGrid> {
       gridPosition = Offset(screenWidth / 2, screenHeight / 2);
     } 
 
+    if(cellSize == 0){
+      if(columns >= rows){
+        cellSize = (screenWidth * 0.25) / columns; //default size is 100 pixels
+      } else{
+        cellSize = (screenWidth * 0.25) / rows;
+      }
+    }
+
     return Stack( //stack to add future widgets on top
       children: [
         Positioned(
@@ -105,9 +116,10 @@ class _CreateGridState extends State<CreateGrid> {
           child: GestureDetector( //adjusts size of grid
             onPanUpdate: (details) {
               setState(() { 
-                cellSize += (details.delta.dx/10); 
-                double lowerThreshold = 100 / columns; //need to add a secondd threshold for rows
-                double upperThreshold = (screenWidth * 0.8) / columns;
+                double adjustmentFactor = 1 / (columns * rows).toDouble();
+                cellSize += (details.delta.dx / adjustmentFactor);
+                double lowerThreshold = rows >= columns ? (screenWidth * 0.15)  / rows : (screenWidth * 0.15) / columns;
+                double upperThreshold = rows >= columns ? (screenWidth * 0.8) / rows : (screenWidth * 0.8) / columns;
                 cellSize = cellSize.clamp(lowerThreshold, upperThreshold); //add constraints
               }); 
             },
@@ -142,7 +154,7 @@ class _CreateGridState extends State<CreateGrid> {
                   widget.selected = !widget.selected;
                 });
               }
-            }, 
+            },
             child: isCreated ? buildGrid(columns, rows) 
             : FutureBuilder<Widget>(
               future: futureGrid(columns, rows),
@@ -155,19 +167,13 @@ class _CreateGridState extends State<CreateGrid> {
                       color: Colors.grey.shade400
                     ),
                     child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Creating Grid",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          CircularProgressIndicator(),
-                        ],
-                      ),
+                      child: Text(
+                        "Creating Grid",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),               
                     ),
                   );
                 } else if (snapshot.hasError) {
@@ -200,7 +206,7 @@ class _CreateGridState extends State<CreateGrid> {
             width: cellSize,
             decoration: BoxDecoration(
               color: widget.pixelColors[y][x],
-              border: Border.all(color: Colors.grey.shade400)
+              border: widget.export ? null : Border.all(color: Colors.grey.shade400)
             ),   
           )
         );
@@ -213,7 +219,7 @@ class _CreateGridState extends State<CreateGrid> {
 
     return Container(
       decoration: BoxDecoration( //border causes error
-        border: widget.selected ? Border.all(color: Colors.blue) : null
+       border: (widget.selected && !widget.export) ? Border.all(color: Colors.blue) : null,
       ),          
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

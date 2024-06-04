@@ -1,8 +1,4 @@
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
-import 'package:share/share.dart';
-import 'package:path_provider/path_provider.dart';
-
-
 import 'CreateGrid.dart';
 
 import 'package:flutter/material.dart';
@@ -15,7 +11,6 @@ import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 
-import 'dart:io'; //unused
 import 'dart:html' as html;
 
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -107,6 +102,7 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
 }
 
 
+  //replace with createGrid
   Widget replica(CreateGrid grid, bool selected, bool exporting){
     return Container(
         decoration: BoxDecoration(
@@ -194,7 +190,7 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
                         height: size * 0.8,
                         width: size * 0.9,
                         child: gridstateLength > 0
-                            ? ScrollConfiguration(
+                            ? ScrollConfiguration( //shows options
                                 behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                                 child: GridView.builder(
                                   physics: NeverScrollableScrollPhysics(),
