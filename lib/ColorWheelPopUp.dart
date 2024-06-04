@@ -66,6 +66,14 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
                 onColorChanged: (Color color) {
                   colorCubit.changeColor(color);
                 },
+                pickersEnabled: <ColorPickerType, bool>{
+                  ColorPickerType.wheel: true,
+                  ColorPickerType.primary: true,
+                  ColorPickerType.accent: false,
+                  ColorPickerType.bw: false,
+                  ColorPickerType.custom: false,
+                  ColorPickerType.customSecondary: false,
+                },
                 width: 20, //in dp
                 height: 20,
                 borderRadius: 12,
