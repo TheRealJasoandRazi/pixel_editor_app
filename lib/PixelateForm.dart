@@ -214,8 +214,8 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
                               'oldHeight': dimensions[1]
                             };
                             List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
-                            gridListCubit.addGrid(CreateGrid(width: newimage.length, height: newimage[0].length, pixelColors: newimage));    
-                            //image.selected = !image.selected;
+                            gridListCubit.addGrid(CreateGrid(width: newimage[0].length, height: newimage.length, pixelColors: newimage));   
+                            //image.selected = !image.selected; 
                           }
                         }
                       } else {

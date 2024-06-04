@@ -12,5 +12,4 @@ class ImageListCubit extends Cubit<List<ImageWrapper>> {
     List<ImageWrapper> newList = state.where((grid) => !grid.selected).toList();
     emit(newList);
   }
-  
 }
