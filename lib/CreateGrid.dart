@@ -27,12 +27,14 @@ class CreateGrid extends StatefulWidget {
 
 class _CreateGridState extends State<CreateGrid> {
   Offset gridPosition = Offset(0, 0);
-  //List<List<Color>> widget.pixelColors = []; //grid is a multidimensional array
   Color defaultColor = Colors.transparent;
-
-  double size = 0;
-
+  
+  double cellSize = 10;
   bool isCreated = false;
+  
+  late int columns;
+  late int rows;
+  late int gridSize;
 
   late PaintCubit paintCubit;
   late ColorCubit colorCubit;
@@ -40,6 +42,16 @@ class _CreateGridState extends State<CreateGrid> {
 
   @override
   void initState() {
+    columns = widget.width;
+    rows = widget.height;
+    gridSize = rows * columns;
+    if(columns >= rows){
+      cellSize = 100 / columns; //default size is 100 pixels
+    } else{
+      cellSize = 100 / rows;
+    }
+    
+    print(cellSize);
     paintCubit = BlocProvider.of<PaintCubit>(context);
     colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
     eraseCubit = BlocProvider.of<EraseCubit>(context); 
@@ -49,33 +61,24 @@ class _CreateGridState extends State<CreateGrid> {
     }
   }
 
-  @override
-  void dispose(){
-    super.dispose();
-  }
-
   void _handleGridUpdate(DragUpdateDetails details) {
     setState(() {
       gridPosition += details.delta;
     });
   }
 
-  void _calculateGridIndex(Offset localPosition, double size, Color color) {
-    final int rows = widget.height;
-    final int columns = widget.width;
-    
-    final cellWidth = size / columns;
-    final cellHeight = size / rows;
-
-    final column = (localPosition.dx / cellWidth).floor().clamp(0, columns - 1);
-    final row = (localPosition.dy / cellHeight).floor().clamp(0, rows - 1);
-
+  void _calculateGridIndex(Offset localPosition, Color color) {
+    final column = (localPosition.dx / cellSize).floor().clamp(0, columns - 1);
+    final row = (localPosition.dy / cellSize).floor().clamp(0, rows - 1);
     setState(() {
       widget.pixelColors[row][column] = color;
     });
   }
 
-  void _handleClick(int row, int column, ColorCubit colorCubit) {
+  void _handleClick(Offset localPosition, ColorCubit colorCubit) {
+    final column = (localPosition.dx / cellSize).floor().clamp(0, columns - 1);
+    final row = (localPosition.dy / cellSize).floor().clamp(0, rows - 1);
+
     setState(() {
       if(colorCubit.state == widget.pixelColors[row][column]){
         widget.pixelColors[row][column] = Colors.transparent;
@@ -85,73 +88,27 @@ class _CreateGridState extends State<CreateGrid> {
     });
   }
 
-  Widget grid() {    
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        border: widget.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
-      ),
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: widget.width,
-        ),
-        itemCount: widget.width * widget.height,
-        itemBuilder: (context, index) {
-          int rowIndex = index ~/ widget.width;
-          int columnIndex = index % widget.width;
-          //progressCubit.updateProgress(index/(widget.width * widget.height), "Creating Grid...", true); //update progress bar
-          Color color = widget.pixelColors[rowIndex][columnIndex];
-
-          //if(index == widget.width * widget.height - 1){progressCubit.updateProgress(0, "", false);}
-          return GestureDetector(
-            onTap: () {
-              if (paintCubit.state) {
-                _handleClick(rowIndex, columnIndex, colorCubit);
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                color: color,
-              ),
-            ),
-          );
-        },
-      )
-    );
-  }
-
-  Future<Widget> futureGrid() async {
-    return grid();
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    if(size == 0){
-       size = screenWidth / 2;
-    }
-
     if (gridPosition == Offset(0, 0)) {
       gridPosition = Offset(screenWidth / 2, screenHeight / 2);
-    }
-
-    final progressCubit = BlocProvider.of<ProgressCubit>(context); 
+    } 
 
     return Stack( //stack to add future widgets on top
       children: [
         Positioned(
-          left: gridPosition.dx + size,
+          left: gridPosition.dx + (cellSize * widget.width),
           top: gridPosition.dy - 10,
           child: GestureDetector( //adjusts size of grid
             onPanUpdate: (details) {
               setState(() { 
-                size += details.delta.dx; 
-                size = size.clamp(screenWidth * 0.15, screenWidth * 0.80); //add constraints
+                cellSize += (details.delta.dx/10); 
+                double lowerThreshold = 100 / columns; //need to add a secondd threshold for rows
+                double upperThreshold = (screenWidth * 0.8) / columns;
+                cellSize = cellSize.clamp(lowerThreshold, upperThreshold); //add constraints
               }); 
             },
             child: Icon(
@@ -163,12 +120,17 @@ class _CreateGridState extends State<CreateGrid> {
           left: gridPosition.dx,
           top: gridPosition.dy,
           child: GestureDetector(
+            onTapDown: (details){
+              if (paintCubit.state) {
+                _handleClick(details.localPosition, colorCubit);
+              }
+            },
             onPanUpdate: (details) {
               if (paintCubit.state) {
-                _calculateGridIndex(details.localPosition, size, colorCubit.state);
+                _calculateGridIndex(details.localPosition, colorCubit.state);
               }
               else if(eraseCubit.state){
-                _calculateGridIndex(details.localPosition, size, Colors.transparent);
+                _calculateGridIndex(details.localPosition,Colors.transparent);
               }
               else if(!widget.selected){
                 _handleGridUpdate(details);
@@ -181,14 +143,14 @@ class _CreateGridState extends State<CreateGrid> {
                 });
               }
             }, 
-            child: isCreated ? grid() 
+            child: isCreated ? buildGrid(columns, rows) 
             : FutureBuilder<Widget>(
-              future: futureGrid(),
+              future: futureGrid(columns, rows),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
-                    width: size,
-                    height: size,
+                    width: cellSize * columns,
+                    height: cellSize * rows,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade400
                     ),
@@ -216,9 +178,47 @@ class _CreateGridState extends State<CreateGrid> {
                 }
               },
             ),
-          ),
+          )
         )
       ]
+    );
+  }
+
+  Future<Widget> futureGrid(int width, int height) async {
+    return buildGrid(width, height);
+  }
+
+  Widget buildGrid(int width, int height) {
+    List<Widget> rows = [];
+
+    for (int y = 0; y < height; y++) {
+      List<Widget> rowChildren = [];
+      for (int x = 0; x < width; x++) {
+        rowChildren.add(
+          Container(
+            height: cellSize,
+            width: cellSize,
+            decoration: BoxDecoration(
+              color: widget.pixelColors[y][x],
+              border: Border.all(color: Colors.grey.shade400)
+            ),   
+          )
+        );
+      }
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: rowChildren,
+      ));
+    }
+
+    return Container(
+      decoration: BoxDecoration( //border causes error
+        border: widget.selected ? Border.all(color: Colors.blue) : null
+      ),          
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: rows,
+      )
     );
   }
 }

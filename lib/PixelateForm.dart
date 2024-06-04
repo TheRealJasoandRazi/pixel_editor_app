@@ -45,10 +45,8 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
   for (int yOut = 0; yOut < newHeight; yOut++) {
     for (int xOut = 0; xOut < newWidth; xOut++) {
       // Find the nearest pixel in the old image
-      final int xIn = (xOut * scaleX).floor().clamp(0, oldWidth - 1); //the clamping doesn't work
-      final int yIn = (yOut * scaleY).floor().clamp(0, oldHeight - 1);
-
-      print('xOut: $xOut, yOut: $yOut, xIn: $xIn, yIn: $yIn, oldwidth: $oldWidth');
+      final int xIn = (xOut * scaleX).floor();
+      final int yIn = (yOut * scaleY).floor();
 
       // Extract RGB components from old image pixel
       try{

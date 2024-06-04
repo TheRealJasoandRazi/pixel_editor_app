@@ -163,10 +163,9 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(colorWheelTool);
     customToolBar.add(eraseTool);
     customToolBar.add(binTool);
-    customToolBar.add(exportTool);
     customToolBar.add(importTool);
+    customToolBar.add(exportTool);
     customToolBar.add(pixelateTool);
-
     
     return Scaffold(
       body: Stack(
