@@ -97,7 +97,7 @@ class _CreateGridState extends State<CreateGrid> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     if (gridPosition == Offset(0, 0)) {
-      gridPosition = Offset(screenWidth / 2, screenHeight / 2);
+      gridPosition = Offset(screenWidth * 0.25, screenHeight * 0.25);
     } 
 
     if(cellSize == 0){
@@ -116,8 +116,8 @@ class _CreateGridState extends State<CreateGrid> {
           child: GestureDetector( //adjusts size of grid
             onPanUpdate: (details) {
               setState(() { 
-                double adjustmentFactor = 1 / (columns * rows).toDouble();
-                cellSize += (details.delta.dx / adjustmentFactor);
+                //double adjustmentFactor = 1 / (columns * rows).toDouble();
+                cellSize += (details.delta.dx / 30);
                 double lowerThreshold = rows >= columns ? (screenWidth * 0.15)  / rows : (screenWidth * 0.15) / columns;
                 double upperThreshold = rows >= columns ? (screenWidth * 0.8) / rows : (screenWidth * 0.8) / columns;
                 cellSize = cellSize.clamp(lowerThreshold, upperThreshold); //add constraints

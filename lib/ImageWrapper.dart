@@ -54,7 +54,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
     if (wrapperPosition == Offset(0, 0)) {
       // Initialize form location
-      wrapperPosition = Offset(screenWidth / 2, screenWidth / 2);
+      wrapperPosition = Offset(screenWidth * 0.25, screenWidth * 0.25);
     }
 
       return Stack( //stack to add future widgets on top

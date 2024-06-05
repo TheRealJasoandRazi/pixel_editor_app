@@ -34,7 +34,7 @@ class _GridFormState extends State<GridForm> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     if(formPosition == Offset(0,0)){//initialise form location
-      formPosition = Offset(screenWidth/2, screenWidth/2);
+      formPosition = Offset(screenWidth * 0.25, screenWidth * 0.25);
     }
 
     final height = screenHeight * 0.25;

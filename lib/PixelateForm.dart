@@ -49,18 +49,14 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
       final int yIn = (yOut * scaleY).floor();
 
       // Extract RGB components from old image pixel
-      try{
-        final pixel = image!.getPixel(xIn, yIn);
-        final int r = img.getRed(pixel);
-        final int g = img.getGreen(pixel);
-        final int b = img.getBlue(pixel);
-        final int a = img.getAlpha(pixel);
+      final pixel = image!.getPixel(xIn, yIn);
+      final int r = img.getRed(pixel);
+      final int g = img.getGreen(pixel);
+      final int b = img.getBlue(pixel);
+      final int a = img.getAlpha(pixel);
 
-        // Store color in the output list
-        pixelColors[yOut][xOut] = Color.fromRGBO(r, g, b, a / 255);
-      } catch(e){
-        print(e);
-      }
+      // Store color in the output list
+      pixelColors[yOut][xOut] = Color.fromRGBO(r, g, b, a / 255);
     }
   }
 
@@ -105,7 +101,7 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
     final screenHeight = MediaQuery.of(context).size.height;
 
     if(formPosition == Offset(0,0)){//initialise form location
-      formPosition = Offset(screenWidth/2, screenWidth/2);
+      formPosition = Offset(screenWidth * 0.25, screenWidth * 0.25);
     }
 
     final height = screenHeight * 0.25;
@@ -212,6 +208,7 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
                               'oldHeight': dimensions[1]
                             };
                             List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
+                            
                             gridListCubit.addGrid(CreateGrid(width: newimage[0].length, height: newimage.length, pixelColors: newimage));   
                             //image.selected = !image.selected; 
                           }

@@ -29,7 +29,11 @@ class _ColorWheelPopUpState extends State<ColorWheelPopUp> {
     final colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
 
     final screenWidth = MediaQuery.of(context).size.width;
-    //final screenHeight = MediaQuery.of(context).size.height;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    if(colorWheelPosition== Offset(0,0)){//initialise form location
+      colorWheelPosition = Offset(screenWidth * 0.25, screenWidth * 0.25);
+    }
 
     if(size == 0){
       size = screenWidth * 0.25;
