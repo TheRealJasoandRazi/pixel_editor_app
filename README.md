@@ -1,16 +1,21 @@
 # pixel_editor_app
 
-A new Flutter project.
+This app specialises in giving users the ability to create their own pixel art
 
-## Getting Started
+## For Developers
 
-This project is a starting point for a Flutter application.
+In order to understand how flutter works, and specifically how this project's code works research these topics beforehand:
+-> Cubits for state management
+-> Stateful and Stateless Widgets
 
-A few resources to get you started if this is your first Flutter project:
+### How this code is structured ###
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+To access the source code, it is in the "lib" folder and broken up into 3 parts:
+-> Cubit
+This folder holds all of the cubits that the widgets use. This includes data of the current color selected, which grids are created, which images have been imported etc.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+-> Tools
+This folder holds the code for the ToolBar's buttons. They all inherit from an "mixin" called "CustomToolBar.dart" where they all must implement the function "ToolBarButton" inn their build function. This makes sure all of the buttons look and work identically.
+
+-> Root
+This is the root of the "lib" folder. All fils here don't belong in a specific folder. These files include "main.dart" where the program runs and "CreateGird.dart" which is the code that handles the grid and its user interactions.
