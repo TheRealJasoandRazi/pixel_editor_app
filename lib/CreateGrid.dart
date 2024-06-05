@@ -14,7 +14,7 @@ class CreateGrid extends StatefulWidget {
 
   bool selected = false;
   late List<List<Color>> pixelColors; //grid is a multidimensional array
-  late bool export;
+  late bool export; //can remove
 
   CreateGrid({
     required this.width,

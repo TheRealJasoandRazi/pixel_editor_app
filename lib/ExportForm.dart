@@ -102,39 +102,39 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
 }
 
 
-  //replace with createGrid
   Widget replica(CreateGrid grid, bool selected, bool exporting){
-    return Container(
-        decoration: BoxDecoration(
-          border: exporting ? null : Border.all(
-            color: selected ? Colors.blueAccent : Colors.grey.shade400,
-            width: 2.0, // Width of the border
-          ),
-        ),
-        child: ScrollConfiguration( //ensures there are no scrollbars in the gridview
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: GridView.builder(
-            physics: NeverScrollableScrollPhysics(), // Disable scrolling
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: grid.width, // Number of columns
+    List<Widget> rows = [];
+
+    for (int y = 0; y < grid.height; y++) {
+      List<Widget> rowChildren = [];
+      for (int x = 0; x < grid.width; x++) {
+        rowChildren.add(
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: grid.pixelColors[y][x],
+                border: exporting ? null : Border.all(color: Colors.grey.shade400),
+              ),
             ),
-            itemCount: grid.width * grid.height,
-            itemBuilder: (context, index) {
-              int rowIndex = index ~/ grid.width;
-              int columnIndex = index % grid.width;
-
-              Color color = grid.pixelColors[rowIndex][columnIndex];
-
-              return Container(
-                decoration: BoxDecoration(
-                  border: exporting ? null : Border.all(color: Colors.grey.shade400),
-                  color: color,
-                ),
-              );
-            },
           ),
+        );
+      }
+      rows.add(Expanded(
+        child: Row(
+          children: rowChildren,
         ),
-      );
+      ));
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+       border: (selected && !exporting) ? Border.all(color: Colors.blue) : null,
+      ),          
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: rows,
+      ) 
+    );
   }
   
   @override
@@ -230,9 +230,6 @@ Future<void> _saveSelectedWidgets(List<GlobalKey> selectedKeys) async {
                         height: size * 0.2,
                         child: GestureDetector(
                           onTap: () async {
-                            print("export button clicked");
-                            print(keyList.length);
-                            print(keyList);
                             _saveSelectedWidgets(keyList);
                             exportFormCubit.changeExportFormVisibility();
                           },
