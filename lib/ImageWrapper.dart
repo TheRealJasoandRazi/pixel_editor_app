@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 class ImageWrapper extends StatefulWidget {
   final Uint8List? image;
@@ -20,9 +19,14 @@ class ImageWrapper extends StatefulWidget {
   _ImageWrapperState createState() => _ImageWrapperState();
 }
 
-class _ImageWrapperState extends State<ImageWrapper> {
+class _ImageWrapperState extends State<ImageWrapper> with SingleTickerProviderStateMixin {
   Offset wrapperPosition = Offset(0, 0);
   double size = 0;
+  bool showInfo = false;
+
+  late AnimationController _controller;
+  late Animation<int> _typewriterAnimation;
+  final String infoOutput = "Use the pixelate tool to transform the image into a grid";
 
   void _handleFormUpdate(DragUpdateDetails details) {
     setState(() {
@@ -31,7 +35,8 @@ class _ImageWrapperState extends State<ImageWrapper> {
   }
   
   @override
-  void dispose(){
+  void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -43,9 +48,36 @@ class _ImageWrapperState extends State<ImageWrapper> {
     super.initState();
     imageWidth = widget.width;
     imageHeight = widget.height;
+
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _typewriterAnimation = IntTween(begin: 0, end: infoOutput.length).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.dismissed) {
+        setState(() {
+          showInfo = false;
+        });
+      }
+    });
   }
 
-
+  void _toggleInfo() {
+    if (!showInfo) {
+      setState(() {
+        showInfo = true;
+      });
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +89,53 @@ class _ImageWrapperState extends State<ImageWrapper> {
       wrapperPosition = Offset(screenWidth * 0.25, screenWidth * 0.25);
     }
 
-      return Stack( //stack to add future widgets on top
+    return Stack(
       children: [
         Positioned(
-          left: wrapperPosition.dx + imageWidth!,
+          left: wrapperPosition.dx + imageWidth,
           top: wrapperPosition.dy - 10,
-          child: GestureDetector( //adjusts size of grid
-            onPanUpdate: (details) {
-              setState(() { 
-                imageWidth = (imageWidth + details.delta.dx).clamp(screenWidth * 0.15, screenWidth * 0.80);
-                imageHeight = (imageHeight + details.delta.dy).clamp(screenHeight * 0.15, screenHeight * 0.80);
-              }); 
-            },
-            child: Icon(
-              Icons.arrow_outward
-            ),
-          )
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onPanUpdate: (details) {
+                  setState(() { 
+                    imageWidth = (imageWidth + details.delta.dx).clamp(screenWidth * 0.15, screenWidth * 0.80);
+                    imageHeight = (imageHeight + details.delta.dy).clamp(screenHeight * 0.15, screenHeight * 0.80);
+                  }); 
+                },
+                child: Icon(Icons.arrow_outward),
+              ),
+              GestureDetector(
+                onTap: _toggleInfo,
+                child: Icon(
+                  color: showInfo ? Colors.blue : Colors.black,
+                  Icons.info
+                ),
+              ),
+              if (showInfo)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8.0),
+                      bottomRight: Radius.circular(8.0),
+                    ),
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(
+                    child: AnimatedBuilder(
+                      animation: _typewriterAnimation,
+                      builder: (BuildContext context, Widget? child) {
+                        return Text(
+                          infoOutput.substring(0, _typewriterAnimation.value),
+                        );
+                      },
+                    ),
+                  ),
+                )
+            ],
+          ),
         ),
         Positioned(
           left: wrapperPosition.dx,
