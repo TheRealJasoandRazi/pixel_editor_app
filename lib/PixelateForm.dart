@@ -88,14 +88,21 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
     }
   }
 
+  final TextEditingController _widthController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed
+    _widthController.dispose();
+    _heightController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final pixelateCubit = BlocProvider.of<PixelateCubit>(context); //retieve form state
     final imageListCubit = BlocProvider.of<ImageListCubit>(context);
-
-    //grabs values entered into the form
-    final TextEditingController _widthController = TextEditingController();
-    final TextEditingController _heightController = TextEditingController();
     
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -104,136 +111,191 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
       formPosition = Offset(screenWidth * 0.25, screenWidth * 0.25);
     }
 
+    double size = screenHeight * 0.25;
     final height = screenHeight * 0.25;
 
     final gridListCubit = BlocProvider.of<GridListCubit>(context);
 
-    return Positioned(
-      left: formPosition.dx,
-      top: formPosition.dy,
-      child: GestureDetector(
-        onPanUpdate: _handleFormUpdate,
-        child: Container(
-          width: height,
-          height: height,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0),
-            color: Colors.grey.shade400,
+    return Stack(
+      children: [
+        Positioned(
+          left: formPosition.dx + (size * 2),
+          top: formPosition.dy - 10,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              setState(() {
+                size += details.delta.dx;
+                size = size.clamp(screenWidth * 0.25, screenWidth * 0.50);
+              });
+            },
+            child: Icon(Icons.arrow_outward),
           ),
-          child: Form(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        ),
+        Positioned(
+          left: formPosition.dx,
+          top: formPosition.dy,
+          child: GestureDetector(
+            onPanUpdate: _handleFormUpdate,
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(
-                    'Pixelate Form',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: SizedBox(
-                    width: height * 0.8,
-                    child: TextField(
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      keyboardType: TextInputType.number,
-                      controller: _widthController,
-                      decoration: InputDecoration(
-                        labelText: 'Width',
-                        fillColor: Colors.grey.shade400,
-                        filled: true,
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
+                  child: Column(
+                    children: [
+                      if (imageListCubit.state.length > 0)
+                        SizedBox(
+                          height: size * 0.1,
+                          width: size * 0.9,
+                          child: Center(
+                            child: Text(
+                              'Click on images to select',
+                            )
+                          )
+                        ),
+                      SizedBox(
+                        height: size * 0.8,
+                        width: size * 0.9,
+                        child: imageListCubit.state.length > 0
+                            ? ScrollConfiguration( //shows options
+                                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                child: GridView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 10.0,
+                                    mainAxisSpacing: 10.0,
+                                  ),
+                                  itemCount: imageListCubit.state.length,
+                                  itemBuilder: (context, index) {
+                                    var image = imageListCubit.state[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState((){
+                                          image.selected = !image.selected; //modifies image in cubit
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: image.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
+                                        ),
+                                        child: Image.memory(
+                                          image.image, 
+                                          fit: BoxFit.fill,
+                                        )
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  "No Images Available",
+                                ),
+                              ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: SizedBox(
-                    width: height * 0.8,
-                    child: TextField(
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      keyboardType: TextInputType.number,
-                      controller: _heightController,
-                      decoration: InputDecoration(
-                        labelText: 'Height',
-                        fillColor: Colors.grey.shade400,
-                        filled: true,
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                      ),
-                    ),
+                Container( // Second container that will show borderless grid
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Container(
-                    width: 100, // Adjust the width as needed
-                    height: 50, // Adjust the height as needed
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade500, // Background color
-                        borderRadius: BorderRadius.circular(8.0), // Rounded corners
-                        boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: Offset(0, 3), // Shadow position
-                            ),
-                        ],
-                    ),
-                    child: GestureDetector(
-                      onTap: () async {
-                      final String widthInput = _widthController.text;
-                      final String heightInput = _heightController.text;
-
-                      int? width = int.tryParse(widthInput);
-                      int? height = int.tryParse(heightInput);
-
-                      // Check if the conversions were successful
-                      if (width != null && height != null) {
-                        for(ImageWrapper image in imageListCubit.state){
-                          if(image.selected){
-                            List<int> dimensions = await checkImageHeader(image.image);
-                            Map<String, dynamic> params = {
-                              'image': image.image,
-                              'newWidth': width,
-                              'newHeight': height,
-                              'oldWidth': dimensions[0],
-                              'oldHeight': dimensions[1]
-                            };
-                            List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
-                            
-                            gridListCubit.addGrid(CreateGrid(width: newimage[0].length, height: newimage.length, pixelColors: newimage));   
-                            //image.selected = !image.selected; 
-                          }
-                        }
-                      } else {
-                        print("aint work");
-                      }
-                      pixelateCubit.changePixelateFormVisibility();
-                      },
-                      child: Center(
-                          // Center the text within the container
-                          child: Text(
-                              'Submit',
-                              style: TextStyle(color: Colors.white),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: size * 0.8,
+                        height: size * 0.3,
+                        child: TextField(
+                          controller: _widthController,
+                          keyboardType: TextInputType.number, // Set input type to number
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly // Allow only digits
+                          ],
+                          decoration: InputDecoration(
+                            hintText: 'Width',
+                            border: InputBorder.none,
                           ),
+                        )
                       ),
-                    )
-                  ),
+                      SizedBox(
+                        width: size * 0.8,
+                        height: size * 0.3,
+                        child: TextField(
+                          keyboardType: TextInputType.number, // Set input type to number
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly // Allow only digits
+                          ],
+                          controller: _heightController,
+                          decoration: InputDecoration(
+                            hintText: 'height',
+                            border: InputBorder.none,
+                          ),
+                        )
+                      ),
+                      SizedBox( //move to other side
+                        width: size * 0.6,
+                        height: size * 0.2,
+                        child: GestureDetector(
+                          onTap: () async {
+                            final String widthInput = _widthController.text;
+                            final String heightInput = _heightController.text;
+
+                            int? width = int.tryParse(widthInput);
+                            int? height = int.tryParse(heightInput);
+
+                            // Check if the conversions were successful
+                            if (width != null && height != null) {
+                              for(ImageWrapper image in imageListCubit.state){
+                                if(image.selected){
+                                  List<int> dimensions = await checkImageHeader(image.image);
+                                  Map<String, dynamic> params = {
+                                    'image': image.image,
+                                    'newWidth': width,
+                                    'newHeight': height,
+                                    'oldWidth': dimensions[0],
+                                    'oldHeight': dimensions[1]
+                                  };
+                                  List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
+                                  
+                                  gridListCubit.addGrid(CreateGrid(width: newimage[0].length, height: newimage.length, pixelColors: newimage));   
+                                  //image.selected = !image.selected; 
+                                }
+                              }
+                            } else {
+                              print("aint work");
+                            }
+                            pixelateCubit.changePixelateFormVisibility();
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: Center(
+                                child: Text("Pixelate"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                  )
                 ),
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
-  
   }
 }

@@ -12,4 +12,16 @@ class ImageListCubit extends Cubit<List<ImageWrapper>> {
     List<ImageWrapper> newList = state.where((grid) => !grid.selected).toList();
     emit(newList);
   }
+
+  //fix now
+  void changeSelectedState(bool newState, ImageWrapper imageWrapper) {
+    int index = state.indexOf(imageWrapper);
+  
+    if (index != -1) {
+      List<ImageWrapper> newList = List.from(state); //unecessary?
+      imageWrapper.selected = newState; //modify imageWrapper
+      newList[index] = imageWrapper;
+      emit(newList);
+    }
+  }
 }

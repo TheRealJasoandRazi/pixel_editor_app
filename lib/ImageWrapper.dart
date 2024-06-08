@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 
+import 'package:pixel_editor_app/Cubit/ImageListState.dart';
+
 class ImageWrapper extends StatefulWidget {
-  final Uint8List? image;
+  final Uint8List image;
   final double width;
   final double height;
 
@@ -153,12 +155,10 @@ class _ImageWrapperState extends State<ImageWrapper> with SingleTickerProviderSt
               decoration: BoxDecoration(
                 border: widget.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
               ),
-              child: widget.image != null
-                  ? Image.memory(
-                      widget.image!,
-                      fit: BoxFit.fill, // Force the image to fill the container
-                    )
-                  : Placeholder(),
+              child: Image.memory(
+                widget.image,
+                fit: BoxFit.fill, // Force the image to fill the container
+              )
             ),
           ),
         )
