@@ -24,5 +24,11 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Run Makefile deploy
-        run: make deploy
+      - name: Deploy to GitHub Pages
+        run: |
+          if [ -d "build/web" ]; then
+            npx gh-pages -d build/web
+          else
+            echo "Error: 'build/web' directory not found. Skipping deployment."
+          fi
+
