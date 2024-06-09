@@ -1,4 +1,3 @@
-BUILD_DIR = build/web
 BASE_HREF = "/pixel_editor_app/"
 
 deploy:
@@ -6,7 +5,7 @@ deploy:
 	flutter build web --base-href $(BASE_HREF) --release
 
 	@echo "Deploying to GitHub Pages..."
-	npx gh-pages -d $(BUILD_DIR)
+	npx gh-pages -d "build/web"
 
 	@echo "✅ Finished deploy"
 
