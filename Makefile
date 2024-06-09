@@ -8,6 +8,8 @@ deploy:
 	flutter build web --base-href $(BASE_HREF) --release
 
 	@echo "Deploying to git repository"
+	git config user.email "Neno701@outlook.com" && \
+    git config user.name "Nemanja" && \
 	cd build/web && \
 	git init && \
 	git add . && \
