@@ -99,6 +99,8 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
     super.dispose();
   }
 
+  List<Uint8List> selectedImages = []; //hold selected images
+
   @override
   Widget build(BuildContext context) {
     final pixelateCubit = BlocProvider.of<PixelateCubit>(context); //retieve form state
@@ -175,18 +177,23 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
                                     return GestureDetector(
                                       onTap: () {
                                         setState((){
-                                          image.selected = !image.selected; //modifies image in cubit
+                                          if(selectedImages.contains(image.image)){
+                                            selectedImages.remove(image.image);
+                                          } else {
+                                            selectedImages.add(image.image);
+                                          }
+                                          //image.selected = !image.selected; //modifies image in cubit
                                         });
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          border: image.selected ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
+                                          border: selectedImages.contains(image.image) ? Border.all(color: Colors.blue, width: 2.0) : Border.all(color: Colors.transparent),
                                         ),
                                         child: Image.memory(
                                           image.image, 
                                           fit: BoxFit.fill,
-                                        )
-                                      ),
+                                        )                                 
+                                      )
                                     );
                                   },
                                 ),
@@ -210,6 +217,15 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(
+                        width: size * 0.8,
+                        height: size * 0.2,
+                        child: Center(
+                          child: Text(
+                            "Input your desired size"
+                          )
+                        )
+                      ),
                       SizedBox(
                         width: size * 0.8,
                         height: size * 0.3,
@@ -253,21 +269,18 @@ Future<List<List<Color>>> nearestNeighborInterpolation(Map<String, dynamic> para
 
                             // Check if the conversions were successful
                             if (width != null && height != null) {
-                              for(ImageWrapper image in imageListCubit.state){
-                                if(image.selected){
-                                  List<int> dimensions = await checkImageHeader(image.image);
-                                  Map<String, dynamic> params = {
-                                    'image': image.image,
-                                    'newWidth': width,
-                                    'newHeight': height,
-                                    'oldWidth': dimensions[0],
-                                    'oldHeight': dimensions[1]
-                                  };
-                                  List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
-                                  
-                                  gridListCubit.addGrid(CreateGrid(width: newimage[0].length, height: newimage.length, pixelColors: newimage));   
-                                  //image.selected = !image.selected; 
-                                }
+                              for(Uint8List image in selectedImages){
+                                List<int> dimensions = await checkImageHeader(image);
+                                Map<String, dynamic> params = {
+                                  'image': image,
+                                  'newWidth': width,
+                                  'newHeight': height,
+                                  'oldWidth': dimensions[0],
+                                  'oldHeight': dimensions[1]
+                                };
+                                List<List<Color>> newimage = await compute(nearestNeighborInterpolation, params); //doesn't improve performance
+                                
+                                gridListCubit.addGrid(CreateGrid(width: newimage[0].length, height: newimage.length, pixelColors: newimage));   
                               }
                             } else {
                               print("aint work");
