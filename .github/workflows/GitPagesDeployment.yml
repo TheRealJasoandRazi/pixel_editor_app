@@ -29,6 +29,6 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Run makefile
-        run: make deploy
+      #- name: Run makefile
+      #  run: make deploy
 
