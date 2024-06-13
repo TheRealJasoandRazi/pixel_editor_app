@@ -14,15 +14,12 @@ class CreateGrid extends StatefulWidget {
 
   bool selected = false;
   late List<List<Color>> pixelColors; //grid is a multidimensional array
-  late bool export; //can remove
 
   CreateGrid({
     required this.width,
     required this.height,
     List<List<Color>>? pixelColors,
-    bool? export,
-  }) : pixelColors = pixelColors ?? [],
-        export = export ?? false;
+  }) : pixelColors = pixelColors ?? [];
 
   @override
   State<CreateGrid> createState() => _CreateGridState();
@@ -43,18 +40,21 @@ class _CreateGridState extends State<CreateGrid> {
   late ColorCubit colorCubit;
   late EraseCubit eraseCubit;
 
+  late double cellWidth;
+  late double cellHeight;
+
+  void _handleGridUpdate(DragUpdateDetails details) {
+    setState(() {
+      gridPosition += details.delta;
+    });
+  }
+
   @override
   void initState() {
     columns = widget.width;
     rows = widget.height;
     gridSize = rows * columns;
-   /* if(columns >= rows){
-      cellSize = 100 / columns; //default size is 100 pixels
-    } else{
-      cellSize = 100 / rows;
-    }*/
     
-    print(cellSize);
     paintCubit = BlocProvider.of<PaintCubit>(context);
     colorCubit = BlocProvider.of<ColorCubit>(context); //retieve form state
     eraseCubit = BlocProvider.of<EraseCubit>(context); 
@@ -64,23 +64,17 @@ class _CreateGridState extends State<CreateGrid> {
     }
   }
 
-  void _handleGridUpdate(DragUpdateDetails details) {
-    setState(() {
-      gridPosition += details.delta;
-    });
-  }
-
   void _calculateGridIndex(Offset localPosition, Color color) {
-    final column = (localPosition.dx / cellSize).floor().clamp(0, columns - 1);
-    final row = (localPosition.dy / cellSize).floor().clamp(0, rows - 1);
+    final column = (localPosition.dx / cellWidth).floor().clamp(0, columns - 1);
+    final row = (localPosition.dy / cellHeight).floor().clamp(0, rows - 1);
     setState(() {
       widget.pixelColors[row][column] = color;
     });
   }
 
   void _handleClick(Offset localPosition, ColorCubit colorCubit) {
-    final column = (localPosition.dx / cellSize).floor().clamp(0, columns - 1);
-    final row = (localPosition.dy / cellSize).floor().clamp(0, rows - 1);
+    final column = (localPosition.dx / cellWidth).floor().clamp(0, columns - 1);
+    final row = (localPosition.dy / cellHeight).floor().clamp(0, rows - 1);
 
     setState(() {
       if(colorCubit.state == widget.pixelColors[row][column]){
@@ -95,103 +89,43 @@ class _CreateGridState extends State<CreateGrid> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    
+    cellWidth = (screenWidth * 0.4) / widget.width;
+    cellHeight = (screenHeight * 0.4) / widget.height;
 
     if (gridPosition == Offset(0, 0)) {
       gridPosition = Offset(screenWidth * 0.25, screenHeight * 0.25);
     } 
 
-    if(cellSize == 0){
-      if(columns >= rows){
-        cellSize = (screenWidth * 0.25) / columns; //default size is 100 pixels
-      } else{
-        cellSize = (screenWidth * 0.25) / rows;
-      }
-    }
-
-    return Stack( //stack to add future widgets on top
-      children: [
-        Positioned(
-          left: gridPosition.dx + (cellSize * widget.width),
-          top: gridPosition.dy - 10,
-          child: GestureDetector( //adjusts size of grid
-            onPanUpdate: (details) {
-              setState(() { 
-                //double adjustmentFactor = 1 / (columns * rows).toDouble();
-                cellSize += (details.delta.dx / 30);
-                double lowerThreshold = rows >= columns ? (screenWidth * 0.15)  / rows : (screenWidth * 0.15) / columns;
-                double upperThreshold = rows >= columns ? (screenWidth * 0.8) / rows : (screenWidth * 0.8) / columns;
-                cellSize = cellSize.clamp(lowerThreshold, upperThreshold); //add constraints
-              }); 
-            },
-            child: Icon(
-              Icons.arrow_outward
-            ),
-          )
-        ),
-        Positioned(
-          left: gridPosition.dx,
-          top: gridPosition.dy,
-          child: GestureDetector(
-            onTapDown: (details){
-              if (paintCubit.state) {
-                _handleClick(details.localPosition, colorCubit);
-              }
-            },
-            onPanUpdate: (details) {
-              if (paintCubit.state) {
-                _calculateGridIndex(details.localPosition, colorCubit.state);
-              }
-              else if(eraseCubit.state){
-                _calculateGridIndex(details.localPosition,Colors.transparent);
-              }
-              else if(!widget.selected){
-                _handleGridUpdate(details);
-              }
-            },
-            onDoubleTap: (){
-              if(!paintCubit.state){
-                setState(() {
-                  widget.selected = !widget.selected;
-                });
-              }
-            },
-            child: isCreated ? buildGrid(columns, rows) 
-            : FutureBuilder<Widget>(
-              future: futureGrid(columns, rows),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(
-                    width: cellSize * columns,
-                    height: cellSize * rows,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade400
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Creating Grid",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),               
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  isCreated = true;
-                  return Container(child: snapshot.data);
-                }
-              },
-            ),
-          )
-        )
-      ]
+    return Positioned(
+      left: gridPosition.dx,
+      top: gridPosition.dy,
+      child: GestureDetector(
+        onTapDown: (details){
+          if (paintCubit.state) {
+            _handleClick(details.localPosition, colorCubit);
+          }
+        },
+        onPanUpdate: (details) {
+          if (paintCubit.state) {
+            _calculateGridIndex(details.localPosition, colorCubit.state);
+          }
+          else if(eraseCubit.state){
+            _calculateGridIndex(details.localPosition,Colors.transparent);
+          }else if(!widget.selected){
+            _handleGridUpdate(details);
+          }
+        },
+        onDoubleTap: (){
+          if(!paintCubit.state){
+            setState(() {
+              widget.selected = !widget.selected;
+            });
+          }
+        },
+        child: buildGrid(columns, rows) 
+      )
     );
-  }
-
-  Future<Widget> futureGrid(int width, int height) async {
-    return buildGrid(width, height);
   }
 
   Widget buildGrid(int width, int height) {
@@ -202,11 +136,11 @@ class _CreateGridState extends State<CreateGrid> {
       for (int x = 0; x < width; x++) {
         rowChildren.add(
           Container(
-            height: cellSize,
-            width: cellSize,
+            height: cellHeight,
+            width: cellWidth,
             decoration: BoxDecoration(
               color: widget.pixelColors[y][x],
-              border: widget.export ? null : Border.all(color: Colors.grey.shade400)
+              border: Border.all(color: Colors.grey.shade400)
             ),   
           )
         );
@@ -218,9 +152,6 @@ class _CreateGridState extends State<CreateGrid> {
     }
 
     return Container(
-      decoration: BoxDecoration( //border causes error
-       border: (widget.selected && !widget.export) ? Border.all(color: Colors.blue) : null,
-      ),          
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: rows,

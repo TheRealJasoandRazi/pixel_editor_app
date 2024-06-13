@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:pixel_editor_app/ExportForm.dart';
 import 'package:pixel_editor_app/ImageWrapper.dart';
+import 'package:pixel_editor_app/Pages/EditorPage.dart';
+import 'package:pixel_editor_app/Pages/ImportPage.dart';
 import 'package:pixel_editor_app/Tools/BinTool.dart';
 import 'package:pixel_editor_app/ColorWheelPopUp.dart';
 
@@ -35,6 +37,10 @@ import 'Cubit/PixelateState.dart';
 import 'Cubit/SwitchState.dart';
 import 'Cubit/ProgressState.dart';
 
+import 'ColorWheel.dart';
+
+//pages
+import 'Pages/CreateGridPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -87,14 +93,31 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ProgressCubit(),
         ),
+        BlocProvider(
+          create: (context) => GridList(),
+        ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          brightness: Brightness.dark,
+          primaryColor: Colors.deepPurple,
+          scaffoldBackgroundColor: Colors.black,
+          textTheme: TextTheme(
+          ),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple,
+            brightness: Brightness.dark,
+          ),
           useMaterial3: true,
         ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const MyHomePage(title: 'Flutter Demo Home Page'),
+          '/CreateGridPage': (context) => CreateGridPage(),
+          '/EditorPage': (context) => EditorPage(),
+          '/ImportPage': (context) => ImportPage(previousPage: "/MainPage",),
+        },
       )
     );
   }
@@ -110,7 +133,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+  /*
   //declare an instance of all classes
   late CustomToolBar customToolBar;
   late GridTool gridTool;
@@ -144,12 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
     pixelateForm = PixelateForm();
     switchTool = SwitchTool();
   }
-  
+  ColorWheel colorWheel = ColorWheel();
+  */
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
+/*
     customToolBar = CustomToolBar(
       screenHeight: screenHeight,
       screenWidth: screenWidth,
@@ -165,11 +189,40 @@ class _MyHomePageState extends State<MyHomePage> {
     customToolBar.add(binTool);
     customToolBar.add(importTool);
     customToolBar.add(exportTool);
-    customToolBar.add(pixelateTool);
+    customToolBar.add(pixelateTool);*/
     
     return Scaffold(
-      body: Stack(
+      body: Center(
+        child: SizedBox(
+          width: screenWidth * 0.25,
+          height: screenHeight * 0.3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Let's get started!", style: Theme.of(context).textTheme.bodyText1),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/CreateGridPage');
+                },
+                child: Text("Create Grid"),
+              ),
+              Text("OR"),
+              Text("Start by using an image"),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/ImportPage');
+                },
+                child: Text("Import"),
+              ),
+            ],
+          ),
+        )
+      )
+      /*body: Stack(
         children: [
+          Center(
+            child: colorWheel
+          ),
           customToolBar,
           BlocBuilder<GridListCubit, List<CreateGrid>>(
             builder: (context, state) {
@@ -245,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           )
         ],
-      ),
+      ),*/
     );
   }
 }

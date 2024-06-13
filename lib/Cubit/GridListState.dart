@@ -13,4 +13,20 @@ class GridListCubit extends Cubit<List<CreateGrid>> {
     List<CreateGrid> newList = state.where((grid) => !grid.selected).toList();
     emit(newList);
   }
+
+  void removeGridAtIndex(int index) {
+    final updatedList = List<CreateGrid>.from(state);
+    if (index >= 0 && index < updatedList.length) {
+      updatedList.removeAt(index);
+      emit(updatedList);
+    }
+  }
+}
+
+class GridList extends Cubit<List<Widget>>{
+  GridList() : super([]); //initial state
+
+  void addGrid(Widget grid){
+    emit([...state, grid]); //"...state" creates a new list and adds grid to it
+  }
 }
