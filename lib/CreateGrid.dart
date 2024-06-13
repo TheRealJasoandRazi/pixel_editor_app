@@ -4,7 +4,6 @@ import 'package:pixel_editor_app/Cubit/EraseState.dart';
 
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
-import 'Cubit/ProgressState.dart';
 
 import 'dart:ui';
 

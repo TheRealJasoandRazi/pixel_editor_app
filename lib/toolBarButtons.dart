@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'Cubit/SwitchState.dart';
 
 mixin ToolBarButtons {
   Widget toolBarButton(IconData icon, Function() action, Color color, String text) {
