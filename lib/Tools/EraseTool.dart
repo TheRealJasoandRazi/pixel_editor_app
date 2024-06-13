@@ -12,7 +12,6 @@ class EraseTool extends StatelessWidget with ToolBarButtons{
   Widget build(BuildContext context) {
     final eraseCubit = BlocProvider.of<EraseCubit>(context); //retieve form state
     final paintCubit = BlocProvider.of<PaintCubit>(context);
-    final exportCubit = BlocProvider.of<ExportCubit>(context);
 
     return BlocBuilder<EraseCubit, bool>(
       builder: (context, state) {
@@ -23,9 +22,6 @@ class EraseTool extends StatelessWidget with ToolBarButtons{
             if(eraseCubit.state) {
               if(paintCubit.state){
                 paintCubit.changeSelection(); //turn off the paint button 
-              }
-              if(exportCubit.state){
-                exportCubit.changeExportFormVisibility();
               }
             }
           },

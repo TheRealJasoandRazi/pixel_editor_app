@@ -10,12 +10,10 @@ class BinTool extends StatelessWidget with ToolBarButtons{
   @override
   Widget build(BuildContext context) {
     final gridListCubit = BlocProvider.of<GridListCubit>(context);
-    final imageListCubit = BlocProvider.of<ImageListCubit>(context);
     return toolBarButton(
       Icons.delete,
       (){
         gridListCubit.removeSelectedGrids();
-        imageListCubit.removeSelectedImages();
       },
       Colors.grey.shade300,
       "Delete"

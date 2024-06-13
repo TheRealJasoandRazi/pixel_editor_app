@@ -22,11 +22,3 @@ class GridListCubit extends Cubit<List<CreateGrid>> {
     }
   }
 }
-
-class GridList extends Cubit<List<Widget>>{
-  GridList() : super([]); //initial state
-
-  void addGrid(Widget grid){
-    emit([...state, grid]); //"...state" creates a new list and adds grid to it
-  }
-}
