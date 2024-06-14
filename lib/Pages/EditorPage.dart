@@ -43,6 +43,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 flex: 1,
                 child: GestureDetector(
                   onTap: (){
+                    colorWheelCubit.closeWheel();
                     Navigator.pushNamed(context, '/CreateGridPage');
                   },
                   child: Padding(
@@ -63,6 +64,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 flex: 1,
                 child: GestureDetector(
                   onTap: (){
+                    colorWheelCubit.closeWheel();
                     Navigator.of(context).push(
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation){
@@ -103,6 +105,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 flex: 1,
                 child: GestureDetector(
                   onTap: (){
+                    colorWheelCubit.closeWheel();
                     Navigator.push(
                     context,
                     PageRouteBuilder( //NEED TO LEARN THIS
@@ -139,6 +142,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 flex: 1,
                 child: GestureDetector(
                   onTap: (){
+                    colorWheelCubit.closeWheel();
                     Navigator.push(
                     context,
                     PageRouteBuilder( //NEED TO LEARN THIS
@@ -204,7 +208,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                   }
                 )
               ),
-          )
+            )
           ),
         ],
       ),

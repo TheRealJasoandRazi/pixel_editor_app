@@ -7,4 +7,8 @@ class ColorWheelCubit extends Cubit<bool> {
   void toggleColorWheel() {
     emit(!state); //emit function changes the state for you
   }
+
+  void closeWheel(){
+    emit(false);
+  }
 }
