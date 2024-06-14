@@ -3,6 +3,8 @@ import 'dart:math';
 import 'Cubit/ColorState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'Cubit/ColorWheelState.dart';
+
 class ColorWheel extends StatefulWidget {
   const ColorWheel({Key? key}) : super(key: key);
 
@@ -25,6 +27,7 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
   final double baseLightness = 0.5;
 
   late final ColorCubit colorCubit;
+  late final ColorWheelCubit colorWheelCubit;
 
   @override
   void initState() {
@@ -43,10 +46,12 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
     ));
 
     colorCubit = context.read<ColorCubit>();
+    colorWheelCubit = context.read<ColorWheelCubit>();
   }
 
   void _toggleSidebar() {
     setState(() {
+      colorWheelCubit.toggleColorWheel();
       _isSidebarVisible = !_isSidebarVisible;
       if (_isSidebarVisible) {
         _controller.forward();

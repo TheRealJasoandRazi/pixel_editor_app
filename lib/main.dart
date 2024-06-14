@@ -12,6 +12,7 @@ import 'Cubit/ColorState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/GridListState.dart';
 import 'Cubit/EraseState.dart';
+import 'Cubit/ColorWheelState.dart';
 
 //pages
 import 'Pages/CreateGridPage.dart';
@@ -42,6 +43,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ExportSelectionCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ColorWheelCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(

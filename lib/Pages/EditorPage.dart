@@ -13,6 +13,7 @@ import 'ImportPage.dart';
 
 //OTHER
 import '../ColorWheel.dart';
+import '../Cubit/ColorWheelState.dart';
 
 class EditorPage extends StatefulWidget {
   const EditorPage({Key? key}) : super(key: key);
@@ -21,13 +22,14 @@ class EditorPage extends StatefulWidget {
   State<EditorPage> createState() => _EditorPageState();
 }
 
-class _EditorPageState extends State<EditorPage> {
+class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin {
   PaintTool paintTool = PaintTool();
   EraseTool eraseTool = EraseTool();
 
   @override
   Widget build(BuildContext context) {
     final gridListCubit = BlocProvider.of<GridListCubit>(context);
+    final colorWheelCubit = BlocProvider.of<ColorWheelCubit>(context);
     final colorCubit = BlocProvider.of<ColorCubit>(context);
 
     return Scaffold(
@@ -173,16 +175,37 @@ class _EditorPageState extends State<EditorPage> {
           ),
         ),
       ),
-      body: Stack( /////BODY OF SCREEN
+      body: Row( /////BODY OF SCREEN
         children: [
-          ColorWheel(),
-          BlocBuilder<GridListCubit, List<CreateGrid>>(
-            builder: (context, state) {
-              return Stack(
-                children: gridListCubit.state
-              );
-            }
+          Expanded(
+            flex: 1,
+            child: ColorWheel(),
+          ),
+          Expanded(
+            flex: 3,
+            child: BlocListener<ColorWheelCubit, bool>(
+              listener: (context, state) {
+                // Handle state changes here, if needed
+              },
+            
+              child: AnimatedAlign( //ANIMATION DOESN'T WORK
+                alignment: context.watch<ColorWheelCubit>().state
+                    ? Alignment.center
+                    : Alignment.centerLeft,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: BlocBuilder<GridListCubit, List<CreateGrid>>(
+                  builder: (context, state) {
+                    if(state.isNotEmpty){
+                      return state[0];
+                    } else {
+                      return Container();
+                    }
+                  }
+                )
+              ),
           )
+          ),
         ],
       ),
       bottomNavigationBar: BottomAppBar( ////BOTTOM

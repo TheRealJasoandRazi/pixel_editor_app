@@ -25,7 +25,6 @@ class CreateGrid extends StatefulWidget {
 }
 
 class _CreateGridState extends State<CreateGrid> {
-  Offset gridPosition = Offset(0, 0);
   Color defaultColor = Colors.transparent;
   
   double cellSize = 0;
@@ -41,12 +40,6 @@ class _CreateGridState extends State<CreateGrid> {
 
   late double cellWidth;
   late double cellHeight;
-
-  void _handleGridUpdate(DragUpdateDetails details) {
-    setState(() {
-      gridPosition += details.delta;
-    });
-  }
 
   @override
   void initState() {
@@ -74,7 +67,6 @@ class _CreateGridState extends State<CreateGrid> {
   void _handleClick(Offset localPosition, ColorCubit colorCubit) {
     final column = (localPosition.dx / cellWidth).floor().clamp(0, columns - 1);
     final row = (localPosition.dy / cellHeight).floor().clamp(0, rows - 1);
-
     setState(() {
       if(colorCubit.state == widget.pixelColors[row][column]){
         widget.pixelColors[row][column] = Colors.transparent;
@@ -92,38 +84,28 @@ class _CreateGridState extends State<CreateGrid> {
     cellWidth = (screenWidth * 0.4) / widget.width;
     cellHeight = (screenHeight * 0.4) / widget.height;
 
-    if (gridPosition == Offset(0, 0)) {
-      gridPosition = Offset(screenWidth * 0.25, screenHeight * 0.25);
-    } 
-
-    return Positioned(
-      left: gridPosition.dx,
-      top: gridPosition.dy,
-      child: GestureDetector(
-        onTapDown: (details){
-          if (paintCubit.state) {
-            _handleClick(details.localPosition, colorCubit);
-          }
-        },
-        onPanUpdate: (details) {
-          if (paintCubit.state) {
-            _calculateGridIndex(details.localPosition, colorCubit.state);
-          }
-          else if(eraseCubit.state){
-            _calculateGridIndex(details.localPosition,Colors.transparent);
-          }else if(!widget.selected){
-            _handleGridUpdate(details);
-          }
-        },
-        onDoubleTap: (){
-          if(!paintCubit.state){
-            setState(() {
-              widget.selected = !widget.selected;
-            });
-          }
-        },
-        child: buildGrid(columns, rows) 
-      )
+    return GestureDetector(
+      onTapDown: (details){
+        if (paintCubit.state) {
+          _handleClick(details.localPosition, colorCubit);
+        }
+      },
+      onPanUpdate: (details) {
+        if (paintCubit.state) {
+          _calculateGridIndex(details.localPosition, colorCubit.state);
+        }
+        else if(eraseCubit.state){
+          _calculateGridIndex(details.localPosition,Colors.transparent);
+        }
+      },
+      onDoubleTap: (){
+        if(!paintCubit.state){
+          setState(() {
+            widget.selected = !widget.selected;
+          });
+        }
+      },
+      child: buildGrid(columns, rows) 
     );
   }
 
@@ -134,23 +116,27 @@ class _CreateGridState extends State<CreateGrid> {
       List<Widget> rowChildren = [];
       for (int x = 0; x < width; x++) {
         rowChildren.add(
-          Container(
-            height: cellHeight,
-            width: cellWidth,
+          Expanded(
+          child: Container(
             decoration: BoxDecoration(
               color: widget.pixelColors[y][x],
               border: Border.all(color: Colors.grey.shade400)
             ),   
           )
+          )
         );
       }
-      rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: rowChildren,
+      rows.add(Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: rowChildren,
+        )
       ));
     }
 
-    return Container(
+    return FractionallySizedBox(
+      widthFactor: 0.7,
+      heightFactor: 0.6,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: rows,

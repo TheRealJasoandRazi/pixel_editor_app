@@ -249,8 +249,6 @@ class _CreateGridPageState extends State<CreateGridPage> {
             ),
             ElevatedButton(
               onPressed: (){
-                print("grid created");
-                //gridList.addGrid(buildGrid());
                 gridListCubit.addGrid(CreateGrid(width: width.toInt(), height: height.toInt()));
                 Navigator.pushNamed(context, '/EditorPage');
               },
