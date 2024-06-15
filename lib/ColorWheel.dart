@@ -22,12 +22,12 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
   double tint = 0.0;
   double shade = 0.0;*/
 
+  Offset? indicatorPosition;
+
   bool firstPage = true;
 
   double saturation = 1.0;
   double lightness = 0.5;
-
-  Color? currentColor; //for list selection
 
   late final ColorCubit colorCubit;
   late final ColorWheelCubit colorWheelCubit;
@@ -69,181 +69,204 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  Widget colorWheel(double width, double height) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 10,
-                  child: GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        firstPage = true;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: firstPage ? Colors.blue : Colors.grey,
-                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Wheel",
-                          style: TextStyle(
-                            color: firstPage ? Colors.white : Colors.black,
-                          ),
-                        )
+Widget colorWheel(double width, double height) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      Expanded( // Options up top
+        flex: 1,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      firstPage = true;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: firstPage ? Colors.blue : Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Wheel",
+                        style: TextStyle(
+                          color: firstPage ? Colors.white : Colors.black,
+                        ),
                       )
                     ),
                   )
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Container()
-                ),
-                Expanded(
-                  flex: 10,
-                  child: GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        firstPage = false;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: firstPage ? Colors.grey : Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "List",
-                          style: TextStyle(
-                            color: firstPage ? Colors.black : Colors.white,
-                          ),
-                        )
-                      )
-                    )
-                  )
-                )
-              ],
-            )
-          ),
-        ),
-        if (firstPage)
-          Expanded(
-            flex: 5,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                final box = context.findRenderObject() as RenderBox;
-                final offset = box.globalToLocal(details.globalPosition);
-                final size = box.size;
-                final center = Offset(size.width / 2, size.height / 2);
-                final dx = offset.dx - center.dx;
-                final dy = offset.dy - center.dy;
-                setState(() {
-                  angle = (atan2(dy, dx) * 180 / pi + 360) % 360;
-                  selectedColor = HSLColor.fromAHSL(1, angle, saturation, lightness).toColor();
-                  colorCubit.changeColor(selectedColor);
-                });
-              },
-              child: CustomPaint(
-                size: Size(width * 0.8, height * 0.8),
-                painter: ColorWheelPainter(
-                  indicatorAngle: angle,
-                  lightness: lightness,
-                  saturation: saturation,
-                ),
               ),
-            ),
-          ),
-        if (firstPage)
-          Expanded(
-            flex: 1,
-            child: Text("Lightness"),
-          ),
-        if (firstPage)
-          Expanded(
-            flex: 2,
-            child: Slider(
-              value: lightness,
-              min: 0.0,
-              max: 1.0,
-              onChanged: (newValue) {
-                setState(() {
-                  lightness = newValue;
-                });
-              },
-            ),
-          ),
-        if (firstPage)
-          Expanded(
-            flex: 1,
-            child: Text("Saturation"),
-          ),
-        if (firstPage)
-          Expanded(
-            flex: 2,
-            child: Slider(
-              value: saturation,
-              min: 0.0,
-              max: 1.0,
-              onChanged: (newValue) {
-                setState(() {
-                  saturation = newValue;
-                });
-              },
-            ),
-          ),
-        if (!firstPage)
-          Expanded(
-            flex: 10,
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
+              Expanded(
+                flex: 1,
+                child: Container()
               ),
-              itemCount: Colors.primaries.length,
-              itemBuilder: (context, index) {
-                Color color = Colors.primaries[index];
-                return GestureDetector(
-                  onLongPress: (){
-                    showColorShades(context, color);
-                  },
-                  onTap: (){
-                    colorCubit.changeColor(color);
+              Expanded(
+                flex: 10,
+                child: GestureDetector(
+                  onTap: () {
                     setState(() {
-                      currentColor = color;
+                      firstPage = false;
                     });
                   },
                   child: Container(
-                    color: color,
-                    child: currentColor == color ?
-                      Center(
-                        child: Icon(
-                          Icons.thumb_up_alt_outlined
-                        )
+                    decoration: BoxDecoration(
+                      color: firstPage ? Colors.grey : Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "List",
+                        style: TextStyle(
+                          color: firstPage ? Colors.black : Colors.white,
+                        ),
                       )
-                    : Container()
+                    )
                   )
-                );
-              },
+                ),
+              )
+            ],
+          )
+        ),
+      ),
+      Expanded(
+        flex: 10,
+        child: firstPage
+          ? Column( // COLOR WHEEL
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        final box = context.findRenderObject() as RenderBox;
+                        final offset = box.globalToLocal(details.globalPosition);
+                        final size = box.size;
+                        final center = Offset(size.width / 2, size.height / 2);
+                        final dx = offset.dx - center.dx;
+                        final dy = offset.dy - center.dy;
+                        setState(() {
+                          angle = (atan2(dy, dx) * 180 / pi + 360) % 360;
+                          selectedColor = HSLColor.fromAHSL(1, angle, saturation, lightness).toColor();
+                          colorCubit.changeColor(selectedColor);
+                          indicatorPosition = offset;
+                        });
+                      },
+                      child: CustomPaint(
+                        size: Size(width * 0.8, height * 0.8),
+                        painter: ColorWheelPainter(
+                          indicatorPosition: indicatorPosition,
+                          lightness: lightness,
+                          saturation: saturation,
+                        ),
+                      ),
+                    )
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text("Lightness"),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Slider(
+                    value: lightness,
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: (newValue) {
+                      setState(() {
+                        lightness = newValue;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text("Saturation"),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Slider(
+                    value: saturation,
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: (newValue) {
+                      setState(() {
+                        saturation = newValue;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Hold to open shades",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Expanded( // LIST 
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                      ),
+                      itemCount: Colors.primaries.length,
+                      itemBuilder: (context, index) {
+                        Color color = Colors.primaries[index];
+                        List<Color> shades = List.generate(10, (index) => color.withOpacity((index + 1) * 0.1));
+                        return GestureDetector(
+                          onLongPress: () {
+                            showColorShades(context, color, shades);
+                          },
+                          onTap: () {
+                            colorCubit.changeColor(color);
+                            setState(() {
+                              //rebuild
+                            });
+                          },
+                          child: shades.contains(colorCubit.state) || colorCubit.state == color 
+                          ? Container(
+                            color: colorCubit.state,
+                            child: Center(
+                              child: Icon(
+                                Icons.thumb_up_alt_outlined,
+                              ),
+                            )
+                          )
+                          : Container(
+                            color: color,
+                          )
+                        );
+                      },
+                    ),
+                  ),
+                )
+              ],
             ),
-          ),
-        
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
-  void showColorShades(BuildContext context, Color color) {
-    List<Color> shades = List.generate(10, (index) => color.withOpacity((index + 1) * 0.1));
+  void showColorShades(BuildContext context, Color color, List<Color> shades) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -254,7 +277,7 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
               onTap: (){
                 colorCubit.changeColor(shade);
                 setState(() {
-                  currentColor = color;
+                  //rebuild
                 });
                 Navigator.pop(context);
               },
@@ -271,7 +294,7 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Align(
+    return Align( //Box
       alignment: Alignment.centerLeft,
         child: SlideTransition(
         position: _offsetAnimation,
@@ -285,16 +308,24 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
           ),
           width: 300,
           height: 500,
-          child: Stack(
+          child: Row(
             children: [
-              colorWheel(300, 500),
-              Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: _toggleSidebar,
-                  child: Icon(Icons.outbond),
-                ),
+              Expanded( //Colour wheel
+                flex: 8,
+                child: colorWheel(300, 500),
               ),
+              Expanded( //Button
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: _toggleSidebar,
+                    child: Icon(
+                      Icons.color_lens
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -319,13 +350,13 @@ class ColorWheelPainter extends CustomPainter {
   final double lightness;
   final double saturation;
   final double increment;
-  final double indicatorAngle;
+  final Offset? indicatorPosition;
 
   ColorWheelPainter({
     required this.lightness,
     required this.saturation, 
     this.increment = 0.5, 
-    required this.indicatorAngle
+    required this.indicatorPosition
   });
 
   @override
@@ -346,16 +377,14 @@ class ColorWheelPainter extends CustomPainter {
         ).createShader(Rect.fromCircle(center: center, radius: radius));
       canvas.drawLine(center, Offset(x, y), paint);
     }
-    /*final indicatorRadius = 10.0; // Radius of the small circle
-    final indicatorX = center.dx + (radius - indicatorRadius) * cos(indicatorAngle * pi / 180);
-    final indicatorY = center.dy + (radius - indicatorRadius) * sin(indicatorAngle * pi / 180);
 
-    final indicatorPaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill;
+    /*if (indicatorPosition != null) {
+      final indicatorPaint = Paint()
+        ..color = Colors.black
+        ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(Offset(indicatorX, indicatorY), indicatorRadius, indicatorPaint);
-    */
+      canvas.drawCircle(indicatorPosition!, 10, indicatorPaint);
+    }*/
   }
 
   @override
