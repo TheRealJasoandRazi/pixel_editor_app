@@ -135,7 +135,7 @@ class _CreateGridState extends State<CreateGrid> {
     }
 
     return FractionallySizedBox(
-      widthFactor: 0.7,
+      widthFactor: 0.7, //for editor page
       heightFactor: 0.6,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
+import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
 import 'package:pixel_editor_app/Pages/ImportPage.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
           '/CreateGridPage': (context) => CreateGridPage(),
           '/EditorPage': (context) => EditorPage(),
           '/ImportPage': (context) => ImportPage(previousPage: "/MainPage",),
+          '/DeleteGridPage': (context) => DeleteGridPage(),
         },
       )
     );

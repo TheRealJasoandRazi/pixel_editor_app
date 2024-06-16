@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/Pages/EditorPage.dart';
 import '../CreateGrid.dart';
-import '../Cubit/GridListState.dart';
+import '../Cubit/GridListState.dart'; // Ensure this import is correct
 
 class DeleteGridPage extends StatefulWidget {
   const DeleteGridPage({super.key});
@@ -38,11 +38,13 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
           ),
         );
       }
-      rows.add(Expanded(
-        child: Row(
-          children: rowChildren,
+      rows.add(
+        Expanded(
+          child: Row(
+            children: rowChildren,
+          ),
         ),
-      ));
+      );
     }
 
     return Container(
@@ -74,12 +76,18 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
               child: Text("Confirm"),
               onPressed: () {
                 setState(() {
-                  selectedGrids.toList().reversed.forEach((index) {
-                    gridListCubit.removeGridAtIndex(index);
+                  selectedGrids.forEach((index) {
+                    try{
+                      gridListCubit.removeGridAtIndex(index);
+                    } catch(e){
+                      print(e);
+                      print("error deleting grid");
+                    }
                   });
                   selectedGrids.clear();
                 });
-                Navigator.of(context).pop();
+                Navigator.pop(context);
+                //Navigator.pushNamed(context, "/DeleteGridPage");
               },
             ),
           ],
@@ -99,8 +107,8 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
           height: screenHeight * 0.9,
           width: screenWidth * 0.9,
           child: BlocBuilder<GridListCubit, List<CreateGrid>>(
-            builder: (context, gridList) {
-              if (gridList.isEmpty) {
+            builder: (context, state) {
+              if (state.isEmpty) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -112,126 +120,163 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                       Padding(
                         padding: const EdgeInsets.all(4),
                         child: ElevatedButton(
-                          onPressed: (){
-                            Navigator.pop(context);
-                          }, 
-                          child: Text("Cancel")
-                        )
-                      )
-                    ]
-                  )
+                          onPressed: () {
+                            Navigator.pop(context); //????
+                            //Navigator.pushNamed(context, "/EditorPage");
+                          },
+                          child: Text("Cancel"),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
-              }
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      "Tap to select grids",
-                      style: TextStyle(fontSize: 16),
+              } else { //IF THERE ARE GRIDS
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        "Tap to select grids",
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
-                  ),
-                  Expanded( //grid display
-                    child: ListView.builder(
-                      itemCount: gridList.length,
-                      itemBuilder: (context, index) {
-                        bool isSelected = selectedGrids.contains(index);
-                        return Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Container(
-                            width: screenWidth * 0.8,
-                            height: screenWidth * 0.3,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (isSelected) {
-                                            selectedGrids.remove(index);
-                                          } else {
-                                            selectedGrids.add(index);
-                                          }
-                                        });
-                                      },
-                                      child: replica(gridListCubit.state[index], selectedGrids.contains(index))
-                                    )
-                                  )
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Text("Dimensions: ${gridListCubit.state[index].width} x ${gridListCubit.state[index].height}")   
-                                  )        
-                                )
-                              ]
-                            )
-                          )
-                        );
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: Row(
-                      children: [
-                        Padding( //Delete Button
-                          padding: const EdgeInsets.only(right: 12.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              if(!selectedGrids.isEmpty){
-                                _confirmDeletion();
-                              }
-                            },
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: state.length,
+                        itemBuilder: (context, index) {
+                          bool isSelected = selectedGrids.contains(index);
+                          return Padding(
+                            padding: const EdgeInsets.all(8),
                             child: Container(
-                              width: screenWidth * 0.20,
-                              height: screenHeight * 0.04,
-                              decoration: BoxDecoration(
-                                color: selectedGrids.isEmpty ? Colors.grey : Colors.blue,
-                                borderRadius: BorderRadius.circular(8.0),
+                              width: screenWidth * 0.8,
+                              height: screenWidth * 0.3,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (isSelected) {
+                                              selectedGrids.remove(index);
+                                            } else {
+                                              selectedGrids.add(index);
+                                            }
+                                          });
+                                        },
+                                        child: Builder(
+                                          builder: (context) {
+                                            try {
+                                              return replica(state[index], isSelected);
+                                            } catch (e) {
+                                              print(e);
+                                              print("Issue with displaying grid");
+                                              print("index is ${index}");
+                                              print("length is ${state.length}");
+                                              return Container(
+                                                child: Text("Error: Grid display issue"),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Center(
+                                      child: Text(
+                                        "Dimensions: ${state[index].width} x ${state[index].height}",
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: Center(
-                                child: Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                    color: selectedGrids.isEmpty ? Colors.black54 : Colors.white,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Center(
+                      child: Row(
+                        children: [
+                          Padding( //DELETE BUTTON
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (selectedGrids.isNotEmpty) {
+                                  _confirmDeletion();
+                                }
+                              },
+                              child: Container(
+                                width: screenWidth * 0.20,
+                                height: screenHeight * 0.04,
+                                decoration: BoxDecoration(
+                                  color: selectedGrids.isEmpty ? Colors.grey : Colors.blue,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                      color: selectedGrids.isEmpty ? Colors.black54 : Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Padding( //Cancel Button
-                          padding: const EdgeInsets.only(left: 12.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              width: screenWidth * 0.20,
-                              height: screenHeight * 0.04,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Cancel"
+                          Padding( //CANCEL BUTTON
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push( //DO TRANSITION BACK, SINCE POP DOESN'T AUTOMATICALLY REFRESH
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) {
+                                      return EditorPage();
+                                    },
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: Tween<double>(
+                                          begin: 0.0,
+                                          end: 1.0,
+                                        ).animate(animation),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: screenWidth * 0.20,
+                                height: screenHeight * 0.04,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
-                              )
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          )
-                        ) 
-                      ],
-                    )
-                  )
-                ]
-              );
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
             },
           ),
         ),
-      )
+      ),
     );
   }
 }

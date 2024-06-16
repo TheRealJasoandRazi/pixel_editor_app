@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/ColorState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
+
 import '../Tools/PaintTool.dart';
 import '../Tools/EraseTool.dart';
 import '../CreateGrid.dart';
@@ -22,9 +23,31 @@ class EditorPage extends StatefulWidget {
   State<EditorPage> createState() => _EditorPageState();
 }
 
-class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin {
+class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin{
   PaintTool paintTool = PaintTool();
   EraseTool eraseTool = EraseTool();
+  List<String> test = ["ass", "test", "boo"];
+
+  Widget topBarButtons(Function() action, Color color, String text){
+    return Expanded( //NEW GRID TOOL
+      flex: 1,
+      child: GestureDetector(
+        onTap: action,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Center(
+              child: Text(text)
+            )
+          )
+        )
+      )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,148 +55,129 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
     final colorWheelCubit = BlocProvider.of<ColorWheelCubit>(context);
     final colorCubit = BlocProvider.of<ColorCubit>(context);
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      appBar: AppBar( //TOP
+      appBar: AppBar( //NAVBAR
         automaticallyImplyLeading: false, //need in release
         flexibleSpace: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Expanded( 
-                flex: 1,
-                child: GestureDetector(
-                  onTap: (){
-                    colorWheelCubit.closeWheel();
-                    Navigator.pushNamed(context, '/CreateGridPage');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent.shade400,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(
-                        child: Text("Add new grid")
-                      )
-                    )
+              Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  topBarButtons( //NEW GRID TOOL
+                    () {
+                      colorWheelCubit.closeWheel();
+                      Navigator.pushNamed(context, '/CreateGridPage');
+                    },
+                    Colors.blueAccent.shade400,
+                    "Add new grid",
+                  ),
+                  topBarButtons( //IMPORT TOOL
+                    () {
+                      colorWheelCubit.closeWheel();
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation){
+                            return ImportPage(previousPage: "/EditorPage");
+                          },
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(0.0, 1.0); // Start from the bottom
+                            const end = Offset.zero; // End at the original position
+                            const curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                            var offsetAnimation = animation.drive(tween);
+
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
+                          transitionDuration: Duration(milliseconds: 300),
+                        ),
+                      );
+                    },
+                    Colors.blueAccent.shade400,
+                    "import"
+                  ),
+                  topBarButtons( //EXPORT TOOL
+                    () {
+                      colorWheelCubit.closeWheel();
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder( //NEED TO LEARN THIS
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return ExportPage();
+                          },
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: Tween<double>(
+                                begin: 0.0,
+                                end: 1.0,
+                              ).animate(animation),
+                              child: child,
+                            );
+                          },
+                        )
+                      );
+                    },
+                    Colors.blueAccent.shade400,
+                    "Export"
+                  ),
+                  topBarButtons( //DELETE BUTTON
+                    (){
+                      colorWheelCubit.closeWheel();
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder( //NEED TO LEARN THIS
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return DeleteGridPage();
+                          },
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: Tween<double>(
+                                begin: 0.0,
+                                end: 1.0,
+                              ).animate(animation),
+                              child: child,
+                            );
+                          },
+                        )
+                      );
+                    },
+                    Colors.blueAccent.shade400,
+                    "Delete"
                   )
+                ]
+              ),
+              Expanded( //LIST OF GRIDS (REPLICA NOT WORKING)
+                child: BlocBuilder<GridListCubit, List<CreateGrid>>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.length,
+                      itemBuilder: (context, index) {
+                        final itemWidth = screenWidth / 12.0;
+                        return GestureDetector(
+                          onTapDown: (details) {
+                            print("cover");
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: itemWidth,
+                                child: state[index],
+                              ),
+                            ],
+                          )
+                        );
+                      }
+                    );
+                  }
                 )
-              ),
-              Expanded( //IMPORT TOOL
-                flex: 1,
-                child: GestureDetector(
-                  onTap: (){
-                    colorWheelCubit.closeWheel();
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation){
-                          return ImportPage(previousPage: "/EditorPage");
-                        },
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(0.0, 1.0); // Start from the bottom
-                          const end = Offset.zero; // End at the original position
-                          const curve = Curves.ease;
-
-                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                          var offsetAnimation = animation.drive(tween);
-
-                          return SlideTransition(
-                            position: offsetAnimation,
-                            child: child,
-                          );
-                        },
-                        transitionDuration: Duration(milliseconds: 300),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent.shade400,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(
-                        child: Text("Import")
-                      )
-                    )
-                  )
-                ),
-              ),
-              Expanded( //EXPORT TOOL
-                flex: 1,
-                child: GestureDetector(
-                  onTap: (){
-                    colorWheelCubit.closeWheel();
-                    Navigator.push(
-                    context,
-                    PageRouteBuilder( //NEED TO LEARN THIS
-                      pageBuilder: (context, animation, secondaryAnimation) {
-                        return ExportPage();
-                      },
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: Tween<double>(
-                            begin: 0.0,
-                            end: 1.0,
-                          ).animate(animation),
-                          child: child,
-                        );
-                      },
-                    )
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent.shade400,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(
-                        child: Text("Export")
-                      )
-                    )
-                  )
-                ),
-              ),
-              Expanded( //EXPORT TOOL
-                flex: 1,
-                child: GestureDetector(
-                  onTap: (){
-                    colorWheelCubit.closeWheel();
-                    Navigator.push(
-                    context,
-                    PageRouteBuilder( //NEED TO LEARN THIS
-                      pageBuilder: (context, animation, secondaryAnimation) {
-                        return DeleteGridPage();
-                      },
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: Tween<double>(
-                            begin: 0.0,
-                            end: 1.0,
-                          ).animate(animation),
-                          child: child,
-                        );
-                      },
-                    )
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent.shade400,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(
-                        child: Text("Delete")
-                      )
-                    )
-                  )
-                ),
               )
             ]
           ),
@@ -181,11 +185,11 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
       ),
       body: Row( /////BODY OF SCREEN
         children: [
-          Expanded(
+          Expanded( ///COLOR WHEEL
             flex: 1,
             child: ColorWheel(),
           ),
-          Expanded(
+          Expanded( //SELECTED GRID
             flex: 3,
             child: BlocListener<ColorWheelCubit, bool>(
               listener: (context, state) {
@@ -212,11 +216,11 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar( ////BOTTOM
+      bottomNavigationBar: BottomAppBar( ////BOTTOM BAR
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
+            Expanded( //SHOWS CURRENT COLOR 
               child: BlocBuilder<ColorCubit, Color>(
                 builder: (context, state) {
                   return Container(
@@ -225,14 +229,49 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 }
               )
             ),
-            Expanded(
+            Expanded( // PAINT TOOL
               child: paintTool,
             ),
-            Expanded(
+            Expanded( // ERASE TOOL
               child: eraseTool
             ),
           ],
         ),
+      )
+    );
+  }
+
+  Widget buildGrid(int width, int height, List<List<Color>> pixelColors) {
+    List<Widget> rows = [];
+
+    for (int y = 0; y < height; y++) {
+      List<Widget> rowChildren = [];
+      for (int x = 0; x < width; x++) {
+        rowChildren.add(
+          Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: pixelColors[y][x],
+              border: Border.all(color: Colors.grey.shade400)
+            ),   
+          )
+          )
+        );
+      }
+      rows.add(Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: rowChildren,
+        )
+      ));
+    }
+
+    return FractionallySizedBox(
+      widthFactor: 0.7, //for editor page
+      heightFactor: 0.6,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: rows,
       )
     );
   }

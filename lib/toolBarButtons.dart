@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 mixin ToolBarButtons {
   Widget toolBarButton(IconData icon, Function() action, Color color, String text) {
-
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(4.0),

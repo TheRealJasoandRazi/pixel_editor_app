@@ -74,7 +74,7 @@ class _CreateGridPageState extends State<CreateGridPage> {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  Expanded(
+                  Expanded( //Filler to have the grid in the center
                     flex: 1,
                     child: Container()
                   ),
@@ -247,9 +247,14 @@ class _CreateGridPageState extends State<CreateGridPage> {
                 ),
               ),
             ),
-            ElevatedButton(
+            ElevatedButton( //Create Grid Button
               onPressed: (){
-                gridListCubit.addGrid(CreateGrid(width: width.toInt(), height: height.toInt()));
+                try{
+                  gridListCubit.addGrid(CreateGrid(width: width.toInt(), height: height.toInt()));
+                } catch (e){
+                  print(e);
+                  print("error in adding grid to cubit");
+                }
                 Navigator.pushNamed(context, '/EditorPage');
               },
               child: Text("Create Grid")

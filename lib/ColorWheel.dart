@@ -378,13 +378,13 @@ class ColorWheelPainter extends CustomPainter {
       canvas.drawLine(center, Offset(x, y), paint);
     }
 
-    /*if (indicatorPosition != null) {
+    if (indicatorPosition != null) {
       final indicatorPaint = Paint()
         ..color = Colors.black
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(indicatorPosition!, 10, indicatorPaint);
-    }*/
+    }
   }
 
   @override

@@ -9,11 +9,6 @@ class GridListCubit extends Cubit<List<CreateGrid>> {
     emit([...state, grid]); //"...state" creates a new list and adds grid to it
   }
 
-  void removeSelectedGrids() { //create new list without the selected grids
-    List<CreateGrid> newList = state.where((grid) => !grid.selected).toList();
-    emit(newList);
-  }
-
   void removeGridAtIndex(int index) {
     final updatedList = List<CreateGrid>.from(state);
     if (index >= 0 && index < updatedList.length) {
