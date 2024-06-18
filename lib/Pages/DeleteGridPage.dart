@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
+import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 import '../CreateGrid.dart';
 import '../Cubit/GridListState.dart'; // Ensure this import is correct
 
@@ -21,41 +22,9 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
     gridListCubit = context.read<GridListCubit>();
   }
 
-  Widget replica(CreateGrid grid, bool selected) {
-    List<Widget> rows = [];
-
-    for (int y = 0; y < grid.height; y++) {
-      List<Widget> rowChildren = [];
-      for (int x = 0; x < grid.width; x++) {
-        rowChildren.add(
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: grid.pixelColors[y][x],
-                border: Border.all(color: Colors.grey.shade400),
-              ),
-            ),
-          ),
-        );
-      }
-      rows.add(
-        Expanded(
-          child: Row(
-            children: rowChildren,
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        border: selected ? Border.all(color: Colors.blue, width: 2) : null,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: rows,
-      ),
-    );
+  @override
+  void dispose(){
+    super.dispose();
   }
 
   void _confirmDeletion() {
@@ -106,10 +75,9 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
         child: SizedBox(
           height: screenHeight * 0.9,
           width: screenWidth * 0.9,
-          child: BlocBuilder<GridListCubit, List<CreateGrid>>(
-            builder: (context, state) {
-              if (state.isEmpty) {
-                return Center(
+          child: 
+              gridListCubit.state.isEmpty ?
+                Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -121,6 +89,7 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                         padding: const EdgeInsets.all(4),
                         child: ElevatedButton(
                           onPressed: () {
+                            selectedGrids.clear();
                             Navigator.pop(context); //????
                             //Navigator.pushNamed(context, "/EditorPage");
                           },
@@ -129,9 +98,8 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                       ),
                     ],
                   ),
-                );
-              } else { //IF THERE ARE GRIDS
-                return Column(
+                )
+              : Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(12),
@@ -142,7 +110,7 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: state.length,
+                        itemCount: gridListCubit.state.length,
                         itemBuilder: (context, index) {
                           bool isSelected = selectedGrids.contains(index);
                           return Padding(
@@ -168,12 +136,13 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                                         child: Builder(
                                           builder: (context) {
                                             try {
-                                              return replica(state[index], isSelected);
+                                              return BuildGrid(grid: gridListCubit.state[index],  selected: isSelected, widthFactor: 0.9, heightFactor: 0.9);
                                             } catch (e) {
                                               print(e);
+                                              print(gridListCubit.state.length);
                                               print("Issue with displaying grid");
                                               print("index is ${index}");
-                                              print("length is ${state.length}");
+                                              print("length is ${gridListCubit.state.length}");
                                               return Container(
                                                 child: Text("Error: Grid display issue"),
                                               );
@@ -187,7 +156,7 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                                     flex: 1,
                                     child: Center(
                                       child: Text(
-                                        "Dimensions: ${state[index].width} x ${state[index].height}",
+                                        "Dimensions: ${gridListCubit.state[index].width} x ${gridListCubit.state[index].height}",
                                       ),
                                     ),
                                   ),
@@ -271,12 +240,9 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                       ),
                     ),
                   ],
-                );
-              }
-            },
-          ),
-        ),
-      ),
-    );
+                )
+              )
+            )
+          );
   }
 }

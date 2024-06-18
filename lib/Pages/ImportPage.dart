@@ -313,7 +313,7 @@ class _ImportPageState extends State<ImportPage> {
             )
           : Container(),
           Center(
-            child: Row(
+            child: Row( //OK
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 newimage != null ? Padding(

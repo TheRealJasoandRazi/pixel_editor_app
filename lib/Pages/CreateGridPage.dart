@@ -250,7 +250,8 @@ class _CreateGridPageState extends State<CreateGridPage> {
             ElevatedButton( //Create Grid Button
               onPressed: (){
                 try{
-                  gridListCubit.addGrid(CreateGrid(width: width.toInt(), height: height.toInt()));
+                  CreateGrid newGrid = CreateGrid(width: width.toInt(), height: height.toInt());
+                  gridListCubit.addGrid(newGrid);
                 } catch (e){
                   print(e);
                   print("error in adding grid to cubit");

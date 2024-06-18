@@ -11,6 +11,8 @@ import 'dart:html' as html;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import '../ResubleWidgets/BuildGrid.dart';
+
 class ExportPage extends StatefulWidget {
   const ExportPage({super.key});
 
@@ -88,41 +90,6 @@ class _ExportPageState extends State<ExportPage> {
     }
   }
 
-  Widget replica(CreateGrid grid, bool selected, bool exporting){
-    List<Widget> rows = [];
-
-    for (int y = 0; y < grid.height; y++) {
-      List<Widget> rowChildren = [];
-      for (int x = 0; x < grid.width; x++) {
-        rowChildren.add(
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: grid.pixelColors[y][x],
-                border: exporting ? null : Border.all(color: Colors.grey.shade400),
-              ),
-            ),
-          ),
-        );
-      }
-      rows.add(Expanded(
-        child: Row(
-          children: rowChildren,
-        ),
-      ));
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-       border: (selected && !exporting) ? Border.all(color: Colors.blue) : null,
-      ),          
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: rows,
-      ) 
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final gridListCubit = BlocProvider.of<GridListCubit>(context);
@@ -160,7 +127,7 @@ class _ExportPageState extends State<ExportPage> {
                             },
                             child: BlocBuilder<ExportSelectionCubit, List<CreateGrid>>(
                               builder: (context, state) {
-                                return replica(grid, state.contains(grid), false);
+                                return BuildGrid(grid: grid, selected: state.contains(grid), exporting: false);
                               },
                             ),
                           );
@@ -207,7 +174,7 @@ class _ExportPageState extends State<ExportPage> {
                                   keyList.add(key);
                                   return RepaintBoundary(
                                     key: key,
-                                    child: replica(grid, false, true), // Borderless
+                                    child: BuildGrid(grid: grid, selected: false, exporting: true)
                                   );
                                 },
                               ),
