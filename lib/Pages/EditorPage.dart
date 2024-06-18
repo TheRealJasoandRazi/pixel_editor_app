@@ -27,7 +27,9 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin{
   PaintTool paintTool = PaintTool();
   EraseTool eraseTool = EraseTool();
-  List<String> test = ["ass", "test", "boo"];
+  
+  CreateGrid? selectedGrid;
+  late final GridListCubit gridListCubit;
 
   Widget topBarButtons(Function() action, Color color, String text){
     return Expanded( //NEW GRID TOOL
@@ -51,8 +53,16 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
   }
 
   @override
+  void initState() {
+    gridListCubit = context.read<GridListCubit>(); //initialise cubits
+    if(gridListCubit.state.isNotEmpty){
+      selectedGrid = gridListCubit.state[0];
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final gridListCubit = BlocProvider.of<GridListCubit>(context);
     final colorWheelCubit = BlocProvider.of<ColorWheelCubit>(context);
     final colorCubit = BlocProvider.of<ColorCubit>(context);
 
@@ -169,14 +179,20 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                         itemBuilder: (context, index) {
                           final itemWidth = screenWidth / 12.0;
                           return GestureDetector(
-                            onTapDown: (details) {
-                              print("test");
+                            onTap: () {
+                              setState(() {
+                                if(selectedGrid != state[index]){
+                                  selectedGrid = state[index];
+                                } else {
+                                  selectedGrid = null;
+                                }
+                              });
                             },
                             child: Row(
                               children: [
                                 Container(
                                   width: itemWidth,
-                                  child: BuildGrid(grid: state[index])
+                                  child: BuildGrid(grid: state[index], selected: selectedGrid == state[index], widthFactor: 0.9, heightFactor: 0.9,)
                                 ),
                               ],
                             )
@@ -213,7 +229,12 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 child: BlocBuilder<GridListCubit, List<CreateGrid>>(
                   builder: (context, state) {
                     if(state.isNotEmpty){
-                      return state[0];
+                      if(selectedGrid != null){
+                        return Container(
+                          child: selectedGrid
+                        ); 
+                      }
+                      return Container();
                     } else {
                       return Container();
                     }
