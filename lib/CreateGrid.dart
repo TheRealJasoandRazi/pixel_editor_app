@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/EraseState.dart';
+import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
 
@@ -60,6 +61,7 @@ class _CreateGridState extends State<CreateGrid> {
   late PaintCubit paintCubit;
   late ColorCubit colorCubit;
   late EraseCubit eraseCubit;
+  late GridListCubit gridListCubit;
 
   late double cellWidth;
   late double cellHeight;
@@ -74,6 +76,7 @@ class _CreateGridState extends State<CreateGrid> {
     paintCubit = BlocProvider.of<PaintCubit>(context);
     colorCubit = BlocProvider.of<ColorCubit>(context);
     eraseCubit = BlocProvider.of<EraseCubit>(context);
+    gridListCubit = BlocProvider.of<GridListCubit>(context);
   }
 
   void _calculateGridIndex(Offset localPosition, Color color) {

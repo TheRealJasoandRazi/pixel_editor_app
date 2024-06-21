@@ -5,6 +5,7 @@ import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
+import 'package:pixel_editor_app/Pages/Export/ExportPage.dart';
 import 'package:pixel_editor_app/Pages/ImportPage.dart';
 
 
@@ -17,8 +18,11 @@ import 'Cubit/ColorWheelState.dart';
 
 //pages
 import 'Pages/CreateGridPage.dart';
+import 'Pages/Export/ExportGifPage.dart';
+import 'Pages/Export/ExportImagePage.dart';
 
 void main() {
+  //debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }
 
@@ -70,6 +74,9 @@ class MyApp extends StatelessWidget {
           '/EditorPage': (context) => EditorPage(),
           '/ImportPage': (context) => ImportPage(previousPage: "/MainPage",),
           '/DeleteGridPage': (context) => DeleteGridPage(),
+          '/ExportPage': (context) => ExportPage(),
+          '/ExportImagePage': (context) => ExportImagePage(),
+          '/ExportGifPage': (context) => ExportGifPage(),
         },
       )
     );
