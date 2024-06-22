@@ -11,6 +11,18 @@ import '../../ResubleWidgets/BuildGrid.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/foundation.dart';
 
+class MultiValueNotifier extends ValueNotifier<Map<String, dynamic>> {
+  MultiValueNotifier(Map<String, dynamic> value) : super(value);
+
+  void updateValue(String key, dynamic newValue) {
+    if (value[key] != newValue) {
+      value[key] = newValue;
+      notifyListeners();
+    }
+  }
+
+}
+
 class ExportGifPage extends StatefulWidget {
   const ExportGifPage({Key? key}) : super(key: key);
 
@@ -22,12 +34,13 @@ class _ExportGifPageState extends State<ExportGifPage> {
   late final GridListCubit gridListCubit;
   List<GlobalKey> keyList = [];
   Uint8List? gifBytes;
-  final ValueNotifier<bool> runGif = ValueNotifier<bool>(false);
   List<img.Image> images = [];
   bool capturedGrids = false;
 
-  int delay = 80;
-  int repeat = 0;
+  final MultiValueNotifier multiValueNotifier = MultiValueNotifier({'runGif': false, 'delay': 80, 'repeat': 0});
+
+  int get delay => multiValueNotifier.value['delay'];
+  int get repeat => multiValueNotifier.value['repeat'];
 
   @override
   void initState() {
@@ -42,7 +55,7 @@ class _ExportGifPageState extends State<ExportGifPage> {
         if(!capturedGrids) {
           captureImages();
         }
-        runGif.value = true;
+        multiValueNotifier.updateValue('runGif', true);
         //runGif.value = true;
       });
     });
@@ -122,12 +135,10 @@ class _ExportGifPageState extends State<ExportGifPage> {
                 min: 0,
                 max: vari == "r" ? 100 : 1000,
                 onChanged: (newValue) {
-                  setState(() {
-                    vari == "r" ?
-                      repeat = newValue.toInt()
-                    :
-                      delay = newValue.toInt();
-                  });
+                  multiValueNotifier.updateValue(
+                    vari == "r" ? 'repeat' : 'delay', 
+                    newValue.toInt()
+                  );
                 },
               ),
             ),
@@ -146,17 +157,17 @@ class _ExportGifPageState extends State<ExportGifPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: (){
-                            setState(() {
+                            
                               if (vari == "r") {
                                 if (repeat > 0) {
-                                  repeat = repeat - 1;
+                                  multiValueNotifier.updateValue('repeat', repeat - 1);
                                 }
                               } else {
                                 if (delay > 0) {
-                                  delay = delay - 1;
+                                  multiValueNotifier.updateValue('delay', delay - 1);
                                 }
                               }
-                            });
+                           
                           },
                           child: Icon(Icons.minimize)
                         )
@@ -164,17 +175,15 @@ class _ExportGifPageState extends State<ExportGifPage> {
                       Expanded( 
                         child: GestureDetector(
                           onTap: (){
-                            setState(() {
-                              if (vari == "r") {
+                            if (vari == "r") {
                                 if (repeat < 100) {
-                                  repeat = repeat + 1;
+                                  multiValueNotifier.updateValue('repeat', repeat + 1);
                                 }
                               } else {
                                 if (delay < 1000) {
-                                  delay = delay + 1;
+                                  multiValueNotifier.updateValue('delay', delay + 1);
                                 }
                               }
-                            });
                           },
                           child: Icon(Icons.plus_one)
                         )          
@@ -244,47 +253,56 @@ class _ExportGifPageState extends State<ExportGifPage> {
           ),
           Expanded(
             flex: 3,
-            child: ValueListenableBuilder<bool>( //ONLY BUILDS GIF WHEN VALUE CHANGES
-              valueListenable: runGif,
-              builder: (context, value, child) {
-                if (value) {
-                  print("building gif");
-                  return Container(
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.25,
-                    child: FutureBuilder<Uint8List>(
-                      future: _createGif(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          print('Error: ${snapshot.error}');
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          return Image.memory(snapshot.data!);
-                        } else {
-                          return Text('No data yet...');
-                        }
-                      },
-                    )
+            child: ValueListenableBuilder<Map<String, dynamic>>( //ONLY BUILDS GIF WHEN VALUE CHANGES
+              valueListenable: multiValueNotifier,
+              builder: (context, values, child) {
+                print(values);
+                //if (values['runGif']) {
+                  //print("building gif");
+                  return Column(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          width: screenWidth * 0.25,
+                          height: screenHeight * 0.25,
+                          child: values["runGif"] ?
+                            FutureBuilder<Uint8List>(
+                            future: _createGif(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                print('Error: ${snapshot.error}');
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData) {
+                                return Image.memory(snapshot.data!);
+                              } else {
+                                return Text('No data yet...');
+                              }
+                            },
+                          )  : Container()
+                        )
+                      ),
+                      Expanded(
+                        child: slider(
+                          "r"
+                        )
+                      ),
+                      Expanded(
+                        child: slider(
+                          "d"
+                        )
+                      )
+                    ]
                   );
-                } else {
+                /*} else {
                   return Container(
                   ); // Placeholder or empty container
-                }
+                }*/
               },
             ),
           ),
-          Expanded(
-            child: slider(
-              "r"
-            )
-          ),
-          Expanded(
-            child: slider(
-              "d"
-            )
-          )
         ],
       ),
     );
