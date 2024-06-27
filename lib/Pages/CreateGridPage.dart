@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/CreateGrid.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
+import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 
 class CreateGridPage extends StatefulWidget {
   const CreateGridPage({super.key});
@@ -51,6 +52,7 @@ class _CreateGridPageState extends State<CreateGridPage> {
   @override
   Widget build(BuildContext context) {
     final gridListCubit = BlocProvider.of<GridListCubit>(context);
+    final selectedGridCubit = BlocProvider.of<SelectedGridCubit>(context);
 
     final inputScreenWidth = MediaQuery.of(context).size.width;
     final inputScreenHeight = MediaQuery.of(context).size.height;
@@ -252,6 +254,7 @@ class _CreateGridPageState extends State<CreateGridPage> {
                 try{
                   CreateGrid newGrid = CreateGrid(width: width.toInt(), height: height.toInt());
                   gridListCubit.addGrid(newGrid);
+                  selectedGridCubit.changeSelection(newGrid);
                 } catch (e){
                   print(e);
                   print("error in adding grid to cubit");

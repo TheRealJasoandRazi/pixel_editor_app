@@ -5,9 +5,7 @@ import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
 
-import 'dart:ui';
-
-class PixelColors {
+class PixelColors with ChangeNotifier { //change Notifier triggered here
   late List<List<Color>> _pixelColors;
 
   // Constructor to initialize with a width and height
@@ -35,6 +33,7 @@ class PixelColors {
   void paint(int row, int column, Color color) {
     if (row >= 0 && row < _pixelColors.length && column >= 0 && column < _pixelColors[row].length) {
       _pixelColors[row][column] = color;
+      notifyListeners();
     }
   }
 }

@@ -271,7 +271,9 @@ class _ExportGifPageState extends State<ExportGifPage> {
                             future: _createGif(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
                               } else if (snapshot.hasError) {
                                 print('Error: ${snapshot.error}');
                                 return Text('Error: ${snapshot.error}');

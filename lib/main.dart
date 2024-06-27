@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
+import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
@@ -22,7 +24,10 @@ import 'Pages/Export/ExportGifPage.dart';
 import 'Pages/Export/ExportImagePage.dart';
 
 void main() {
-  //debugRepaintRainbowEnabled = true;
+  WidgetsApp.debugAllowBannerOverride = false; // Remove debug banner if needed
+  //debugPaintLayerBordersEnabled = true; // Enable layer borders
+  debugProfilePaintsEnabled = true; //for profile mode
+  debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }
 
@@ -51,6 +56,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ColorWheelCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SelectedGridCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(

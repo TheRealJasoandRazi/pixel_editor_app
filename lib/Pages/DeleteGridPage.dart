@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 import '../CreateGrid.dart';
@@ -14,11 +15,13 @@ class DeleteGridPage extends StatefulWidget {
 
 class _DeleteGridPageState extends State<DeleteGridPage> {
   late final GridListCubit gridListCubit;
+  late final SelectedGridCubit selectedGridCubit;
   final Set<int> selectedGrids = {}; // Track selected grids by their index
 
   @override
   void initState() {
     super.initState();
+    selectedGridCubit = context.read<SelectedGridCubit>();
     gridListCubit = context.read<GridListCubit>();
   }
 
@@ -47,6 +50,9 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                 setState(() {
                   selectedGrids.forEach((index) {
                     try{
+                      if(gridListCubit.state[index] == selectedGridCubit.state){
+                        selectedGridCubit.changeSelection(null);
+                      }
                       gridListCubit.removeGridAtIndex(index);
                     } catch(e){
                       print(e);
