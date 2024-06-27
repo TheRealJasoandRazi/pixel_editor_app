@@ -4,6 +4,7 @@ import 'package:pixel_editor_app/Cubit/EraseState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
+import 'Cubit/DropperState.dart';
 
 class PixelColors with ChangeNotifier { //change Notifier triggered here
   late List<List<Color>> _pixelColors;
@@ -36,6 +37,10 @@ class PixelColors with ChangeNotifier { //change Notifier triggered here
       notifyListeners();
     }
   }
+
+  Color retrieveColor(int row, int column){
+    return _pixelColors[row][column];
+  }
 }
 
 class CreateGrid extends StatefulWidget {
@@ -60,6 +65,7 @@ class _CreateGridState extends State<CreateGrid> {
   late PaintCubit paintCubit;
   late ColorCubit colorCubit;
   late EraseCubit eraseCubit;
+  late DropperCubit dropperCubit;
   late GridListCubit gridListCubit;
 
   late double cellWidth;
@@ -75,6 +81,7 @@ class _CreateGridState extends State<CreateGrid> {
     paintCubit = BlocProvider.of<PaintCubit>(context);
     colorCubit = BlocProvider.of<ColorCubit>(context);
     eraseCubit = BlocProvider.of<EraseCubit>(context);
+    dropperCubit = BlocProvider.of<DropperCubit>(context);
     gridListCubit = BlocProvider.of<GridListCubit>(context);
   }
 
@@ -99,6 +106,10 @@ class _CreateGridState extends State<CreateGrid> {
         }
       } else if (eraseCubit.state){
         widget.pixelColors.paint(row, column, Colors.transparent);
+      } else if (dropperCubit.state){
+        Color newColor = widget.pixelColors.retrieveColor(row, column);
+        print(newColor);
+        colorCubit.changeColor(newColor);
       }
     });
   }
@@ -114,7 +125,7 @@ class _CreateGridState extends State<CreateGrid> {
         cellHeight = (constraints.maxHeight * 0.6) / widget.height;
         return GestureDetector(
           onTapDown: (details) {
-            if (paintCubit.state || eraseCubit.state) {
+            if (paintCubit.state || eraseCubit.state || dropperCubit.state) {
               _handleClick(details.localPosition, colorCubit);
             }
           },

@@ -4,6 +4,7 @@ import 'package:pixel_editor_app/Cubit/ColorState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
+import 'package:pixel_editor_app/Tools/DropperTool.dart';
 
 import '../Tools/PaintTool.dart';
 import '../Tools/EraseTool.dart';
@@ -28,6 +29,7 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin{
   PaintTool paintTool = PaintTool();
   EraseTool eraseTool = EraseTool();
+  DropperTool dropperTool = DropperTool();
 
   late final GridListCubit gridListCubit;
   late final SelectedGridCubit selectedGridCubit;
@@ -282,6 +284,9 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
             ),
             Expanded( // ERASE TOOL
               child: eraseTool
+            ),
+            Expanded( // DROPPER TOOl
+              child: dropperTool
             ),
           ],
         ),

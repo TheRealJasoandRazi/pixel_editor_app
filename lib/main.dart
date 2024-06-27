@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/Cubit/DropperState.dart';
 import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
@@ -59,6 +60,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SelectedGridCubit(),
+        ),
+        BlocProvider(
+          create: (context) => DropperCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(
