@@ -29,7 +29,9 @@ class EraseTool extends StatelessWidget with ToolBarButtons{
             }
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,
-          "Eraser"
+          "Eraser is used to turn cells in the grid to transparent",
+          context,
+          "eraser"
         );
       }
     );

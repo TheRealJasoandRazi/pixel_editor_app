@@ -1,0 +1,36 @@
+dependencies: \
+  /Users/nemanjapopovic/pixel_editor_app/ios/Runner/GeneratedPluginRegistrant.m \
+  /Users/nemanjapopovic/pixel_editor_app/ios/Runner/GeneratedPluginRegistrant.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Modules/module.modulemap \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/Flutter.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterAppDelegate.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterMacros.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterPlugin.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterBinaryMessenger.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterChannels.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterCodecs.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterPlatformViews.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterTexture.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterCallbackCache.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterDartProject.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterEngine.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterEngineGroup.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterHeadlessDartRunner.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/Flutter.framework/Headers/FlutterViewController.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/file_picker/file_picker.framework/Headers/FilePickerPlugin.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/file_picker/file_picker.framework/Modules/module.modulemap \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/file_picker/file_picker.framework/Headers/file_picker-umbrella.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/file_picker/file_picker.framework/Headers/FileInfo.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/file_picker/file_picker.framework/Headers/FileUtils.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/file_picker/file_picker.framework/Headers/ImageUtils.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/image_gallery_saver/image_gallery_saver.framework/Headers/ImageGallerySaverPlugin.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/image_gallery_saver/image_gallery_saver.framework/Modules/module.modulemap \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/image_gallery_saver/image_gallery_saver.framework/Headers/image_gallery_saver-umbrella.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/image_gallery_saver/image_gallery_saver.framework/Headers/image_gallery_saver-Swift.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/path_provider_foundation/path_provider_foundation.framework/Modules/module.modulemap \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/path_provider_foundation/path_provider_foundation.framework/Headers/path_provider_foundation-umbrella.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/path_provider_foundation/path_provider_foundation.framework/Headers/path_provider_foundation-Swift.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/share/share.framework/Headers/FLTSharePlugin.h \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/share/share.framework/Modules/module.modulemap \
+  /Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/share/share.framework/Headers/share-umbrella.h

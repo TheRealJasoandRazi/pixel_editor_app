@@ -1,0 +1,23 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/image_gallery_saver/image_gallery_saver.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/image_gallery_saver.build/unextended-module.modulemap",
+    }]
+    },
+    {
+    'type': 'directory',
+    'name': "/Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/image_gallery_saver/image_gallery_saver.framework/Headers"
+    'contents': [{
+      'type': 'file',
+      'name': "image_gallery_saver-Swift.h",
+      'external-contents': "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/image_gallery_saver.build/unextended-interface-header.h",
+    }]
+    }]
+}

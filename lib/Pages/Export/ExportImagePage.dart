@@ -7,7 +7,7 @@ import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
-import 'dart:html' as html;
+import 'dart:html' as html; //web only package
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -42,7 +42,7 @@ class _ExportImagePageState extends State<ExportImagePage> {
     print(result);
   }
 
-  void saveImageWeb(Uint8List capturedImage) {
+  void saveImageWeb(Uint8List capturedImage) { //for web only
     final blob = html.Blob([capturedImage]);
     final url = html.Url.createObjectUrlFromBlob(blob);
     

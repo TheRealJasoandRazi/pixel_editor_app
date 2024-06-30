@@ -29,7 +29,9 @@ class PaintTool extends StatelessWidget with ToolBarButtons {
             }
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,
-          "Paint"
+          "Painter is used to fill in cells with the current color",
+          context,
+          "painter"
         );
       },
     );

@@ -18,6 +18,7 @@ import 'Cubit/PaintState.dart';
 import 'Cubit/GridListState.dart';
 import 'Cubit/EraseState.dart';
 import 'Cubit/ColorWheelState.dart';
+import 'Cubit/PopUpState.dart';
 
 //pages
 import 'Pages/CreateGridPage.dart';
@@ -27,8 +28,8 @@ import 'Pages/Export/ExportImagePage.dart';
 void main() {
   WidgetsApp.debugAllowBannerOverride = false; // Remove debug banner if needed
   //debugPaintLayerBordersEnabled = true; // Enable layer borders
-  debugProfilePaintsEnabled = true; //for profile mode
-  debugRepaintRainbowEnabled = true;
+  //debugProfilePaintsEnabled = true; //for profile mode
+  //debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }
 
@@ -63,6 +64,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DropperCubit(),
+        ),
+        BlocProvider(
+          create: (context) => PopUpCubit(),
         ),
       ], //gives access to form state to all descendants
       child: MaterialApp(

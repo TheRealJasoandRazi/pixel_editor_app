@@ -1,0 +1,23 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/DKImagePickerController/DKImagePickerController.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/unextended-module.modulemap",
+    }]
+    },
+    {
+    'type': 'directory',
+    'name': "/Users/nemanjapopovic/pixel_editor_app/build/ios/Debug-iphonesimulator/DKImagePickerController/DKImagePickerController.framework/Headers"
+    'contents': [{
+      'type': 'file',
+      'name': "DKImagePickerController-Swift.h",
+      'external-contents': "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/unextended-interface-header.h",
+    }]
+    }]
+}

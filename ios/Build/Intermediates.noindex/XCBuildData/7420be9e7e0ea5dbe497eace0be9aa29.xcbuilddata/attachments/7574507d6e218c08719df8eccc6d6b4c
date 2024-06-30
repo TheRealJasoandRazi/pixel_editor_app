@@ -1,0 +1,68 @@
+{
+  "" : {
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGif-master.dia",
+    "emit-module-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGif-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGif-master-emit-module.dia",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGif-master.swiftdeps"
+  },
+  "/Users/nemanjapopovic/pixel_editor_app/ios/Pods/SwiftyGif/SwiftyGif/NSImage+SwiftyGif.swift" : {
+    "const-values" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.swiftconstvalues",
+    "dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.d",
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.o",
+    "llvm-bc" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.bc",
+    "object" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.o",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif.swiftdeps",
+    "swiftmodule" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImage+SwiftyGif~partial.swiftmodule"
+  },
+  "/Users/nemanjapopovic/pixel_editor_app/ios/Pods/SwiftyGif/SwiftyGif/NSImageView+SwiftyGif.swift" : {
+    "const-values" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.swiftconstvalues",
+    "dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.d",
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.o",
+    "llvm-bc" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.bc",
+    "object" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.o",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif.swiftdeps",
+    "swiftmodule" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/NSImageView+SwiftyGif~partial.swiftmodule"
+  },
+  "/Users/nemanjapopovic/pixel_editor_app/ios/Pods/SwiftyGif/SwiftyGif/ObjcAssociatedWeakObject.swift" : {
+    "const-values" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.swiftconstvalues",
+    "dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.d",
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.o",
+    "llvm-bc" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.bc",
+    "object" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.o",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject.swiftdeps",
+    "swiftmodule" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/ObjcAssociatedWeakObject~partial.swiftmodule"
+  },
+  "/Users/nemanjapopovic/pixel_editor_app/ios/Pods/SwiftyGif/SwiftyGif/SwiftyGifManager.swift" : {
+    "const-values" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.swiftconstvalues",
+    "dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.d",
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.o",
+    "llvm-bc" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.bc",
+    "object" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.o",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager.swiftdeps",
+    "swiftmodule" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/SwiftyGifManager~partial.swiftmodule"
+  },
+  "/Users/nemanjapopovic/pixel_editor_app/ios/Pods/SwiftyGif/SwiftyGif/UIImage+SwiftyGif.swift" : {
+    "const-values" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.swiftconstvalues",
+    "dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.d",
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.o",
+    "llvm-bc" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.bc",
+    "object" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.o",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif.swiftdeps",
+    "swiftmodule" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImage+SwiftyGif~partial.swiftmodule"
+  },
+  "/Users/nemanjapopovic/pixel_editor_app/ios/Pods/SwiftyGif/SwiftyGif/UIImageView+SwiftyGif.swift" : {
+    "const-values" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.swiftconstvalues",
+    "dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.d",
+    "diagnostics" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.o",
+    "llvm-bc" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.bc",
+    "object" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.o",
+    "swift-dependencies" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif.swiftdeps",
+    "swiftmodule" : "/Users/nemanjapopovic/pixel_editor_app/ios/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SwiftyGif.build/Objects-normal/arm64/UIImageView+SwiftyGif~partial.swiftmodule"
+  }
+}

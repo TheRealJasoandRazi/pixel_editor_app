@@ -28,7 +28,9 @@ class DropperTool extends StatelessWidget with ToolBarButtons{
             }
           },
           state ? Colors.blue.shade300 : Colors.grey.shade300,
-          "Dropper"
+          "Dropper is used to get color from the grid",
+          context,
+          "dropper"
         );
       }
     );

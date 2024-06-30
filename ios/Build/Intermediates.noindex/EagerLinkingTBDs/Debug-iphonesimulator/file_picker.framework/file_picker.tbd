@@ -1,0 +1,44 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_file_pickerVersionNumber",
+            "_file_pickerVersionString"
+          ],
+          "objc_class": [
+            "FilePickerPlugin",
+            "ImageUtils",
+            "FileUtils",
+            "FileInfo",
+            "PodsDummy_file_picker"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/file_picker.framework/file_picker"
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "12",
+        "target": "x86_64-ios-simulator"
+      },
+      {
+        "min_deployment": "14",
+        "target": "arm64-ios-simulator"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

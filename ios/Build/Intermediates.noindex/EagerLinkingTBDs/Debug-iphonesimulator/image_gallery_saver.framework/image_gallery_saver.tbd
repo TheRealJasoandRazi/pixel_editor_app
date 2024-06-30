@@ -1,0 +1,124 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC04saveE0_08isReturnE4PathySo7UIImageC_SbtF",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvg",
+            "_$s19image_gallery_saver15SaveResultModelV12errorMessageSSSgvg",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC015didFinishSavingE00A05error11contextInfoySo7UIImageC_So7NSErrorCSgSvSgtFTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC12errorMessageSSvpWvd",
+            "_$s19image_gallery_saver15SaveResultModelV8filePathSSSgvM",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC20didFinishSavingVideo9videoPath5error11contextInfoySS_So7NSErrorCSgSvSgtFTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvs",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC12errorMessageSSvpfi",
+            "_image_gallery_saverVersionNumber",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC015didFinishSavingE00A05error11contextInfoySo7UIImageC_So7NSErrorCSgSvSgtF",
+            "_$s19image_gallery_saver15SaveResultModelV9isSuccess8filePath12errorMessageACSbSg_SSSgAHtcfC",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC12errorMessageSSvg",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginCACycfC",
+            "_$s19image_gallery_saver15SaveResultModelV12errorMessageSSSgvM",
+            "_$s19image_gallery_saver15SaveResultModelV8filePathSSSgvs",
+            "_$s19image_gallery_saver15SaveResultModelV9isSuccessSbSgvpMV",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginCMa",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC04saveE0_08isReturnE4PathySo7UIImageC_SbtFTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC9saveVideo_08isReturnE4PathySS_SbtF",
+            "_$s19image_gallery_saver15SaveResultModelV9isSuccessSbSgvM",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC04saveE9AtFileUrl_08isReturnE4PathySS_SbtF",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvM",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6handle_6resultySo17FlutterMethodCallC_yypSgctF",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC9saveVideo_08isReturnE4PathySS_SbtFTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvpMV",
+            "_$s19image_gallery_saver15SaveResultModelV8filePathSSSgvpMV",
+            "_$s19image_gallery_saver15SaveResultModelV9isSuccessSbSgvpfi",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC02isE4File8filenameSbSS_tFTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginCMn",
+            "_$s19image_gallery_saver15SaveResultModelVMn",
+            "_$s19image_gallery_saver15SaveResultModelVACycfC",
+            "_$s19image_gallery_saver15SaveResultModelV12errorMessageSSSgvpfi",
+            "_$s19image_gallery_saver15SaveResultModelV5toDicSDySSypGSgyF",
+            "_$s19image_gallery_saver15SaveResultModelV8filePathSSSgvpfi",
+            "_$s19image_gallery_saver15SaveResultModelV6encode2toys7Encoder_p_tKF",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvMTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC02isE4File8filenameSbSS_tF",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvsTq",
+            "_$s19image_gallery_saver15SaveResultModelV8filePathSSSgvg",
+            "_$s19image_gallery_saver15SaveResultModelV12errorMessageSSSgvs",
+            "_image_gallery_saverVersionString",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC10saveResult9isSuccess5error8filePathySb_SSSgAHtF",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC12errorMessageSSvpMV",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC8register4withySo07FlutterH9Registrar_p_tFZ",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginCACycfc",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6handle_6resultySo17FlutterMethodCallC_yypSgctFTq",
+            "_$s19image_gallery_saver15SaveResultModelVN",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvpfi",
+            "_$s19image_gallery_saver15SaveResultModelV9isSuccessSbSgvg",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC10saveResult9isSuccess5error8filePathySb_SSSgAHtFTq",
+            "_$s19image_gallery_saver15SaveResultModelV12errorMessageSSSgvpMV",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvpWvd",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC20didFinishSavingVideo9videoPath5error11contextInfoySS_So7NSErrorCSgSvSgtF",
+            "_$s19image_gallery_saver15SaveResultModelVSEAAMc",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginCN",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginCfD",
+            "_$s19image_gallery_saver15SaveResultModelV9isSuccessSbSgvs",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC6resultyypSgcSgvgTq",
+            "_$s19image_gallery_saver28SwiftImageGallerySaverPluginC04saveE9AtFileUrl_08isReturnE4PathySS_SbtFTq",
+            "_$s19image_gallery_saver15SaveResultModelVMa"
+          ],
+          "objc_class": [
+            "PodsDummy_image_gallery_saver",
+            "_TtC19image_gallery_saver28SwiftImageGallerySaverPlugin",
+            "ImageGallerySaverPlugin"
+          ]
+        }
+      },
+      {
+        "data": {
+          "global": [
+            "_Swift51Overrides",
+            "_Swift50Overrides"
+          ]
+        },
+        "targets": [
+          "x86_64-ios-simulator"
+        ],
+        "text": {
+          "global": [
+            "__ZN5swift39swift51override_conformsToSwiftProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEN7__swift9__runtime4llvm9StringRefEPFPKNS_35TargetProtocolConformanceDescriptorIS1_EES4_S8_SC_E",
+            "__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E",
+            "__Z34_swiftoverride_class_getSuperclassPKN5swift14TargetMetadataINS_9InProcessEEE"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/image_gallery_saver.framework/image_gallery_saver"
+      }
+    ],
+    "swift_abi": [
+      {
+        "abi": 7
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "12",
+        "target": "x86_64-ios-simulator"
+      },
+      {
+        "min_deployment": "14",
+        "target": "arm64-ios-simulator"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}
