@@ -1,60 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/PopUpState.dart';
 import 'package:pixel_editor_app/ResubleWidgets/ToolTipPainter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import '../main.dart'; // Import the main.dart file to access routeObserver
 
-mixin ToolBarButtons { //on RouteAware
+class ToolBarButton extends StatefulWidget {
+  final IconData icon;
+  final Function() action;
+  final Color color;
+  final String text;
+  final String tool;
+
+  const ToolBarButton({
+    Key? key,
+    required this.icon,
+    required this.action,
+    required this.color,
+    required this.text,
+    required this.tool,
+  }) : super(key: key);
+
+  @override
+  _ToolBarButtonState createState() => _ToolBarButtonState();
+}
+
+class _ToolBarButtonState extends State<ToolBarButton> with RouteAware {
   OverlayEntry? _overlayEntry;
-/*
+
+  @override
+  void didChangeDependencies() { //executes when dependencies such as inherited widgets, route info etc.
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute); 
+  }
+
   @override
   void didPushNext() {
-    // Called when a route is pushed on top of this route
-    // You can perform actions when another page is pushed on top
     _removeOverlay();
   }
-*/
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
 
   void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
 
-
-  Widget toolBarButton(IconData icon, Function() action, Color color, String text, BuildContext context, String tool) {
-    final popUpCubit = BlocProvider.of<PopUpCubit>(context); 
-
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: GestureDetector(
-          onTap: () {
-            action();
-            if(popUpCubit.returnState(tool) == false){ //checks popup hasn't showed before
-              if(_overlayEntry == null){ //makee sure its only made once
-                _overlayEntry = toolTip(context, text);
-                Overlay.of(context).insert(_overlayEntry!);
-                popUpCubit.turnTrue(tool); //turns to true, so pop up wont show again
-              }
-            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              color: color,
-            ),
-            child: Center(
-              child: Icon(
-                icon,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  OverlayEntry toolTip(BuildContext context, String text) {
+  OverlayEntry _createToolTip(BuildContext context, String text) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
 
@@ -92,6 +88,39 @@ mixin ToolBarButtons { //on RouteAware
           ),
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final popUpCubit = BlocProvider.of<PopUpCubit>(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: GestureDetector(
+        onTap: () {
+          widget.action();
+          if (popUpCubit.returnState(widget.tool) == false) {
+            if (_overlayEntry == null) {
+              _overlayEntry = _createToolTip(context, widget.text);
+              Overlay.of(context).insert(_overlayEntry!);
+              popUpCubit.turnTrue(widget.tool);
+            }
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: widget.color,
+          ),
+          child: Center(
+            child: Icon(
+              widget.icon,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

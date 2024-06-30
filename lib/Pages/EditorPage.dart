@@ -26,7 +26,7 @@ class EditorPage extends StatefulWidget {
   State<EditorPage> createState() => _EditorPageState();
 }
 
-class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin{
+class _EditorPageState extends State<EditorPage>  with SingleTickerProviderStateMixin {
   PaintTool paintTool = PaintTool();
   EraseTool eraseTool = EraseTool();
   DropperTool dropperTool = DropperTool();

@@ -10,6 +10,7 @@ import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
 import 'package:pixel_editor_app/Pages/Export/ExportPage.dart';
 import 'package:pixel_editor_app/Pages/ImportPage.dart';
+import 'Pages/HomePage.dart';
 
 
 //state imports
@@ -24,6 +25,8 @@ import 'Cubit/PopUpState.dart';
 import 'Pages/CreateGridPage.dart';
 import 'Pages/Export/ExportGifPage.dart';
 import 'Pages/Export/ExportImagePage.dart';
+
+RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() {
   WidgetsApp.debugAllowBannerOverride = false; // Remove debug banner if needed
@@ -41,33 +44,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ColorCubit(),
-        ),
-        BlocProvider(
-          create: (context) => PaintCubit(),
-        ),
-        BlocProvider(
-          create: (context) => GridListCubit(),
-        ),
-        BlocProvider(
-          create: (context) => EraseCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ExportSelectionCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ColorWheelCubit(),
-        ),
-        BlocProvider(
-          create: (context) => SelectedGridCubit(),
-        ),
-        BlocProvider(
-          create: (context) => DropperCubit(),
-        ),
-        BlocProvider(
-          create: (context) => PopUpCubit(),
-        ),
+        BlocProvider(create: (context) => ColorCubit()),
+        BlocProvider(create: (context) => PaintCubit()),
+        BlocProvider(create: (context) => GridListCubit()),
+        BlocProvider(create: (context) => EraseCubit()),
+        BlocProvider(create: (context) => ExportSelectionCubit()),
+        BlocProvider(create: (context) => ColorWheelCubit()),
+        BlocProvider(create: (context) => SelectedGridCubit()),
+        BlocProvider(create: (context) => DropperCubit()),
+        BlocProvider(create: (context) => PopUpCubit()),
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -83,9 +68,10 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
+        navigatorObservers: [routeObserver],
         initialRoute: '/',
         routes: {
-          '/': (context) => const MyHomePage(title: 'Flutter Demo Home Page'),
+          '/': (context) => const MyHomePage(),
           '/CreateGridPage': (context) => CreateGridPage(),
           '/EditorPage': (context) => EditorPage(),
           '/ImportPage': (context) => ImportPage(previousPage: "/MainPage",),
@@ -98,51 +84,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});//the required defines it parameters
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: screenWidth * 0.25,
-          height: screenHeight * 0.3,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Let's get started!", style: Theme.of(context).textTheme.bodyText1),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/CreateGridPage');
-                },
-                child: Text("Create Grid"),
-              ),
-              Text("OR"),
-              Text("Start by using an image"),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/ImportPage');
-                },
-                child: Text("Import"),
-              ),
-            ],
-          ),
-        )
-      )
-    );
-  }
-}
-

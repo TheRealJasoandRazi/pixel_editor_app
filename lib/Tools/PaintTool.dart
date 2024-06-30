@@ -2,36 +2,34 @@ import 'package:flutter/material.dart';
 import '../ResubleWidgets/toolBarButtons.dart';
 import '../Cubit/EraseState.dart';
 import '../Cubit/DropperState.dart';
-
 import '../Cubit/PaintState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PaintTool extends StatelessWidget with ToolBarButtons {
+class PaintTool extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final paintCubit = BlocProvider.of<PaintCubit>(context); //retieve form state
-    final eraseCubit = BlocProvider.of<EraseCubit>(context); //retieve form state
+    final paintCubit = BlocProvider.of<PaintCubit>(context); // Retrieve from state
+    final eraseCubit = BlocProvider.of<EraseCubit>(context); // Retrieve from state
     final dropperCubit = BlocProvider.of<DropperCubit>(context);
 
-    return BlocBuilder<PaintCubit, bool>( //rebuilds whenever paint state changes
+    return BlocBuilder<PaintCubit, bool>( // Rebuilds whenever paint state changes
       builder: (context, state) {
-        return toolBarButton(
-          Icons.format_paint,
-          (){
+        return ToolBarButton(
+          icon: Icons.format_paint,
+          action: () {
             paintCubit.changeSelection();
-            if(paintCubit.state) {
-              if(eraseCubit.state){
-                eraseCubit.changeSelection(); //turn off the erase button
+            if (paintCubit.state) {
+              if (eraseCubit.state) {
+                eraseCubit.changeSelection(); // Turn off the erase button
               } 
-              if(dropperCubit.state){
+              if (dropperCubit.state) {
                 dropperCubit.changeSelection();
               }
             }
           },
-          state ? Colors.blue.shade300 : Colors.grey.shade300,
-          "Painter is used to fill in cells with the current color",
-          context,
-          "painter"
+          color: state ? Colors.blue.shade300 : Colors.grey.shade300,
+          text: "Painter is used to fill in cells with the current color",
+          tool: "painter",
         );
       },
     );

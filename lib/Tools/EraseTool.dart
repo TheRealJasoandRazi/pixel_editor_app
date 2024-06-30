@@ -5,35 +5,33 @@ import '../ResubleWidgets/toolBarButtons.dart';
 import '../Cubit/DropperState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EraseTool extends StatelessWidget with ToolBarButtons{
-
+class EraseTool extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final eraseCubit = BlocProvider.of<EraseCubit>(context); //retieve form state
+    final eraseCubit = BlocProvider.of<EraseCubit>(context); // Retrieve from state
     final paintCubit = BlocProvider.of<PaintCubit>(context);
     final dropperCubit = BlocProvider.of<DropperCubit>(context);
 
     return BlocBuilder<EraseCubit, bool>(
       builder: (context, state) {
-        return toolBarButton(
-          Icons.remove,
-          (){
+        return ToolBarButton(
+          icon: Icons.remove,
+          action: () {
             eraseCubit.changeSelection();
-            if(eraseCubit.state) {
-              if(paintCubit.state){
-                paintCubit.changeSelection(); //turn off the paint button 
+            if (eraseCubit.state) {
+              if (paintCubit.state) {
+                paintCubit.changeSelection(); // Turn off the paint button
               }
-              if(dropperCubit.state){
+              if (dropperCubit.state) {
                 dropperCubit.changeSelection();
               }
             }
           },
-          state ? Colors.blue.shade300 : Colors.grey.shade300,
-          "Eraser is used to turn cells in the grid to transparent",
-          context,
-          "eraser"
+          color: state ? Colors.blue.shade300 : Colors.grey.shade300,
+          text: "Eraser is used to turn cells in the grid to transparent",
+          tool: "eraser",
         );
-      }
+      },
     );
   }
 }
