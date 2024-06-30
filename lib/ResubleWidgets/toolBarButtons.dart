@@ -3,8 +3,22 @@ import 'package:pixel_editor_app/Cubit/PopUpState.dart';
 import 'package:pixel_editor_app/ResubleWidgets/ToolTipPainter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-mixin ToolBarButtons {
+mixin ToolBarButtons { //on RouteAware
   OverlayEntry? _overlayEntry;
+/*
+  @override
+  void didPushNext() {
+    // Called when a route is pushed on top of this route
+    // You can perform actions when another page is pushed on top
+    _removeOverlay();
+  }
+*/
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
 
   Widget toolBarButton(IconData icon, Function() action, Color color, String text, BuildContext context, String tool) {
     final popUpCubit = BlocProvider.of<PopUpCubit>(context); 
@@ -17,7 +31,7 @@ mixin ToolBarButtons {
             action();
             if(popUpCubit.returnState(tool) == false){ //checks popup hasn't showed before
               if(_overlayEntry == null){ //makee sure its only made once
-                _overlayEntry = test(context, text);
+                _overlayEntry = toolTip(context, text);
                 Overlay.of(context).insert(_overlayEntry!);
                 popUpCubit.turnTrue(tool); //turns to true, so pop up wont show again
               }
@@ -40,7 +54,7 @@ mixin ToolBarButtons {
     );
   }
 
-  OverlayEntry test(BuildContext context, String text) {
+  OverlayEntry toolTip(BuildContext context, String text) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
 
@@ -67,10 +81,7 @@ mixin ToolBarButtons {
                         style: TextStyle(color: Colors.black),
                       ),
                       IconButton(
-                        onPressed: () {
-                          _overlayEntry?.remove();
-                          _overlayEntry = null;
-                        },
+                        onPressed: _removeOverlay,
                         icon: Icon(Icons.delete),
                       ),
                     ],

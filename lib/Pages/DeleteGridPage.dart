@@ -175,6 +175,7 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                     ),
                     Center(
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding( //DELETE BUTTON
                             padding: const EdgeInsets.only(right: 12.0),
