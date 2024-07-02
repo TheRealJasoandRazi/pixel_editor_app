@@ -4,7 +4,7 @@ import 'package:pixel_editor_app/Cubit/ColorState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
-import 'package:pixel_editor_app/Pages/LayersPage.dart';
+import 'package:pixel_editor_app/Pages/Layers/LayersListPage.dart';
 import 'package:pixel_editor_app/Tools/DropperTool.dart';
 
 import '../Tools/PaintTool.dart';
@@ -246,7 +246,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                   onTap: () {
                     colorWheelCubit.closeWheel();
                     Navigator.of(context).push(
-                      pageAnimation.slideUpTransition(LayersPage())
+                      pageAnimation.slideUpTransition(LayersListPage())
                     );
                   },
                   child: Container(

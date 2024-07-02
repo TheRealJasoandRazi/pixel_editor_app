@@ -108,7 +108,6 @@ class _CreateGridState extends State<CreateGrid> {
         widget.pixelColors.paint(row, column, Colors.transparent);
       } else if (dropperCubit.state){
         Color newColor = widget.pixelColors.retrieveColor(row, column);
-        print(newColor);
         colorCubit.changeColor(newColor);
       }
     });
