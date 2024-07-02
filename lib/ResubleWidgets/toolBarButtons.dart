@@ -69,18 +69,21 @@ class _ToolBarButtonState extends State<ToolBarButton> with RouteAware {
                 width: screenHeight * 0.15,
                 height: screenHeight * 0.15,
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        text,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      IconButton(
-                        onPressed: _removeOverlay,
-                        icon: Icon(Icons.delete),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          text,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        IconButton(
+                          onPressed: _removeOverlay,
+                          icon: Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

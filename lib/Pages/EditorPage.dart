@@ -4,6 +4,7 @@ import 'package:pixel_editor_app/Cubit/ColorState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
+import 'package:pixel_editor_app/Pages/LayersPage.dart';
 import 'package:pixel_editor_app/Tools/DropperTool.dart';
 
 import '../Tools/PaintTool.dart';
@@ -18,6 +19,7 @@ import 'ImportPage.dart';
 import '../ColorWheel.dart';
 import '../Cubit/ColorWheelState.dart';
 import '../ResubleWidgets/BuildGrid.dart';
+import '../ResubleWidgets/PageTransitionAnimations.dart';
 
 class EditorPage extends StatefulWidget {
   const EditorPage({Key? key}) : super(key: key);
@@ -33,6 +35,8 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
 
   late final GridListCubit gridListCubit;
   late final SelectedGridCubit selectedGridCubit;
+
+  late final PageTransitionAnimations pageAnimation = PageTransitionAnimations();
 
   Widget topBarButtons(Function() action, Color color, String text){
     return Expanded( //NEW GRID TOOL
@@ -98,25 +102,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                         () {
                           colorWheelCubit.closeWheel();
                           Navigator.of(context).push(
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation, secondaryAnimation){
-                                return ImportPage(previousPage: "/EditorPage");
-                              },
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                const begin = Offset(0.0, 1.0); // Start from the bottom
-                                const end = Offset.zero; // End at the original position
-                                const curve = Curves.ease;
-
-                                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                var offsetAnimation = animation.drive(tween);
-
-                                return SlideTransition(
-                                  position: offsetAnimation,
-                                  child: child,
-                                );
-                              },
-                              transitionDuration: Duration(milliseconds: 300),
-                            ),
+                            pageAnimation.slideUpTransition(ImportPage(previousPage: "/EditorPage"))
                           );
                         },
                         Colors.blueAccent.shade400,
@@ -127,20 +113,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                           colorWheelCubit.closeWheel();
                           Navigator.push(
                             context,
-                            PageRouteBuilder( //NEED TO LEARN THIS
-                              pageBuilder: (context, animation, secondaryAnimation) {
-                                return ExportPage();
-                              },
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: Tween<double>(
-                                    begin: 0.0,
-                                    end: 1.0,
-                                  ).animate(animation),
-                                  child: child,
-                                );
-                              },
-                            )
+                            pageAnimation.fadeInTransition(ExportPage())
                           );
                         },
                         Colors.blueAccent.shade400,
@@ -151,20 +124,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                           colorWheelCubit.closeWheel();
                           Navigator.push(
                             context,
-                            PageRouteBuilder( //NEED TO LEARN THIS
-                              pageBuilder: (context, animation, secondaryAnimation) {
-                                return DeleteGridPage();
-                              },
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: Tween<double>(
-                                    begin: 0.0,
-                                    end: 1.0,
-                                  ).animate(animation),
-                                  child: child,
-                                );
-                              },
-                            )
+                            pageAnimation.fadeInTransition(DeleteGridPage())
                           );
                         },
                         Colors.blueAccent.shade400,
@@ -278,6 +238,31 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                   );
                 }
               )
+            ),
+            Expanded( //temporary code
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: GestureDetector(
+                  onTap: () {
+                    colorWheelCubit.closeWheel();
+                    Navigator.of(context).push(
+                      pageAnimation.slideUpTransition(LayersPage())
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.layers,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             Expanded( // PAINT TOOL
               child: paintTool,
