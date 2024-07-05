@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixel_editor_app/CreateGrid.dart';
+import 'package:pixel_editor_app/ResubleWidgets/CreateGrid.dart';
 import 'dart:collection';
 import '../Layers.dart';
 

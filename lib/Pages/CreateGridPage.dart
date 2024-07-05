@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixel_editor_app/CreateGrid.dart';
+import 'package:pixel_editor_app/ResubleWidgets/CreateGrid.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 
@@ -250,16 +250,11 @@ class _CreateGridPageState extends State<CreateGridPage> {
               ),
             ),
             ElevatedButton( //Create Grid Button
-              onPressed: (){
-                try{
-                  gridListCubit.addGrid(
-                    List.generate(height.toInt(), (_) => List.filled(width.toInt(), Colors.transparent))
-                  );
-                  selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
-                } catch (e){
-                  print(e);
-                  print("error in adding grid to cubit");
-                }
+              onPressed: (){         
+                gridListCubit.addGrid(
+                  List.generate(height.toInt(), (_) => List.filled(width.toInt(), Colors.transparent))
+                );
+                selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
                 Navigator.pushNamed(context, '/EditorPage');
               },
               child: Text("Create Grid")

@@ -2,75 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/EraseState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
-import 'Cubit/PaintState.dart';
-import 'Cubit/ColorState.dart';
-import 'Cubit/DropperState.dart';
-import 'Layers.dart';
-
-class PixelColors { //change Notifier triggered here
-  late List<List<Color>> _pixelColors;
-
-  // Constructor to initialize with a width and height
-  PixelColors(int width, int height) {
-    _pixelColors = List.generate(height, (_) => List.filled(width, Colors.transparent));
-  }
-
-  PixelColors.input(List<List<Color>?>? pixelColors) {
-    if (pixelColors != null) {
-      final height = pixelColors.length;
-      final width = pixelColors[0]!.length; // Use non-null assertion operator (!) since pixelColors[0] is already checked
-
-      _pixelColors = List.generate(height, (row) {
-        return List<Color>.generate(width, (col) {
-          return pixelColors[row]![col]; // Safe to access directly with ! as we ensured pixelColors[row] is not null;
-        });
-      });
-    }
-  }
-  
-  // Getter to access the pixelColors grid
-  List<List<Color>> get pixelColors => _pixelColors;
-
-  // Method to paint a specific color at a given row and column
-  void paint(int row, int column, Color color) {
-    if (row >= 0 && row < _pixelColors.length && column >= 0 && column < _pixelColors[row].length) {
-      _pixelColors[row][column] = color;
-    }
-  }
-
-  Color retrieveColor(int row, int column){
-    return _pixelColors[row][column];
-  }
-}
+import '../Cubit/PaintState.dart';
+import '../Cubit/ColorState.dart';
+import '../Cubit/DropperState.dart';
+import '../Layers.dart';
 
 class CreateGrid extends StatefulWidget {
   final int width;
   final int height;
-  final PixelColors pixelColors; // Declare PixelColors instance as a member variable
   final Layers? thisLayer;
 
-  CreateGrid({
-    required this.width,
-    required this.height,
-  }) : pixelColors = PixelColors(width, height),
-      thisLayer = null,
-      super();
-
-  CreateGrid.fromPixelColors({
-    required List<List<Color>> pixelColors,
-  }) : pixelColors = PixelColors.input(pixelColors),
-       height = pixelColors.length,
-       width = pixelColors.isNotEmpty ? pixelColors[0].length : 0,
-       thisLayer = null;
-
-   CreateGrid.fromLayers({
+   CreateGrid({
     required Layers layer,
-  }) : pixelColors = PixelColors.input(layer.listOfViews[layer.editable]),
-       height = layer.listOfViews[layer.editable].length,
+  }) : height = layer.listOfViews[layer.editable].length,
        width = layer.listOfViews[layer.editable][0].length,
        thisLayer = layer;
-
-
 
   @override
   State<CreateGrid> createState() => _CreateGridState();
@@ -103,9 +49,8 @@ class _CreateGridState extends State<CreateGrid> {
   void _calculateGridIndex(Offset localPosition, Color color) {
     final column = (localPosition.dx / cellWidth).floor().clamp(0, widget.width - 1);
     final row = (localPosition.dy / cellHeight).floor().clamp(0, widget.height - 1);
-    setState(() {
-      widget.pixelColors.paint(row, column, color); // Use widget.pixelColors to paint
-      widget.thisLayer!.editLayer(row, column, color); //copy onto editable layer
+    setState(() { //rebuild itself
+      widget.thisLayer!.editLayer(row, column, color); //edit layer
     });
   }
 
@@ -115,18 +60,15 @@ class _CreateGridState extends State<CreateGrid> {
 
     setState(() {
       if(paintCubit.state){
-        if (colorCubit.state == widget.pixelColors.pixelColors[row][column]) {
-          widget.pixelColors.paint(row, column, Colors.transparent);
-          widget.thisLayer!.editLayer(row, column, Colors.transparent); //copy onto editable layer
+        if (colorCubit.state == widget.thisLayer!.getColor(row, column)) {
+          widget.thisLayer!.editLayer(row, column, Colors.transparent); 
         } else {
-          widget.pixelColors.paint(row, column, colorCubit.state);
-          widget.thisLayer!.editLayer(row, column, colorCubit.state); //copy onto editable layer
+          widget.thisLayer!.editLayer(row, column, colorCubit.state);
         }
       } else if (eraseCubit.state){
-        widget.pixelColors.paint(row, column, Colors.transparent);
-        widget.thisLayer!.editLayer(row, column, Colors.transparent); //copy onto editable layer
+        widget.thisLayer!.editLayer(row, column, Colors.transparent); 
       } else if (dropperCubit.state){
-        Color newColor = widget.pixelColors.retrieveColor(row, column);
+        Color newColor = widget.thisLayer!.getColor(row, column);
         colorCubit.changeColor(newColor);
       }
     });
@@ -154,19 +96,7 @@ class _CreateGridState extends State<CreateGrid> {
               _calculateGridIndex(details.localPosition, Colors.transparent);
             }
           },
-          child: Builder(
-            builder: (context) {
-              try {
-                return buildGrid(widget.width, widget.height);
-              } catch (e) {
-                print(e);
-                print("issue in build grid");
-                return Container(
-                  child: Text("Error: Grid display issue"),
-                );
-              }
-            },
-          ),
+          child: buildGrid(widget.width, widget.height)
         );
       },
     );
@@ -182,7 +112,7 @@ class _CreateGridState extends State<CreateGrid> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  color: widget.pixelColors.pixelColors[y][x],
+                  color: widget.thisLayer!.getColor(y, x),
                   border: Border.all(color: Colors.grey.shade400)),
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
-import '../CreateGrid.dart';
+import '../ResubleWidgets/CreateGrid.dart';
 import '../Cubit/GridListState.dart'; // Ensure this import is correct
 
 class DeleteGridPage extends StatefulWidget {

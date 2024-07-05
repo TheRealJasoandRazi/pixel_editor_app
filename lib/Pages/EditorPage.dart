@@ -11,7 +11,7 @@ import '../Layers.dart';
 
 import '../Tools/PaintTool.dart';
 import '../Tools/EraseTool.dart';
-import '../CreateGrid.dart';
+import '../ResubleWidgets/CreateGrid.dart';
 
 //PAGES
 import 'Export/ExportPage.dart';
@@ -234,7 +234,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                             if(selected.isViewable(layer)) { //only viewable layers get shown
                               if(selected.isEditable(layer)){
                                 positionedWidgets.add(
-                                  CreateGrid.fromLayers( //pass layer into CreateGrid, touse its editlayer function
+                                  CreateGrid( //pass layer into CreateGrid, touse its editlayer function
                                     layer: selected,
                                   )
                                 );
@@ -243,7 +243,6 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                                   IgnorePointer( 
                                     child: BuildGrid(
                                       pixelColors: layer,
-                                      exporting: true,
                                     )
                                   )
                                 );

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pixel_editor_app/CreateGrid.dart';
 
 class BuildGrid extends StatelessWidget {
-  final CreateGrid? grid;
   final List<List<Color>?>? pixelColors;
   final bool selected;
   final bool exporting;
@@ -11,8 +9,7 @@ class BuildGrid extends StatelessWidget {
 
   const BuildGrid({
     Key? key,
-    this.grid,
-    this.pixelColors,
+    required this.pixelColors,
     this.selected = false,
     this.exporting = false,
     this.widthFactor = 0.7,
@@ -23,57 +20,30 @@ class BuildGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> rows = [];
 
-    if (pixelColors != null && grid == null) {
-      // Render using pixelColors, BIG ISSUE HERE, GRID TOO BIG
-      for (int y = 0; y < pixelColors!.length; y++) {
-        List<Widget> rowChildren = [];
-        for (int x = 0; x < pixelColors![y]!.length; x++) {
-          rowChildren.add(
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: pixelColors![y]![x],
-                  border: exporting ? null : Border.all(color: Colors.grey.shade400),
-                ),
-              ),
-            ),
-          );
-        }
-        rows.add(
+    for (int y = 0; y < pixelColors!.length; y++) {
+      List<Widget> rowChildren = [];
+      for (int x = 0; x < pixelColors![y]!.length; x++) {
+        rowChildren.add(
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: rowChildren,
+            child: Container(
+              decoration: BoxDecoration(
+                color: pixelColors![y]![x],
+                border: exporting ? null : Border.all(color: Colors.grey.shade400),
+              ),
             ),
           ),
         );
       }
-    } else if (grid != null && pixelColors == null) {
-      // Render using grid
-      for (int y = 0; y < grid!.height; y++) {
-        List<Widget> rowChildren = [];
-        for (int x = 0; x < grid!.width; x++) {
-          rowChildren.add(
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: grid!.pixelColors.pixelColors[y][x],
-                  border: exporting ? null : Border.all(color: Colors.grey.shade400),
-                ),
-              ),
-            ),
-          );
-        }
-        rows.add(
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: rowChildren,
-            ),
+      rows.add(
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: rowChildren,
           ),
-        );
-      }
+        ),
+      );
     }
+    
 
     return FractionallySizedBox(
       widthFactor: widthFactor,
