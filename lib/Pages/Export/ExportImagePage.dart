@@ -12,6 +12,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../ResubleWidgets/BuildGrid.dart';
+import '../../Layers.dart';
 
 class ExportImagePage extends StatefulWidget {
   const ExportImagePage({super.key});
@@ -24,6 +25,7 @@ class _ExportImagePageState extends State<ExportImagePage> {
 
   late final ExportSelectionCubit exportSelectionCubit;
   List<GlobalKey> keyList = [];
+  List<Layers> exportList = [];
 
   @override
   void initState() {
@@ -119,16 +121,17 @@ class _ExportImagePageState extends State<ExportImagePage> {
                           var grid = gridListCubit.state[index];
                           return GestureDetector(
                             onTap: () {
-                              if (exportSelectionCubit.containsGrid(grid)) {
-                                exportSelectionCubit.removeSelectedGrid(grid);
-                              } else {
-                                exportSelectionCubit.addGrid(grid);
-                              }
+                              setState(() {
+                                if (exportList.contains(grid)) {
+                                  exportList.remove(grid);
+                                } else {
+                                  exportList.add(grid);
+                                }
+                                keyList.clear();//prevents unselected grids from being exported
+                              });
                             },
-                            child: BlocBuilder<ExportSelectionCubit, List<CreateGrid>>(
-                              builder: (context, state) {
-                                return BuildGrid(grid: grid, selected: state.contains(grid), exporting: false);
-                              },
+                            child: Stack(
+                              children: grid.displayInStack(exportList.contains(grid), false)
                             ),
                           );
                         },
@@ -146,69 +149,51 @@ class _ExportImagePageState extends State<ExportImagePage> {
             child: Container( // Second container that will show borderless grid
               width: screenWidth * 0.9,
               height: screenHeight * 0.4,
-              child: BlocBuilder<ExportSelectionCubit, List<CreateGrid>>( // Rebuilds entire grid
-                builder: (context, state) {
-                  keyList.clear(); // Resets list on every update
-                  return state.length > 0
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text("Previews")
-                          ),
-                          Expanded(
-                            child: ScrollConfiguration(
-                              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                              child: GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 10.0,
-                                  mainAxisSpacing: 10.0,
-                                ),
-                                itemCount: state.length,
-                                itemBuilder: (context, index) {
-                                  var grid = state[index];
-                                  GlobalKey key = GlobalKey(); // Creates new keys
-                                  keyList.add(key);
-                                  return RepaintBoundary(
-                                    key: key,
-                                    child: BuildGrid(grid: grid, selected: false, exporting: true)
-                                  );
-                                },
-                              ),
-                            )
-                          ),
-                          Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _saveSelectedWidgets(keyList);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Export"),
-                                ),
-                                SizedBox(width: 10), // Add space between buttons if needed
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Cancel"),
-                                ),
-                              ],
+              child: exportList.isNotEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text("Previews")
+                      ),
+                      Expanded(
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                          child: GridView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 10.0,
+                              mainAxisSpacing: 10.0,
                             ),
+                            itemCount: exportList.length,
+                            itemBuilder: (context, index) {
+                              var grid = exportList[index];
+                              GlobalKey key = GlobalKey(); // Creates new keys
+                              keyList.add(key);
+                              return RepaintBoundary(
+                                key: key,
+                                child: Stack(
+                                  children: grid.displayInStack(false, true)
+                                )
+                              );
+                            },
                           ),
-                        ]
-                      )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        )
+                      ), 
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "No Grids Selected",
+                            ElevatedButton(
+                              onPressed: () {
+                                _saveSelectedWidgets(keyList);
+                                Navigator.pop(context);
+                              },
+                              child: Text("Export"),
                             ),
+                            SizedBox(width: 10), // Add space between buttons if needed
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);
@@ -216,10 +201,25 @@ class _ExportImagePageState extends State<ExportImagePage> {
                               child: Text("Cancel"),
                             ),
                           ],
-                        );
-                },
-              ),
-            )
+                        ),
+                      ),
+                    ]
+                  )
+                : Column( //IF EXPORT LIST IS EMPTY
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "No Grids Selected",
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel"),
+                      ),
+                    ],
+                  ),
+            ),
           )
         ]
       )

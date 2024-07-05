@@ -10,7 +10,6 @@ import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 import 'package:pixel_editor_app/Pages/EditorPage.dart';
 import 'package:pixel_editor_app/Pages/Export/ExportPage.dart';
 import 'package:pixel_editor_app/Pages/ImportPage.dart';
-import 'package:pixel_editor_app/Pages/Layers/LayersListPage.dart';
 import 'Pages/HomePage.dart';
 
 
@@ -80,7 +79,6 @@ class MyApp extends StatelessWidget {
           '/ExportPage': (context) => ExportPage(),
           '/ExportImagePage': (context) => ExportImagePage(),
           '/ExportGifPage': (context) => ExportGifPage(),
-          '/LayersListPage': (context) => LayersListPage()
         },
       )
     );

@@ -5,8 +5,9 @@ import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'Cubit/PaintState.dart';
 import 'Cubit/ColorState.dart';
 import 'Cubit/DropperState.dart';
+import 'Layers.dart';
 
-class PixelColors with ChangeNotifier { //change Notifier triggered here
+class PixelColors { //change Notifier triggered here
   late List<List<Color>> _pixelColors;
 
   // Constructor to initialize with a width and height
@@ -34,7 +35,6 @@ class PixelColors with ChangeNotifier { //change Notifier triggered here
   void paint(int row, int column, Color color) {
     if (row >= 0 && row < _pixelColors.length && column >= 0 && column < _pixelColors[row].length) {
       _pixelColors[row][column] = color;
-      notifyListeners();
     }
   }
 
@@ -47,15 +47,30 @@ class CreateGrid extends StatefulWidget {
   final int width;
   final int height;
   final PixelColors pixelColors; // Declare PixelColors instance as a member variable
-  final Key? key;
+  final Layers? thisLayer;
 
   CreateGrid({
     required this.width,
     required this.height,
-    List<List<Color>?>? pixelColors, // Optional parameter for PixelColors
-    this.key,
-  }) : pixelColors = pixelColors != null ? PixelColors.input(pixelColors) : PixelColors(width, height),
-       super(key: key);
+  }) : pixelColors = PixelColors(width, height),
+      thisLayer = null,
+      super();
+
+  CreateGrid.fromPixelColors({
+    required List<List<Color>> pixelColors,
+  }) : pixelColors = PixelColors.input(pixelColors),
+       height = pixelColors.length,
+       width = pixelColors.isNotEmpty ? pixelColors[0].length : 0,
+       thisLayer = null;
+
+   CreateGrid.fromLayers({
+    required Layers layer,
+  }) : pixelColors = PixelColors.input(layer.listOfViews[layer.editable]),
+       height = layer.listOfViews[layer.editable].length,
+       width = layer.listOfViews[layer.editable][0].length,
+       thisLayer = layer;
+
+
 
   @override
   State<CreateGrid> createState() => _CreateGridState();
@@ -90,6 +105,7 @@ class _CreateGridState extends State<CreateGrid> {
     final row = (localPosition.dy / cellHeight).floor().clamp(0, widget.height - 1);
     setState(() {
       widget.pixelColors.paint(row, column, color); // Use widget.pixelColors to paint
+      widget.thisLayer!.editLayer(row, column, color); //copy onto editable layer
     });
   }
 
@@ -101,11 +117,14 @@ class _CreateGridState extends State<CreateGrid> {
       if(paintCubit.state){
         if (colorCubit.state == widget.pixelColors.pixelColors[row][column]) {
           widget.pixelColors.paint(row, column, Colors.transparent);
+          widget.thisLayer!.editLayer(row, column, Colors.transparent); //copy onto editable layer
         } else {
           widget.pixelColors.paint(row, column, colorCubit.state);
+          widget.thisLayer!.editLayer(row, column, colorCubit.state); //copy onto editable layer
         }
       } else if (eraseCubit.state){
         widget.pixelColors.paint(row, column, Colors.transparent);
+        widget.thisLayer!.editLayer(row, column, Colors.transparent); //copy onto editable layer
       } else if (dropperCubit.state){
         Color newColor = widget.pixelColors.retrieveColor(row, column);
         colorCubit.changeColor(newColor);

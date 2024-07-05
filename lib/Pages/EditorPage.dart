@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/ColorState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
-import 'package:pixel_editor_app/Pages/Layers/LayersListPage.dart';
+import 'package:pixel_editor_app/Pages/LayeringPage.dart';
 import 'package:pixel_editor_app/Tools/DropperTool.dart';
+import '../Layers.dart';
 
 import '../Tools/PaintTool.dart';
 import '../Tools/EraseTool.dart';
@@ -64,7 +66,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
     gridListCubit = context.read<GridListCubit>(); //initialise cubits
     selectedGridCubit = context.read<SelectedGridCubit>(); 
     if(gridListCubit.state.isNotEmpty && selectedGridCubit.state == null){
-      selectedGridCubit.changeSelection(gridListCubit.state[0]);
+      //selectedGridCubit.changeSelection(gridListCubit.state[0]);
     }
     super.initState();
   }
@@ -133,9 +135,9 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                     ]
                   ),
                 ),
-                Expanded( //LIST OF GRIDS (REPLICA NOT WORKING)
+                Expanded( //GRID LIST IN NAV BAR
                   flex: 1,
-                  child: BlocBuilder<GridListCubit, List<CreateGrid>>( //unneccessary
+                  child: BlocBuilder<GridListCubit, List<Layers> >( 
                     builder: (context, state) {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -146,7 +148,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                             onTap: () {
                               setState(() {
                                 if(selectedGridCubit.state != state[index]){
-                                  selectedGridCubit.changeSelection(state[index]);
+                                  selectedGridCubit.changeSelection(index);
                                 } else {
                                   selectedGridCubit.changeSelection(null);
                                 }
@@ -158,24 +160,34 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                                   width: itemWidth,
                                   child: Builder(
                                     builder: (context) {
-                                      bool widget = selectedGridCubit.state == state[index]; //always returning false
-                                      return widget ? //if the grid is the same as the selected grid, wrap it in a value notifier
-                                      ListenableBuilder( //index of selected grid
-                                        listenable: selectedGridCubit.state!.pixelColors,
-                                        builder: (context, child) {
-                                          return Container(
-                                            child: RepaintBoundary( //only rebuild child not entire page
-                                              child: BuildGrid( //create replica under a value notifer
-                                                grid: state[index],
-                                                selected: true, 
-                                                widthFactor: 0.9, 
-                                                heightFactor: 0.9
-                                              )
-                                            )
-                                          ); 
+                                      return Stack(
+                                        children: () { //displays all layers in a stack for each grid
+                                        List<Widget> positionedWidgets = [];
+
+                                        for (var layer in state[index].allLayers) { //loop through layers
+                                          bool widget = selectedGridCubit.state == index;
+                                          positionedWidgets.add(widget ? //if the grid is the same as the selected grid, wrap it in a value notifier
+                                          ListenableBuilder( //index of selected grid
+                                            listenable: state[selectedGridCubit.state!],//selectedGridCubit.state!.pixelColors,
+                                            builder: (context, child) {
+                                              return Container(
+                                                child: RepaintBoundary( //only rebuild child not entire page
+                                                  child: BuildGrid( //create replica under a value notifer
+                                                    pixelColors: layer,
+                                                    selected: true, 
+                                                    widthFactor: 0.9, 
+                                                    heightFactor: 0.9
+                                                  )
+                                                )
+                                              ); 
+                                            }
+                                          )
+                                        : BuildGrid(pixelColors: layer, selected: false, widthFactor: 0.9, heightFactor: 0.9,)
+                                          );
                                         }
-                                      )
-                                    : BuildGrid(grid: state[index], selected: false, widthFactor: 0.9, heightFactor: 0.9,);
+                                        return positionedWidgets;
+                                        }(),
+                                      );
                                     }
                                   )
                                 ),
@@ -205,16 +217,43 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 // Handle state changes here, if needed
               },
               child: RepaintBoundary(
-                child: AnimatedAlign( //ANIMATION DOESN'T WORK
+                child: AnimatedAlign(
                   alignment: context.watch<ColorWheelCubit>().state
                       ? Alignment.center
                       : Alignment.centerLeft,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
-                  child: BlocBuilder<SelectedGridCubit, CreateGrid?>(
+                  child: BlocBuilder<SelectedGridCubit, int?>(
                   builder: (context, state) {
-                    if(state != null){
-                      return state;
+                    if(state != null){ //gets only first grid, change to selected grid later
+                      return Stack(
+                        children: () {
+                          List<Widget> positionedWidgets = [];     
+                          Layers selected = gridListCubit.state[state];
+                          for (var layer in selected.allLayers) { //all layers to enforce order
+                            if(selected.isViewable(layer)) { //only viewable layers get shown
+                              if(selected.isEditable(layer)){
+                                positionedWidgets.add(
+                                  CreateGrid.fromLayers( //pass layer into CreateGrid, touse its editlayer function
+                                    layer: selected,
+                                  )
+                                );
+                              } else {
+                                positionedWidgets.add(
+                                  IgnorePointer( 
+                                    child: BuildGrid(
+                                      pixelColors: layer,
+                                      exporting: true,
+                                    )
+                                  )
+                                );
+                              }
+                            }
+                          }
+                          //print(positionedWidgets);
+                          return positionedWidgets;
+                        }(),
+                      );
                     } else {
                       return Container();
                     }
@@ -246,7 +285,11 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                   onTap: () {
                     colorWheelCubit.closeWheel();
                     Navigator.of(context).push(
-                      pageAnimation.slideUpTransition(LayersListPage())
+                      pageAnimation.slideUpTransition(
+                        LayeringPage(
+                          initialListOfLayers: gridListCubit.state[selectedGridCubit.state!]
+                        )
+                      )
                     );
                   },
                   child: Container(

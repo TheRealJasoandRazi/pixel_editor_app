@@ -320,7 +320,7 @@ class _ImportPageState extends State<ImportPage> {
                   padding: const EdgeInsets.only(right: 12.0),
                   child: GestureDetector(
                     onTap: () {
-                      gridListCubit.addGrid(CreateGrid(width: newimage![0].length, height: newimage!.length, pixelColors: newimage)); 
+                      gridListCubit.addGrid(newimage!); 
                       if(widget.previousPage == "/EditorPage"){
                         Navigator.pop(context);
                       } else {

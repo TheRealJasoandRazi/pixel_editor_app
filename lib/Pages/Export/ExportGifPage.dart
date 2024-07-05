@@ -233,15 +233,13 @@ class _ExportGifPageState extends State<ExportGifPage> {
                       onTap: () {
                         print("test");
                       },
-                      child: Row(
+                      child: Row( //why is there a row?
                         children: [
                           Container(
                             width: itemWidth,
-                            child: BuildGrid(
-                              grid: gridListCubit.state[index],
-                              widthFactor: 0.9,
-                              heightFactor: 0.9,
-                            ),
+                            child: Stack(
+                              children: gridListCubit.state[index].displayInStack(false, false) //might needa change these args
+                            )
                           ),
                         ],
                       ),
@@ -254,11 +252,8 @@ class _ExportGifPageState extends State<ExportGifPage> {
           Expanded(
             flex: 3,
             child: ValueListenableBuilder<Map<String, dynamic>>( //ONLY BUILDS GIF WHEN VALUE CHANGES
-              valueListenable: multiValueNotifier,
+              valueListenable: multiValueNotifier, //hashmap that holds values like delay and repeats
               builder: (context, values, child) {
-                print(values);
-                //if (values['runGif']) {
-                  //print("building gif");
                   return Column(
                     children: [
                       Expanded(

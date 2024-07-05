@@ -50,7 +50,7 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                 setState(() {
                   selectedGrids.forEach((index) {
                     try{
-                      if(gridListCubit.state[index] == selectedGridCubit.state){
+                      if(index == selectedGridCubit.state){
                         selectedGridCubit.changeSelection(null);
                       }
                       gridListCubit.removeGridAtIndex(index);
@@ -142,7 +142,9 @@ class _DeleteGridPageState extends State<DeleteGridPage> {
                                         child: Builder(
                                           builder: (context) {
                                             try {
-                                              return BuildGrid(grid: gridListCubit.state[index],  selected: isSelected, widthFactor: 0.9, heightFactor: 0.9);
+                                              return Stack(
+                                                children: gridListCubit.state[index].displayInStack(isSelected, false),
+                                              );                      
                                             } catch (e) {
                                               print(e);
                                               print(gridListCubit.state.length);
