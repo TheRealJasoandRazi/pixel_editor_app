@@ -150,6 +150,31 @@ class _LayeringPageState extends State<LayeringPage> {
               flex: 1,
               child: GestureDetector(
                 onTap: () {
+                  print("show delete button");
+                },
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.layers),
+                        Text( //need to find an icon for this
+                          "-",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold, 
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () {
                   Navigator.pushNamed(context, "/EditorPage");
                 },
                 child: Container(

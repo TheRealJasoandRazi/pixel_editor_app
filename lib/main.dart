@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/DropperState.dart';
-import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 
@@ -48,7 +47,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => PaintCubit()),
         BlocProvider(create: (context) => GridListCubit()),
         BlocProvider(create: (context) => EraseCubit()),
-        BlocProvider(create: (context) => ExportSelectionCubit()),
         BlocProvider(create: (context) => ColorWheelCubit()),
         BlocProvider(create: (context) => SelectedGridCubit()),
         BlocProvider(create: (context) => DropperCubit()),

@@ -278,19 +278,31 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 }
               )
             ),
-            Expanded( //temporary code
+            Expanded( //GO TO LAYERING PAGE
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: GestureDetector(
                   onTap: () {
-                    colorWheelCubit.closeWheel();
-                    Navigator.of(context).push(
-                      pageAnimation.slideUpTransition(
-                        LayeringPage(
-                          initialListOfLayers: gridListCubit.state[selectedGridCubit.state!]
+                    if(selectedGridCubit.state == null){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Center(
+                            child: Text(
+                              'Cannot open layers page, no grid currently selected'
+                            )
+                          ),
+                        ),
+                      );
+                    } else {
+                      colorWheelCubit.closeWheel();
+                      Navigator.of(context).push(
+                        pageAnimation.slideUpTransition(
+                          LayeringPage(
+                            initialListOfLayers: gridListCubit.state[selectedGridCubit.state!]
+                          )
                         )
-                      )
-                    );
+                      );
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(

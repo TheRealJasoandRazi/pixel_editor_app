@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../CreateGrid.dart';
+//import '../../CreateGrid.dart';
 import '../../Cubit/GridListState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixel_editor_app/Cubit/ExportSelectionState.dart';
 
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
@@ -11,7 +10,7 @@ import 'dart:html' as html; //web only package
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import '../../ResubleWidgets/BuildGrid.dart';
+//import '../../ResubleWidgets/BuildGrid.dart';
 import '../../Layers.dart';
 
 class ExportImagePage extends StatefulWidget {
@@ -23,20 +22,17 @@ class ExportImagePage extends StatefulWidget {
 
 class _ExportImagePageState extends State<ExportImagePage> {
 
-  late final ExportSelectionCubit exportSelectionCubit;
   List<GlobalKey> keyList = [];
   List<Layers> exportList = [];
 
   @override
   void initState() {
     super.initState();
-    exportSelectionCubit = context.read<ExportSelectionCubit>(); //initialise cubit
   }
 
   @override
   void dispose(){
     super.dispose();
-    exportSelectionCubit.clearList(); //empty list when closing export form
   }
 
   Future<void> saveImageMobile(Uint8List imageData) async {
