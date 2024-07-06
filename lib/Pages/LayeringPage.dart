@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 import '../Grid.dart';
 import '../ResubleWidgets/SnackBarMessage.dart';
+import '../Cubit/DeleteButtonState.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../ResubleWidgets/DisplayLayerSettings.dart';
 
 class LayeringPage extends StatefulWidget {
-  final Grid initialListOfLayers;
+  final Grid grid;
 
   const LayeringPage({
     super.key,
-    required this.initialListOfLayers,
+    required this.grid,
   });
 
   @override
@@ -16,241 +19,13 @@ class LayeringPage extends StatefulWidget {
 }
 
 class _LayeringPageState extends State<LayeringPage> {
-  late bool showDeleteButton;
-  late bool showMenu;
-  late double layerOpacity; 
+  late final DeleteButtonCubit deleteButtonCubit;
 
   @override
   void initState() {
     super.initState();
-    showDeleteButton = false;
-    showMenu = false;
-    layerOpacity = 1.0;
+    deleteButtonCubit = context.read<DeleteButtonCubit>(); 
   }
-
-  double? buttonWidth;
-  double? buttonHeight;
-
- Widget layer(int index) { //need to make layer its own stateful widget?
-  List<List<Color>> layer = widget.initialListOfLayers.allLayers[index];
-
-  return Column(
-    children: [
-      Expanded(
-        flex: 3,
-      child:Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.blue),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Stack(
-                  children: [
-                    AnimatedPositioned(
-                      duration: Duration(milliseconds: 300),
-                      left: showDeleteButton ? 60 : 0,
-                      top: 0,
-                      right: showDeleteButton ? 0 : 0,
-                      bottom: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue),
-                        ),
-                        child: LayoutBuilder( //use to set one size that wont be changed for the edit and view button, its so when the delete button shows up, the buttons will stay the same size
-                          builder: (context, constraints) {
-                            if(buttonHeight == null && buttonWidth == null){
-                              buttonHeight = constraints.maxHeight * 0.4;
-                              buttonWidth = constraints.maxWidth * 0.5;
-                            }
-                            return Column( //VIEW AND EDIT BUTTON
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      widget.initialListOfLayers.changeEditable(layer);
-                                    });
-                                  },
-                                  child: Opacity(
-                                    opacity: widget.initialListOfLayers.isEditable(layer) ? 1.0 : 0.5,
-                                    child: Container(
-                                      width: buttonWidth, 
-                                      height: buttonHeight, 
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey,
-                                        borderRadius: BorderRadius.circular(8.0),
-                                      ),
-                                      child: Center(
-                                        child: Icon(Icons.edit),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (widget.initialListOfLayers.isViewable(layer)) {
-                                        widget.initialListOfLayers.removeView(layer);
-                                      } else {
-                                        widget.initialListOfLayers.addView(layer);
-                                      }
-                                    });
-                                  },
-                                  child: Opacity(
-                                    opacity: widget.initialListOfLayers.isViewable(layer) ? 1.0 : 0.5,
-                                    child: Container(
-                                      width: buttonWidth, 
-                                      height: buttonHeight,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey,
-                                        borderRadius: BorderRadius.circular(8.0),
-                                      ),
-                                      child: Center(
-                                        child: Icon(Icons.remove_red_eye),
-                                      ),
-                                    ),
-                                  )
-                                ), 
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded( //DISPLAY GRID
-                flex: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.pink),
-                  ),
-                  child: Opacity(
-                    opacity: layerOpacity,
-                    child: BuildGrid(
-                      pixelColors: layer,
-                      heightFactor: 1,
-                      widthFactor: 0.9,
-                    ),
-                  )
-                ),
-              ),
-              Expanded( //EDITABLE TEXT
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.pink),
-                  ),
-                  child: Center(
-                    child: Text("Editable Layer Text"),
-                  ),
-                ),
-              ),
-              Expanded( //MENU BUTTON
-                flex: 1,
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showMenu = !showMenu;
-                    });
-                  },
-                  icon: Icon(Icons.menu),
-                ),
-              ),
-            ],
-          ),
-        ),
-        AnimatedPositioned( //SHOWS THE DELETE BUTTON
-          duration: Duration(milliseconds: 300),
-          left: showDeleteButton ? 0 : -60,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                if (widget.initialListOfLayers.allLayers.length > 1) {
-                  widget.initialListOfLayers.removeLayer(layer);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Center(
-                        child: Text(
-                          'Cannot delete the last layer, otherwise it will delete the grid entirely',
-                        ),
-                      ),
-                    ),
-                  );
-                }
-              });
-            },
-            child: Container(
-              color: Colors.red,
-              width: 60,
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ],
-    )
-  ),
-    Expanded(
-      flex: 1,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.pink)
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
-              left: 0,
-              top: showMenu ? 0 : -60, // Slide into view
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Row(
-                    children: [
-                      Text(
-                        "Menu",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
-                      ),
-                      Slider(
-                        value: layerOpacity, 
-                        onChanged: (newValue){
-                          setState(() {
-                            layerOpacity = newValue;
-                          });
-                        }
-                      )
-                    ]
-                  )
-                ),
-              ),
-            )
-          ]
-        ),
-      )
-    )
-    ]
-  );
-}
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -263,12 +38,15 @@ class _LayeringPageState extends State<LayeringPage> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: widget.initialListOfLayers.allLayers.length,
+                itemCount: widget.grid.allLayers.length,
                 itemBuilder: (context, index) {
                   return SizedBox(
                     width: screenWidth * 0.9,
                     height: screenHeight * 0.30,
-                     child: layer(index),
+                      child: DisplayLayerSettings(
+                        grid: widget.grid,
+                        layer: widget.grid.allLayers[index],
+                      ),
                   );
                 },
               ),
@@ -284,7 +62,7 @@ class _LayeringPageState extends State<LayeringPage> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    widget.initialListOfLayers.addLayer();
+                    widget.grid.addLayer();
                   });
                 },
                 child: Container(
@@ -308,8 +86,8 @@ class _LayeringPageState extends State<LayeringPage> {
               flex: 1,
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    showDeleteButton = !showDeleteButton;
+                  setState(() { //refresh page
+                    deleteButtonCubit.changeState();
                   });
                 },
                 child: Container(

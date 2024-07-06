@@ -2,35 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 
 class Grid with ChangeNotifier {
-  int editable; //index of editable layer in list of views
+  late int editable; //index of editable layer in list of views
 
-  List<List<List<Color>>> listOfViews;
-  List<List<List<Color>>> allLayers;
+  late List<Layer> listOfViews;
+  late List<Layer> allLayers;
 
-  final int height;
-  final int width;
+  late int height;
+  late int width;
 
- Grid(List<List<Color>> grid) 
-      : listOfViews = [grid],
-        editable = 0,
-        allLayers = [grid],
-        height = grid.length,
-        width = grid[0].length;
-
-  List<List<Color>> createLayer(){
-    return List.generate(height, (_) => 
-      List.filled(width, Colors.transparent));
+  Grid(List<List<Color>> grid) {
+    height = grid.length;
+    width = grid[0].length;
+    Layer firstLayer = Layer(width, height, "Layer 1");
+    listOfViews = [firstLayer];
+    editable = 0;
+    allLayers = [firstLayer];
   }
 
-  bool isViewable(List<List<Color>> layer) {
+  void changeLayerName(Layer layer, String name){
+    int index = allLayers.indexOf(layer);
+    if(index != -1){ //if layer exists
+      allLayers[index].changeName(name);
+    }
+  }
+
+  void changeLayerOpacity(Layer layer, double opacity){
+    int index = allLayers.indexOf(layer);
+    if(index != -1){ //if layer exists
+      allLayers[index].changeOpacity(opacity);
+    }
+  }
+
+  Layer createLayer(){
+    return Layer(width, height, "Layer ${allLayers.length}");
+  }
+
+  bool isViewable(Layer layer) {
     return listOfViews.contains(layer);
   }
 
-  bool isEditable(List<List<Color>> layer) {
+  bool isEditable(Layer layer) {
     return listOfViews[editable] == layer;
   }
 
-  void removeView(List<List<Color>> layer){
+  void removeView(Layer layer){
     if(listOfViews.contains(layer)){ //if currently viewable
       int index = listOfViews.indexOf(layer);
       if(index < editable){
@@ -45,7 +60,7 @@ class Grid with ChangeNotifier {
     }
   }
 
-  void addView(List<List<Color>> layer){
+  void addView(Layer layer){
     if(!listOfViews.contains(layer)){
       listOfViews.add(layer);
     }
@@ -69,7 +84,7 @@ class Grid with ChangeNotifier {
     return list;
   }
 
-  void removeLayer(List<List<Color>> layer){
+  void removeLayer(Layer layer){
     if(listOfViews.contains(layer)){
       int index = listOfViews.indexOf(layer);
       if(index == editable){
@@ -80,15 +95,15 @@ class Grid with ChangeNotifier {
   }
 
   void editLayer(int row, int col, Color color){ //paint theGrid directly using this
-    listOfViews[editable][row][col] = color;
+    listOfViews[editable].paint(row, col, color);
     notifyListeners();
   }
 
   Color getColor(int row, int col){
-    return listOfViews[editable][row][col];
+    return listOfViews[editable].getColor(row, col);
   }
 
-  void changeEditable(List<List<Color>> layer){
+  void changeEditable(Layer layer){
     if(listOfViews.contains(layer)){ //if currently viewable
       int index = listOfViews.indexOf(layer);
       editable = index;
@@ -97,6 +112,7 @@ class Grid with ChangeNotifier {
       int index = listOfViews.indexOf(layer);
       editable = index;
     }
+    notifyListeners();
   }
 }
 
@@ -110,11 +126,19 @@ class Layer{
     name = name;
   }
 
-  void paint(){
-
+  void paint(int row, int col, Color color){
+    layout[row][col] = color;
   }
 
-  void getColor(){
-    
+  Color getColor(int row, int col){
+    return layout[row][col];
+  }
+
+  void changeName(String newName){
+    name = newName;
+  }
+
+  void changeOpacity(double newOpacity){
+    opacity = newOpacity;
   }
 }

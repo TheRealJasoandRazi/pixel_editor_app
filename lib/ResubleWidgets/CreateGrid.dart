@@ -14,8 +14,8 @@ class CreateGrid extends StatefulWidget {
 
    CreateGrid({
     required Grid layer,
-  }) : height = layer.listOfViews[layer.editable].length,
-       width = layer.listOfViews[layer.editable][0].length,
+  }) : height = layer.listOfViews[layer.editable].layout.length,
+       width = layer.listOfViews[layer.editable].layout[0].length,
        thisLayer = layer;
 
   @override

@@ -1,0 +1,273 @@
+import 'package:flutter/material.dart';
+import '../Grid.dart';
+import '../Cubit/DeleteButtonState.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../ResubleWidgets/BuildGrid.dart';
+
+class DisplayLayerSettings extends StatefulWidget {
+  final Layer layer; //layer your modifying
+  final Grid grid; //grid used to do checks
+  
+  const DisplayLayerSettings({
+    super.key,
+    required this.layer,
+    required this.grid
+  });
+
+  @override
+  State<DisplayLayerSettings> createState() => _DisplayLayerSettingsState();
+}
+
+class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
+  double? buttonWidth;
+  double? buttonHeight;
+
+  late Layer layer;
+  late Grid grid;
+  late bool showMenu;
+
+  @override
+  void initState() {
+    layer = widget.layer;
+    grid = widget.grid;
+    showMenu = false;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 3,
+        child:Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Stack(
+                    children: [
+                      BlocBuilder<DeleteButtonCubit, bool>(
+                        builder:(context, state) {
+                          return AnimatedPositioned(
+                            duration: Duration(milliseconds: 300),
+                            left: state ? 60 : 0,
+                            top: 0,
+                            right: state ? 0 : 0,
+                            bottom: 0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.blue),
+                              ),
+                              child: LayoutBuilder( //use to set one size that wont be changed for the edit and view button, its so when the delete button shows up, the buttons will stay the same size
+                                builder: (context, constraints) {
+                                  if(buttonHeight == null && buttonWidth == null){
+                                    buttonHeight = constraints.maxHeight * 0.4;
+                                    buttonWidth = constraints.maxWidth * 0.5;
+                                  }
+                                  return ListenableBuilder( //REBUILD EDIT AND VIEW ICON WHENEVER IT IS CLICKED
+                                    listenable: grid, 
+                                    builder:(context, child) {
+                                      return Column( //VIEW AND EDIT BUTTON
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                        GestureDetector( //EDIT BUTTON
+                                          onTap: () {
+                                            grid.changeEditable(layer);
+                                          },
+                                          child: Opacity(
+                                            opacity: grid.isEditable(layer) ? 1.0 : 0.5,
+                                            child: Container(
+                                              width: buttonWidth, 
+                                              height: buttonHeight, 
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey,
+                                                borderRadius: BorderRadius.circular(8.0),
+                                              ),
+                                              child: Center(
+                                                child: Icon(Icons.edit),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector( //VIEW BUTTON
+                                          onTap: () {
+                                            setState(() {
+                                              if(!grid.isEditable(layer)){
+                                                if (grid.isViewable(layer)) {
+                                                  grid.removeView(layer);
+                                                } else {
+                                                  grid.addView(layer);
+                                                }
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Center(
+                                                      child: const Text("Cannot hide a layer while it is editable"),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                          },
+                                          child: Opacity(
+                                            opacity: grid.isViewable(layer) ? 1.0 : 0.5,
+                                            child: Container(
+                                              width: buttonWidth, 
+                                              height: buttonHeight,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey,
+                                                borderRadius: BorderRadius.circular(8.0),
+                                              ),
+                                              child: Center(
+                                                child: Icon(Icons.remove_red_eye),
+                                              ),
+                                            ),
+                                          )
+                                        ), 
+                                        ],
+                                      );
+                                    }
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                      )
+                    ],
+                  ),
+                ),
+                Expanded( //DISPLAY GRID
+                  flex: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.pink),
+                    ),
+                    child: Opacity(
+                      opacity: layer.opacity,
+                      child: BuildGrid(
+                        pixelColors: layer,
+                        heightFactor: 1,
+                        widthFactor: 0.9,
+                      ),
+                    )
+                  ),
+                ),
+                Expanded( //EDITABLE TEXT
+                  flex: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.pink),
+                    ),
+                    child: Center(
+                      child: Text("Editable Layer Text"),
+                    ),
+                  ),
+                ),
+                Expanded( //MENU BUTTON
+                  flex: 1,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showMenu = !showMenu;
+                      });
+                    },
+                    icon: Icon(Icons.menu),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          BlocBuilder<DeleteButtonCubit, bool>(
+            builder:(context, state) {
+              return AnimatedPositioned( //SHOWS THE DELETE BUTTON
+                duration: Duration(milliseconds: 300),
+                left: state ? 0 : -60,
+                top: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (grid.allLayers.length > 1) {
+                        grid.removeLayer(layer);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Center(
+                              child: Text(
+                                'Cannot delete the last layer, otherwise it will delete the grid entirely',
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  child: Container(
+                    color: Colors.red,
+                    width: 60,
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            }
+          )
+        ],
+      )
+    ),
+      Expanded(
+        flex: 1,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.pink)
+          ),
+          child: Stack(
+            children: [
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 300),
+                left: 0,
+                top: showMenu ? 0 : -60, // Slide into view
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Text(
+                          "Menu",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
+                          ),
+                        ),
+                        Slider(
+                          value: layer.opacity, 
+                          onChanged: (newValue){
+                            setState(() {
+                              layer.opacity = newValue;
+                            });
+                          }
+                        )
+                      ]
+                    )
+                  ),
+                ),
+              )
+            ]
+          ),
+        )
+      )
+      ]
+    );
+  }
+}

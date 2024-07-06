@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -163,7 +165,6 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                                       return Stack(
                                         children: () { //displays all layers in a stack for each grid
                                         List<Widget> positionedWidgets = [];
-
                                         for (var layer in state[index].allLayers) { //loop through layers
                                           bool widget = selectedGridCubit.state == index;
                                           positionedWidgets.add(widget ? //if the grid is the same as the selected grid, wrap it in a value notifier
@@ -243,6 +244,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                                   IgnorePointer( 
                                     child: BuildGrid(
                                       pixelColors: layer,
+                                      includeOpacity: true,
                                     )
                                   )
                                 );
@@ -297,7 +299,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                       Navigator.of(context).push(
                         pageAnimation.slideUpTransition(
                           LayeringPage(
-                            initialListOfLayers: gridListCubit.state[selectedGridCubit.state!]
+                            grid: gridListCubit.state[selectedGridCubit.state!]
                           )
                         )
                       );
