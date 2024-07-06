@@ -70,6 +70,12 @@ class Layers with ChangeNotifier {
   }
 
   void removeLayer(List<List<Color>> layer){
+    if(listOfViews.contains(layer)){
+      int index = listOfViews.indexOf(layer);
+      if(index == editable){
+        editable = 0; //in case user deletes layer tahts editables
+      }
+    }
     allLayers.remove(layer);
   }
 

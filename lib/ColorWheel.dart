@@ -18,14 +18,8 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
 
   late Color selectedColor;
   double angle = 0.0;
-  /*double tone = 0.0;
-  double tint = 0.0;
-  double shade = 0.0;*/
-
   Offset? indicatorPosition;
-
   bool firstPage = true;
-
   double saturation = 1.0;
   double lightness = 0.5;
 
