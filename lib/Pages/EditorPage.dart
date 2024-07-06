@@ -7,7 +7,7 @@ import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
 import 'package:pixel_editor_app/Pages/DeleteGridPage.dart';
 import 'package:pixel_editor_app/Pages/LayeringPage.dart';
 import 'package:pixel_editor_app/Tools/DropperTool.dart';
-import '../Layers.dart';
+import '../Grid.dart';
 
 import '../Tools/PaintTool.dart';
 import '../Tools/EraseTool.dart';
@@ -137,7 +137,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 ),
                 Expanded( //GRID LIST IN NAV BAR
                   flex: 1,
-                  child: BlocBuilder<GridListCubit, List<Layers> >( 
+                  child: BlocBuilder<GridListCubit, List<Grid> >( 
                     builder: (context, state) {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -229,7 +229,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                       return Stack(
                         children: () {
                           List<Widget> positionedWidgets = [];     
-                          Layers selected = gridListCubit.state[state];
+                          Grid selected = gridListCubit.state[state];
                           for (var layer in selected.allLayers) { //all layers to enforce order
                             if(selected.isViewable(layer)) { //only viewable layers get shown
                               if(selected.isEditable(layer)){

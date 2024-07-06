@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 
-class Layers with ChangeNotifier {
+class Grid with ChangeNotifier {
   int editable; //index of editable layer in list of views
 
   List<List<List<Color>>> listOfViews;
@@ -10,7 +10,7 @@ class Layers with ChangeNotifier {
   final int height;
   final int width;
 
-  Layers(List<List<Color>> grid) 
+ Grid(List<List<Color>> grid) 
       : listOfViews = [grid],
         editable = 0,
         allLayers = [grid],
@@ -79,7 +79,7 @@ class Layers with ChangeNotifier {
     allLayers.remove(layer);
   }
 
-  void editLayer(int row, int col, Color color){ //paint the layers directly using this
+  void editLayer(int row, int col, Color color){ //paint theGrid directly using this
     listOfViews[editable][row][col] = color;
     notifyListeners();
   }
@@ -97,5 +97,24 @@ class Layers with ChangeNotifier {
       int index = listOfViews.indexOf(layer);
       editable = index;
     }
+  }
+}
+
+class Layer{
+  double opacity = 1.0;
+  late String name;
+  late List<List<Color>> layout;
+
+  Layer(int width, int height, String name){
+    layout =  List.generate(height, (_) => List.filled(width, Colors.transparent));
+    name = name;
+  }
+
+  void paint(){
+
+  }
+
+  void getColor(){
+    
   }
 }

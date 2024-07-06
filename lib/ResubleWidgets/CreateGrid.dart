@@ -5,15 +5,15 @@ import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import '../Cubit/PaintState.dart';
 import '../Cubit/ColorState.dart';
 import '../Cubit/DropperState.dart';
-import '../Layers.dart';
+import '../Grid.dart';
 
 class CreateGrid extends StatefulWidget {
   final int width;
   final int height;
-  final Layers? thisLayer;
+  final Grid? thisLayer;
 
    CreateGrid({
-    required Layers layer,
+    required Grid layer,
   }) : height = layer.listOfViews[layer.editable].length,
        width = layer.listOfViews[layer.editable][0].length,
        thisLayer = layer;

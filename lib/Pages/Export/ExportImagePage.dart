@@ -11,7 +11,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 //import '../../ResubleWidgets/BuildGrid.dart';
-import '../../Layers.dart';
+import '../../Grid.dart';
 
 class ExportImagePage extends StatefulWidget {
   const ExportImagePage({super.key});
@@ -23,7 +23,7 @@ class ExportImagePage extends StatefulWidget {
 class _ExportImagePageState extends State<ExportImagePage> {
 
   List<GlobalKey> keyList = [];
-  List<Layers> exportList = [];
+  List<Grid> exportList = [];
 
   @override
   void initState() {

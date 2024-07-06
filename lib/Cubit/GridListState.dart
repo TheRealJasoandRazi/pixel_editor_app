@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/ResubleWidgets/CreateGrid.dart';
 import 'dart:collection';
-import '../Layers.dart';
+import '../Grid.dart';
 
 /*class GridListCubit extends Cubit<List<CreateGrid>> {
   GridListCubit() : super([]); //initial state
@@ -20,16 +20,16 @@ import '../Layers.dart';
   }
 }*/
 
-class GridListCubit extends Cubit<List<Layers>> {
+class GridListCubit extends Cubit<List<Grid>> {
   GridListCubit() : super([]); //initial state
 
   void addGrid(List<List<Color>> grid){
-    Layers newGrid = Layers(grid);
+    Grid newGrid = Grid(grid);
     emit(List.from(state)..add(newGrid));
   }
 
   void removeGridAtIndex(int index) {
-    final updatedList = List<Layers>.from(state);
+    final updatedList = List<Grid>.from(state);
     if (index >= 0 && index < updatedList.length) {
       updatedList.removeAt(index);
       emit(updatedList);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
-import '../Layers.dart';
+import '../Grid.dart';
 import '../ResubleWidgets/SnackBarMessage.dart';
 
 class LayeringPage extends StatefulWidget {
-  final Layers initialListOfLayers;
+  final Grid initialListOfLayers;
 
   const LayeringPage({
     super.key,
