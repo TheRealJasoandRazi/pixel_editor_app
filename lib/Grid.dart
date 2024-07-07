@@ -86,6 +86,76 @@ class Grid with ChangeNotifier {
     return list;
   }
 
+  void swapLayers(Layer layer, String action) {
+    int index = allLayers.indexOf(layer);
+    
+    if (index == -1) {
+      return;
+    }
+
+    if (action == "up" && index > 0) {
+      // Swap with the layer above
+      Layer temp = allLayers[index];
+      allLayers[index] = allLayers[index - 1];
+      allLayers[index - 1] = temp;
+    } else if (action == "down" && index < allLayers.length - 1) {
+      // Swap with the layer below
+      Layer temp = allLayers[index];
+      allLayers[index] = allLayers[index + 1];
+      allLayers[index + 1] = temp;
+    }
+    notifyListeners(); //rebuild layers list when moving positions
+  }
+
+  void mergeLayers(Layer layer, String action){ //LAYERS LISTED BELOW HAVE DOMINANCE
+    int currentLayerIndex = allLayers.indexOf(layer);
+    if(currentLayerIndex == -1){
+      return;
+    }
+
+    int? otherLayerIndex;
+    if(action == "down"){
+      otherLayerIndex = currentLayerIndex + 1; //gets layer index below
+      if(otherLayerIndex >= allLayers.length){
+        return; //another safety check, that index is valid/exists
+      }
+    } else if(action == "up"){
+      otherLayerIndex = currentLayerIndex - 1;
+      if(otherLayerIndex < 0){
+        return; 
+      }
+    }
+    
+    Layer newLayer = Layer(width, height, "new merged layer"); 
+    for(int row = 0; row < height; row++){
+      for(int col = 0; col < width; col++){
+
+        if(action == "up"){ //first check current layer for color
+          Color color = layer.getColor(row, col); //get current layer color
+          if(color != Colors.transparent){
+            newLayer.paint(row, col, color);
+          } else {
+            Color otherLayerColor = allLayers[otherLayerIndex!].getColor(row, col);
+            newLayer.paint(row, col, otherLayerColor);
+          }
+        }
+        else if(action == "down"){ //check below layer for color first
+          Color color = allLayers[otherLayerIndex!].getColor(row, col);
+          if(color != Colors.transparent){
+            newLayer.paint(row, col, color);
+          } else {
+            Color otherLayerColor = layer.getColor(row, col);
+            newLayer.paint(row, col, otherLayerColor);
+          }
+        }
+      }
+    }
+    //remove one of the layers, replace current layer, and delete other layer
+    allLayers[currentLayerIndex] = newLayer;
+    allLayers.remove(allLayers[otherLayerIndex!]);
+    notifyListeners(); //REFRESHES LAYERSPAGE
+  }
+
   void removeLayer(Layer layer){ //when you deletinng the last listofview index, it crashes because editable has nothing to point to
     int index = listOfViews.indexOf(layer);
     if(index == editable){

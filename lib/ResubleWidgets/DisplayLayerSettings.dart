@@ -4,6 +4,8 @@ import '../Cubit/DeleteButtonState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../ResubleWidgets/BuildGrid.dart';
 
+import 'package:flutter/cupertino.dart'; //apple style widgets
+
 class DisplayLayerSettings extends StatefulWidget {
   final int layerIndex; //layer your modifying
   final Grid grid; //grid used to do checks
@@ -164,9 +166,12 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                       border: Border.all(color: Colors.pink),
                     ),
                     child: Center(
+                      /*child: Text(
+                        layer.name
+                      ),*/
                       child: Text(
                         layer.name
-                      ),
+                      )
                     ),
                   ),
                 ),
@@ -184,7 +189,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
               ],
             ),
           ),
-          BlocBuilder<DeleteButtonCubit, bool>(
+          BlocBuilder<DeleteButtonCubit, bool>( //DELETE BUTTON
             builder:(context, state) {
               return AnimatedPositioned( //SHOWS THE DELETE BUTTON
                 duration: Duration(milliseconds: 300),
@@ -225,7 +230,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
         ],
       )
     ),
-      Expanded(
+      Expanded( //MENU POP UP
         flex: 1,
         child: Container(
           decoration: BoxDecoration(
@@ -241,21 +246,116 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                   width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center, //I dont this does much
                       children: [
-                        Text(
-                          "Menu",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white
+                        Expanded(
+                          flex: 3,
+                          child: Column( //OPACITY CHANGE
+                            children: [
+                              Text(
+                                "Opacity",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                                ),
+                              ),
+                              Slider(
+                                value: layer.opacity, 
+                                onChanged: (newValue){
+                                  setState(() {
+                                    layer.opacity = newValue;
+                                  });
+                                }
+                              ),
+                            ]
                           ),
                         ),
-                        Slider(
-                          value: layer.opacity, 
-                          onChanged: (newValue){
-                            setState(() {
-                              layer.opacity = newValue;
-                            });
-                          }
+                        Expanded( //NEW NAME INPUT
+                          flex: 2,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter new layer name', 
+                            ),
+                            onChanged: (text) {
+                              setState(() {
+                                layer.changeName(text);
+                              });
+                            },
+                          )
+                        ),
+                        Expanded( //SWAP LAYERS BUTTON
+                          child: IconButton(
+                            onPressed: (){
+                              showCupertinoModalPopup( //APPLE ACTION BUTTON MENU
+                                context: context,
+                                builder: (BuildContext context) => CupertinoActionSheet(
+                                  title: Text('Swap Layers'),
+                                  actions: <Widget>[
+                                    CupertinoActionSheetAction(
+                                      child: Text('Swap With Layer Above'),
+                                      onPressed: () {
+                                        grid.swapLayers(layer, "up");
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    CupertinoActionSheetAction(
+                                      child: Text('Swap With Layer Below'),
+                                      onPressed: () {
+                                        grid.swapLayers(layer, "down");
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                  cancelButton: CupertinoActionSheetAction(
+                                    child: Text('Cancel'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.swap_calls,
+                            ),
+                          ),
+                        ),
+                        Expanded( //MERGE LAYERS BUTTON
+                          child: IconButton(
+                            onPressed: (){
+                              showCupertinoModalPopup( //APPLE ACTION BUTTON MENU
+                                context: context,
+                                builder: (BuildContext context) => CupertinoActionSheet(
+                                  title: Text('Swap Layers'),
+                                  actions: <Widget>[
+                                    CupertinoActionSheetAction(
+                                      child: Text('Merge Above'),
+                                      onPressed: () {
+                                        grid.mergeLayers(layer, "up");
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    CupertinoActionSheetAction(
+                                      child: Text('Merge Below'),
+                                      onPressed: () {
+                                       grid.mergeLayers(layer, "down");
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                  cancelButton: CupertinoActionSheetAction(
+                                    child: Text('Cancel'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.merge,
+                            ),
+                          ),
                         )
                       ]
                     )
