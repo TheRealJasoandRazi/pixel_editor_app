@@ -360,10 +360,20 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                         Expanded(
                           child: IconButton(
                             onPressed: (){
-
+                              grid.rotateLayer(layer);
                             },
                             icon: Icon(
                               Icons.rotate_right          
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: IconButton(
+                            onPressed: (){
+                              
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_ios         
                             ),
                           ),
                         )

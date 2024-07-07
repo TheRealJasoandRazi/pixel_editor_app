@@ -31,6 +31,32 @@ class Grid with ChangeNotifier {
     allLayers = [firstLayer];
   }
 
+  void rotateLayer(Layer layer) {
+    int index = allLayers.indexOf(layer);
+    if(index == -1){
+      return;
+    }
+
+    // Get the number of rows and columns
+    int rows = layer.layout.length;
+    int cols = layer.layout[0].length;
+
+    // Create a new matrix to store the rotated colors
+    Layer rotatedLayer = Layer(width, height, layer.name);
+
+    // Iterate over each element in the original matrix
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        // Assign the current element to the rotated matrix in a clockwise manner
+        rotatedLayer.layout[j][rows - 1 - i] = layer.layout[i][j];
+      }  //no idea how "rows - 1 - i" works
+    }
+
+    //update grid in list
+    allLayers[index] = rotatedLayer;
+    notifyListeners(); //refresh page
+  }
+
   void changeLayerName(Layer layer, String name){
     int index = allLayers.indexOf(layer);
     if(index != -1){ //if layer exists
