@@ -356,6 +356,16 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                               Icons.merge,
                             ),
                           ),
+                        ),
+                        Expanded(
+                          child: IconButton(
+                            onPressed: (){
+
+                            },
+                            icon: Icon(
+                              Icons.rotate_right          
+                            ),
+                          ),
                         )
                       ]
                     )

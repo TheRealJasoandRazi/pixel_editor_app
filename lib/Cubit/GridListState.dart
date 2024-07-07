@@ -24,6 +24,7 @@ class GridListCubit extends Cubit<List<Grid>> {
   GridListCubit() : super([]); //initial state
 
   void addGrid(Grid newGrid){
+    print(newGrid);
     emit(List.from(state)..add(newGrid));
   }
 

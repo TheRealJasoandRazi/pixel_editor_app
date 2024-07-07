@@ -321,7 +321,7 @@ class _ImportPageState extends State<ImportPage> {
                   child: GestureDetector(
                     onTap: () {
                       gridListCubit.addGrid(
-                        Grid(newimage![0].length, newimage!.length)
+                        Grid.import(newimage!)
                       ); 
                       if(widget.previousPage == "/EditorPage"){
                         Navigator.pop(context);

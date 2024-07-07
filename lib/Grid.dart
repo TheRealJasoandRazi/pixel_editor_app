@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 
@@ -15,6 +17,15 @@ class Grid with ChangeNotifier {
     width = aWidth;
     height = aHeight;
     Layer firstLayer = Layer(width, height, "Layer ${layerCount}");
+    listOfViews = [firstLayer];
+    editable = 0;
+    allLayers = [firstLayer];
+  }
+
+  Grid.import(List<List<Color>> aLayout){
+    width = aLayout[0].length;
+    height = aLayout.length;
+    Layer firstLayer = Layer.import(aLayout,"Layer ${layerCount}");
     listOfViews = [firstLayer];
     editable = 0;
     allLayers = [firstLayer];
@@ -125,7 +136,7 @@ class Grid with ChangeNotifier {
         return; 
       }
     }
-    
+
     Layer newLayer = Layer(width, height, "new merged layer"); 
     for(int row = 0; row < height; row++){
       for(int col = 0; col < width; col++){
@@ -198,6 +209,11 @@ class Layer{
 
   Layer(int width, int height, String aName){
     layout =  List.generate(height, (_) => List.filled(width, Colors.transparent));
+    name = aName;
+  }
+
+  Layer.import(List<List<Color>> grid, String aName){
+    layout = grid;
     name = aName;
   }
 
