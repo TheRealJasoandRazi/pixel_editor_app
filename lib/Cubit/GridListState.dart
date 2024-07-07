@@ -23,8 +23,7 @@ import '../Grid.dart';
 class GridListCubit extends Cubit<List<Grid>> {
   GridListCubit() : super([]); //initial state
 
-  void addGrid(List<List<Color>> grid){
-    Grid newGrid = Grid(grid);
+  void addGrid(Grid newGrid){
     emit(List.from(state)..add(newGrid));
   }
 

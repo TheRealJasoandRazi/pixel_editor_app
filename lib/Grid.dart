@@ -9,11 +9,12 @@ class Grid with ChangeNotifier {
 
   late int height;
   late int width;
+  int layerCount = 1;
 
-  Grid(List<List<Color>> grid) {
-    height = grid.length;
-    width = grid[0].length;
-    Layer firstLayer = Layer(width, height, "Layer 1");
+  Grid(int aWidth, int aHeight) {
+    width = aWidth;
+    height = aHeight;
+    Layer firstLayer = Layer(width, height, "Layer ${layerCount}");
     listOfViews = [firstLayer];
     editable = 0;
     allLayers = [firstLayer];
@@ -34,7 +35,7 @@ class Grid with ChangeNotifier {
   }
 
   Layer createLayer(){
-    return Layer(width, height, "Layer ${allLayers.length}");
+    return Layer(width, height, "Layer ${layerCount}");
   }
 
   bool isViewable(Layer layer) {
@@ -67,6 +68,7 @@ class Grid with ChangeNotifier {
   }
 
   void addLayer(){
+    layerCount++;
     allLayers.add(createLayer());
   }
 
@@ -84,14 +86,17 @@ class Grid with ChangeNotifier {
     return list;
   }
 
-  void removeLayer(Layer layer){
-    if(listOfViews.contains(layer)){
-      int index = listOfViews.indexOf(layer);
-      if(index == editable){
-        editable = 0; //in case user deletes layer tahts editables
-      }
+  void removeLayer(Layer layer){ //when you deletinng the last listofview index, it crashes because editable has nothing to point to
+    int index = listOfViews.indexOf(layer);
+    if(index == editable){
+      editable = 0; //in case user deletes layer tahts editables
     }
-    allLayers.remove(layer);
+    if(allLayers.contains(layer)){ //remove from allLayers
+      allLayers.remove(layer);
+    } else if(listOfViews.contains(layer)){ //remove from listofViews
+      listOfViews.remove(layer);
+    }
+    notifyListeners();
   }
 
   void editLayer(int row, int col, Color color){ //paint theGrid directly using this
@@ -121,9 +126,9 @@ class Layer{
   late String name;
   late List<List<Color>> layout;
 
-  Layer(int width, int height, String name){
+  Layer(int width, int height, String aName){
     layout =  List.generate(height, (_) => List.filled(width, Colors.transparent));
-    name = name;
+    name = aName;
   }
 
   void paint(int row, int col, Color color){

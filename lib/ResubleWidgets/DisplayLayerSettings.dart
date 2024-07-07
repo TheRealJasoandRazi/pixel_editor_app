@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../ResubleWidgets/BuildGrid.dart';
 
 class DisplayLayerSettings extends StatefulWidget {
-  final Layer layer; //layer your modifying
+  final int layerIndex; //layer your modifying
   final Grid grid; //grid used to do checks
   
   const DisplayLayerSettings({
     super.key,
-    required this.layer,
+    required this.layerIndex,
     required this.grid
   });
 
@@ -27,8 +27,8 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
   late bool showMenu;
 
   @override
-  void initState() {
-    layer = widget.layer;
+  void initState() { //only runs once
+    layer = widget.grid.allLayers[widget.layerIndex];
     grid = widget.grid;
     showMenu = false;
     super.initState();
@@ -36,6 +36,8 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
 
   @override
   Widget build(BuildContext context) {
+    layer = widget.grid.allLayers[widget.layerIndex]; //update layer everytime layer is rendered
+
     return Column(
       children: [
         Expanded(
@@ -53,7 +55,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                   flex: 2,
                   child: Stack(
                     children: [
-                      BlocBuilder<DeleteButtonCubit, bool>(
+                      BlocBuilder<DeleteButtonCubit, bool>( //WHEN TRUE, ANIMATE EDIT AND VIEW BUTTONS
                         builder:(context, state) {
                           return AnimatedPositioned(
                             duration: Duration(milliseconds: 300),
@@ -71,71 +73,66 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                     buttonHeight = constraints.maxHeight * 0.4;
                                     buttonWidth = constraints.maxWidth * 0.5;
                                   }
-                                  return ListenableBuilder( //REBUILD EDIT AND VIEW ICON WHENEVER IT IS CLICKED
-                                    listenable: grid, 
-                                    builder:(context, child) {
-                                      return Column( //VIEW AND EDIT BUTTON
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                        GestureDetector( //EDIT BUTTON
-                                          onTap: () {
-                                            grid.changeEditable(layer);
-                                          },
-                                          child: Opacity(
-                                            opacity: grid.isEditable(layer) ? 1.0 : 0.5,
-                                            child: Container(
-                                              width: buttonWidth, 
-                                              height: buttonHeight, 
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey,
-                                                borderRadius: BorderRadius.circular(8.0),
-                                              ),
-                                              child: Center(
-                                                child: Icon(Icons.edit),
-                                              ),
-                                            ),
+                                  return Column( //VIEW AND EDIT BUTTON
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    GestureDetector( //EDIT BUTTON
+                                      onTap: () {
+                                        grid.changeEditable(layer);
+                                      },
+                                      child: Opacity(
+                                        opacity: grid.isEditable(layer) ? 1.0 : 0.5,
+                                        child: Container(
+                                          width: buttonWidth, 
+                                          height: buttonHeight, 
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          child: Center(
+                                            child: Icon(Icons.edit),
                                           ),
                                         ),
-                                        GestureDetector( //VIEW BUTTON
-                                          onTap: () {
-                                            setState(() {
-                                              if(!grid.isEditable(layer)){
-                                                if (grid.isViewable(layer)) {
-                                                  grid.removeView(layer);
-                                                } else {
-                                                  grid.addView(layer);
-                                                }
-                                              } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(
-                                                    content: Center(
-                                                      child: const Text("Cannot hide a layer while it is editable"),
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            });
-                                          },
-                                          child: Opacity(
-                                            opacity: grid.isViewable(layer) ? 1.0 : 0.5,
-                                            child: Container(
-                                              width: buttonWidth, 
-                                              height: buttonHeight,
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey,
-                                                borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                    GestureDetector( //VIEW BUTTON
+                                      onTap: () {
+                                        setState(() {
+                                          if(!grid.isEditable(layer)){
+                                            if (grid.isViewable(layer)) {
+                                              grid.removeView(layer);
+                                            } else {
+                                              grid.addView(layer);
+                                            }
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Center(
+                                                  child: const Text("Cannot hide a layer while it is editable"),
+                                                ),
                                               ),
-                                              child: Center(
-                                                child: Icon(Icons.remove_red_eye),
-                                              ),
-                                            ),
-                                          )
-                                        ), 
-                                        ],
-                                      );
-                                    }
+                                            );
+                                          }
+                                        });
+                                      },
+                                      child: Opacity(
+                                        opacity: grid.isViewable(layer) ? 1.0 : 0.5,
+                                        child: Container(
+                                          width: buttonWidth, 
+                                          height: buttonHeight,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          child: Center(
+                                            child: Icon(Icons.remove_red_eye),
+                                          ),
+                                        ),
+                                      )
+                                    ), 
+                                    ],
                                   );
-                                },
+                                }
                               ),
                             ),
                           );
@@ -167,7 +164,9 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                       border: Border.all(color: Colors.pink),
                     ),
                     child: Center(
-                      child: Text("Editable Layer Text"),
+                      child: Text(
+                        layer.name
+                      ),
                     ),
                   ),
                 ),

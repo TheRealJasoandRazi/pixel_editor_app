@@ -299,7 +299,8 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                       Navigator.of(context).push(
                         pageAnimation.slideUpTransition(
                           LayeringPage(
-                            grid: gridListCubit.state[selectedGridCubit.state!]
+                            //grid: gridListCubit.state[selectedGridCubit.state!]
+                            gridIndex: selectedGridCubit.state!,
                           )
                         )
                       );

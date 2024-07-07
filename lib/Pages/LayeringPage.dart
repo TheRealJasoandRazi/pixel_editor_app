@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 import '../Grid.dart';
 import '../ResubleWidgets/SnackBarMessage.dart';
@@ -7,11 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../ResubleWidgets/DisplayLayerSettings.dart';
 
 class LayeringPage extends StatefulWidget {
-  final Grid grid;
-
+  //final Grid grid;
+  final int gridIndex;
   const LayeringPage({
     super.key,
-    required this.grid,
+    required this.gridIndex,
   });
 
   @override
@@ -20,11 +21,13 @@ class LayeringPage extends StatefulWidget {
 
 class _LayeringPageState extends State<LayeringPage> {
   late final DeleteButtonCubit deleteButtonCubit;
+  late final GridListCubit gridListCubit;
 
   @override
   void initState() {
     super.initState();
     deleteButtonCubit = context.read<DeleteButtonCubit>(); 
+    gridListCubit = context.read<GridListCubit>();
   }
 
   @override
@@ -34,27 +37,33 @@ class _LayeringPageState extends State<LayeringPage> {
 
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.grid.allLayers.length,
-                itemBuilder: (context, index) {
-                  return SizedBox(
-                    width: screenWidth * 0.9,
-                    height: screenHeight * 0.30,
-                      child: DisplayLayerSettings(
-                        grid: widget.grid,
-                        layer: widget.grid.allLayers[index],
-                      ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+        child: ListenableBuilder(
+          listenable: gridListCubit.state[widget.gridIndex], //Rebuild page when something gets deleted
+          builder: (context, child) {
+            Grid grid = gridListCubit.state[widget.gridIndex]; //always get the most up to date grid
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: grid.allLayers.length,
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        width: screenWidth * 0.9,
+                        height: screenHeight * 0.30,
+                          child: DisplayLayerSettings(
+                            grid: grid,
+                            layerIndex: index,
+                          ),
+                      );
+                    },
+                  ),       
+                ),
+              ],
+            );
+          }
+        )
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: BottomAppBar( //BOTTOM BAR
         child: Row(
           children: [
             Expanded(
@@ -62,7 +71,8 @@ class _LayeringPageState extends State<LayeringPage> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    widget.grid.addLayer();
+                    gridListCubit.state[widget.gridIndex].addLayer();
+                    //grid.addLayer();
                   });
                 },
                 child: Container(
@@ -82,7 +92,7 @@ class _LayeringPageState extends State<LayeringPage> {
                 ),
               ),
             ),
-            Expanded(
+            Expanded( //OPEN DELETE BUTTON
               flex: 1,
               child: GestureDetector(
                 onTap: () {
@@ -114,6 +124,9 @@ class _LayeringPageState extends State<LayeringPage> {
               flex: 1,
               child: GestureDetector(
                 onTap: () {
+                  if(deleteButtonCubit.state){
+                    deleteButtonCubit.changeState();
+                  }
                   Navigator.pushNamed(context, "/EditorPage");
                 },
                 child: Container(

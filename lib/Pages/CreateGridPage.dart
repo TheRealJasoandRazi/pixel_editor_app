@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/ResubleWidgets/CreateGrid.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
+import '../Grid.dart';
 
 class CreateGridPage extends StatefulWidget {
   const CreateGridPage({super.key});
@@ -252,7 +253,7 @@ class _CreateGridPageState extends State<CreateGridPage> {
             ElevatedButton( //Create Grid Button
               onPressed: (){         
                 gridListCubit.addGrid(
-                  List.generate(height.toInt(), (_) => List.filled(width.toInt(), Colors.transparent))
+                  Grid(width.toInt(), height.toInt())
                 );
                 selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
                 Navigator.pushNamed(context, '/EditorPage');

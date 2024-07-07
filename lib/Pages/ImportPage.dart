@@ -8,7 +8,7 @@ import '../ResubleWidgets/CreateGrid.dart';
 import '../Cubit/GridListState.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/foundation.dart';
-
+import '../Grid.dart';
 
 class ImportPage extends StatefulWidget {
   final String previousPage;
@@ -320,7 +320,9 @@ class _ImportPageState extends State<ImportPage> {
                   padding: const EdgeInsets.only(right: 12.0),
                   child: GestureDetector(
                     onTap: () {
-                      gridListCubit.addGrid(newimage!); 
+                      gridListCubit.addGrid(
+                        Grid(newimage![0].length, newimage!.length)
+                      ); 
                       if(widget.previousPage == "/EditorPage"){
                         Navigator.pop(context);
                       } else {
