@@ -360,7 +360,19 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                         Expanded(
                           child: IconButton(
                             onPressed: (){
-                              grid.rotateLayer(layer);
+                              if(grid.width == grid.height){
+                                grid.rotateLayer(layer);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Center(
+                                      child: Text(
+                                        "Cannot rotate layer when the width and height is different"
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
                             },
                             icon: Icon(
                               Icons.rotate_right          

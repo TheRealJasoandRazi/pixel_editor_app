@@ -45,7 +45,7 @@ class Grid with ChangeNotifier {
       for (int j = 0; j < cols; j++) {
         // Assign the current element to the rotated matrix in a clockwise manner
         rotatedLayer.layout[j][rows - 1 - i] = layer.layout[i][j];
-      }  //no idea how "rows - 1 - i" works but i
+      }  //no idea how "rows - 1 - i" works
     }
 
     //update grid in list
