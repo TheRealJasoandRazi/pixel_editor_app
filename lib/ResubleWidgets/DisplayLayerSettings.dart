@@ -370,7 +370,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                         Expanded(
                           child: IconButton(
                             onPressed: (){
-                              
+                              grid.reflectLayer(layer);
                             },
                             icon: Icon(
                               Icons.arrow_back_ios         
