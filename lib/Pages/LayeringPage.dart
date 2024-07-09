@@ -41,7 +41,7 @@ class _LayeringPageState extends State<LayeringPage> {
           listenable: gridListCubit.state[widget.gridIndex], //Rebuild page when something gets deleted
           builder: (context, child) {
             Grid grid = gridListCubit.state[widget.gridIndex]; //always get the most up to date grid
-            return Column(
+            return Column( //unnecessaey?
               children: [
                 Expanded(
                   child: ListView.builder(
@@ -50,10 +50,17 @@ class _LayeringPageState extends State<LayeringPage> {
                       return SizedBox(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.30,
-                          child: DisplayLayerSettings(
-                            grid: grid,
-                            layerIndex: index,
+                        child: Container( //for layout purposes
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              //color: Colors.pink
+                            )
                           ),
+                        child: DisplayLayerSettings(
+                          grid: grid,
+                          layerIndex: index,
+                        ),
+                        )
                       );
                     },
                   ),       

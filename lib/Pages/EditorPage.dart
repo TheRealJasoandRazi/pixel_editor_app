@@ -37,6 +37,8 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
   EraseTool eraseTool = EraseTool();
   DropperTool dropperTool = DropperTool();
 
+  bool showHud = true;
+
   late final GridListCubit gridListCubit;
   late final SelectedGridCubit selectedGridCubit;
 
@@ -85,9 +87,10 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.10),
           child: AppBar(
+          backgroundColor: showHud ? null : Colors.black,
           automaticallyImplyLeading: false, //need in release
           flexibleSpace: SafeArea(
-            child: Column(
+            child: showHud ? Column(
               children: [
                 Expanded(
                   flex: 1,
@@ -201,73 +204,92 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                   )
                 )
               ]
-            ),
+            ) : Container()
           ),
         ),
       ),
-      body: Row( /////BODY OF SCREEN
+      body: Stack( /////BODY OF SCREEN
         children: [
-          Expanded( ///COLOR WHEEL
-            flex: 1,
-            child: ColorWheel(),
-          ),
-          Expanded( //SELECTED GRID
-            flex: 3,
-            child: BlocListener<ColorWheelCubit, bool>(
-              listener: (context, state) {
-                // Handle state changes here, if needed
+          Positioned( /////HIDE HUD BUTTON
+            top: 0,
+            left: 0,
+            child: IconButton(
+              onPressed: (){
+                setState(() {
+                  showHud = !showHud;
+                });
               },
-              child: RepaintBoundary(
-                child: AnimatedAlign(
-                  alignment: context.watch<ColorWheelCubit>().state
-                      ? Alignment.center
-                      : Alignment.centerLeft,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  child: BlocBuilder<SelectedGridCubit, int?>(
-                  builder: (context, state) {
-                    if(state != null){ //gets only first grid, change to selected grid later
-                      return Stack(
-                        children: () {
-                          List<Widget> positionedWidgets = [];     
-                          Grid selected = gridListCubit.state[state];
-                          for (var layer in selected.allLayers) { //all layers to enforce order
-                            if(selected.isViewable(layer)) { //only viewable layers get shown
-                              if(selected.isEditable(layer)){
-                                positionedWidgets.add(
-                                  CreateGrid( //pass layer into CreateGrid, touse its editlayer function
-                                    layer: selected,
-                                  )
-                                );
-                              } else {
-                                positionedWidgets.add(
-                                  IgnorePointer( 
-                                    child: BuildGrid(
-                                      pixelColors: layer,
-                                      includeOpacity: true,
-                                    )
-                                  )
-                                );
-                              }
-                            }
-                          }
-                          //print(positionedWidgets);
-                          return positionedWidgets;
-                        }(),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }
-                )
-                ),
-              )
+              icon: Icon(
+                Icons.remove_red_eye_sharp
+              ),
             )
           ),
-        ],
+          Row(
+            children: [
+              Expanded( ///COLOR WHEEL
+                flex: 1,
+                child: ColorWheel(),
+              ),
+              Expanded( //SELECTED GRID
+                flex: 3,
+                child: BlocListener<ColorWheelCubit, bool>(
+                  listener: (context, state) {
+                    // Handle state changes here, if needed
+                  },
+                  child: RepaintBoundary(
+                    child: AnimatedAlign(
+                      alignment: context.watch<ColorWheelCubit>().state
+                          ? Alignment.center
+                          : Alignment.centerLeft,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      child: BlocBuilder<SelectedGridCubit, int?>(
+                      builder: (context, state) {
+                        if(state != null){ //gets only first grid, change to selected grid later
+                          return Stack(
+                            children: () {
+                              List<Widget> positionedWidgets = [];     
+                              Grid selected = gridListCubit.state[state];
+                              for (var layer in selected.allLayers) { //all layers to enforce order
+                                if(selected.isViewable(layer)) { //only viewable layers get shown
+                                  if(selected.isEditable(layer)){
+                                    positionedWidgets.add(
+                                      CreateGrid( //pass layer into CreateGrid, touse its editlayer function
+                                        layer: selected,
+                                      )
+                                    );
+                                  } else {
+                                    positionedWidgets.add(
+                                      IgnorePointer( 
+                                        child: BuildGrid(
+                                          pixelColors: layer,
+                                          includeOpacity: true,
+                                        )
+                                      )
+                                    );
+                                  }
+                                }
+                              }
+                              //print(positionedWidgets);
+                              return positionedWidgets;
+                            }(),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }
+                    )
+                    ),
+                  )
+                )
+              ),
+            ],
+          ),
+        ]
       ),
       bottomNavigationBar: BottomAppBar( ////BOTTOM BAR
-        child: Row(
+        color: showHud ? null : Colors.black,//not even fully black 
+        child: showHud ? Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded( //SHOWS CURRENT COLOR 
@@ -331,7 +353,7 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
               child: dropperTool
             ),
           ],
-        ),
+        ) : Container()
       )
     );
   }
