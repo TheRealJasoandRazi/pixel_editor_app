@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixel_editor_app/Cubit/GridSizeState.dart';
 
 import '../ResubleWidgets/CreateGrid.dart';
 import '../Cubit/GridListState.dart';
@@ -26,8 +27,10 @@ class _ImportPageState extends State<ImportPage> {
   late Uint8List? currentImage;
   bool opened = false;
 
-  double width = 3;
-  double height = 3;
+  late GridSizeCubit gridSizeCubit;
+
+  late double width;
+  late double height;
 
   late final GridListCubit gridListCubit;
 
@@ -37,6 +40,9 @@ class _ImportPageState extends State<ImportPage> {
   void initState() {
     super.initState();
     gridListCubit = context.read<GridListCubit>();
+    gridSizeCubit = context.read<GridSizeCubit>();
+    height = gridSizeCubit.state['height']!.toDouble();
+    width = gridSizeCubit.state['width']!.toDouble();
   }
 
   void getNewImage() async {
@@ -323,6 +329,7 @@ class _ImportPageState extends State<ImportPage> {
                       gridListCubit.addGrid(
                         Grid.import(newimage!)
                       ); 
+                      gridSizeCubit.changeValues(width.toInt(), height.toInt()); //remembers users last input  
                       if(widget.previousPage == "/EditorPage"){
                         Navigator.pop(context);
                       } else {

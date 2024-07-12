@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/ResubleWidgets/CreateGrid.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
 import 'package:pixel_editor_app/Cubit/SelectedGridState.dart';
+import '../Cubit/GridSizeState.dart';
 import '../Grid.dart';
 
 class CreateGridPage extends StatefulWidget {
@@ -13,11 +14,21 @@ class CreateGridPage extends StatefulWidget {
 }
 
 class _CreateGridPageState extends State<CreateGridPage> {
-  double width = 3;
-  double height = 3;
-
   late double screenWidth;
   late double screenHeight;
+
+  late GridSizeCubit gridSizeCubit;
+
+  late double width;
+  late double height;
+
+  @override
+  void initState() {
+    super.initState();
+    gridSizeCubit = context.read<GridSizeCubit>();
+    height = gridSizeCubit.state['height']!.toDouble();
+    width = gridSizeCubit.state['width']!.toDouble();
+  }
 
   Widget buildGrid() {
     List<Widget> rows = [];
@@ -62,9 +73,6 @@ class _CreateGridPageState extends State<CreateGridPage> {
     screenWidth = inputScreenWidth;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Second Page'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -250,15 +258,30 @@ class _CreateGridPageState extends State<CreateGridPage> {
                 ),
               ),
             ),
-            ElevatedButton( //Create Grid Button
-              onPressed: (){         
-                gridListCubit.addGrid(
-                  Grid(width.toInt(), height.toInt())
-                );
-                selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
-                Navigator.pushNamed(context, '/EditorPage');
-              },
-              child: Text("Create Grid")
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  ElevatedButton( //Create Grid Button
+                    onPressed: (){      
+                      gridSizeCubit.changeValues(width.toInt(), height.toInt()); //remembers users last input  
+                      gridListCubit.addGrid(
+                        Grid(width.toInt(), height.toInt())
+                      );
+                      selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
+                      Navigator.pushNamed(context, '/EditorPage');
+                    },
+                    child: Text("Create Grid")
+                  ),
+                  SizedBox(height: 20.0), //adds spacing
+                  ElevatedButton( //Cancel Button
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel")
+                  )
+                ]
+              )
             )
           ],
         ),
