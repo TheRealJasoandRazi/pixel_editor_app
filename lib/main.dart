@@ -20,6 +20,7 @@ import 'Cubit/EraseState.dart';
 import 'Cubit/ColorWheelState.dart';
 import 'Cubit/PopUpState.dart';
 import 'Cubit/DeleteButtonState.dart';
+import 'Cubit/LayersSideBarState.dart';
 
 //pages
 import 'Pages/CreateGridPage.dart';
@@ -52,7 +53,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SelectedGridCubit()),
         BlocProvider(create: (context) => DropperCubit()),
         BlocProvider(create: (context) => PopUpCubit()),
-        BlocProvider(create: (context) => DeleteButtonCubit())
+        BlocProvider(create: (context) => DeleteButtonCubit()),
+        BlocProvider(create: (context) => LayersSideBarCubit())
       ], //gives access to form state to all descendants
       child: MaterialApp(
         title: 'Flutter Demo',

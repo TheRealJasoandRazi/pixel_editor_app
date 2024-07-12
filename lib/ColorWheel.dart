@@ -24,7 +24,7 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
   double lightness = 0.5;
 
   late final ColorCubit colorCubit;
-  late final ColorWheelCubit colorWheelCubit;
+  late final ColorWheelCubit colorWheelCubit; //NOT NEEDED ANYMORE
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
     );
 
     _offsetAnimation = Tween<Offset>(
-      begin: const Offset(-0.9, 0.0),
+      begin: const Offset(-1.0, 0.0), //starts outside of the left side fo the screen
       end: Offset(0.0, 0.0),
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -44,17 +44,6 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
 
     colorCubit = context.read<ColorCubit>();
     colorWheelCubit = context.read<ColorWheelCubit>();
-  }
-
-  void _toggleSidebar() {
-    setState(() {
-      colorWheelCubit.toggleColorWheel();
-      if (colorWheelCubit.state) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
   }
 
   @override
@@ -288,8 +277,14 @@ Widget colorWheel(double width, double height) {
 
   @override
   Widget build(BuildContext context) {
-    return Align( //Box
-      alignment: Alignment.centerLeft,
+    return BlocListener<ColorWheelCubit, bool>(
+      listener: (context, state) {
+        if (state) {
+          _controller.forward();
+        } else {
+          _controller.reverse();
+        }
+      },
         child: SlideTransition(
         position: _offsetAnimation,
         child: Container(
@@ -300,28 +295,9 @@ Widget colorWheel(double width, double height) {
             ),
             color: Colors.deepPurple,
           ),
-          width: 300,
-          height: 500,
-          child: Row(
-            children: [
-              Expanded( //Colour wheel
-                flex: 8,
-                child: colorWheel(300, 500),
-              ),
-              Expanded( //Button
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: _toggleSidebar,
-                    child: Icon(
-                      Icons.color_lens
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+          width: 300, //absolute values == bad
+          height: 500,  
+          child: colorWheel(300, 500),
         ),
       ),
     );

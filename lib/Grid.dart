@@ -104,12 +104,14 @@ class Grid with ChangeNotifier {
         }
       }
     }
+    notifyListeners(); //for refresh from layer side bar
   }
 
   void addView(Layer layer){
     if(!listOfViews.contains(layer)){
       listOfViews.add(layer);
     }
+    notifyListeners(); //for refresh from layer side bar
   }
 
   void addLayer(){

@@ -11,9 +11,13 @@ class CreateGrid extends StatefulWidget {
   final int width;
   final int height;
   final Grid? thisLayer;
+  final double widthFactor;
+  final double heightFactor;
 
    CreateGrid({
     required Grid layer,
+    required double this.widthFactor,
+    required double this.heightFactor,
   }) : height = layer.listOfViews[layer.editable].layout.length,
        width = layer.listOfViews[layer.editable].layout[0].length,
        thisLayer = layer;
@@ -76,13 +80,13 @@ class _CreateGridState extends State<CreateGrid> {
 
   @override
   Widget build(BuildContext context) {
-    gridWidthFactor = 0.7;
-    gridHeightFactor = 0.6;
+    gridWidthFactor = widget.widthFactor;
+    gridHeightFactor = widget.heightFactor;
 
     return LayoutBuilder( //to get parent size
       builder: (context, constraints) {
-        cellWidth = (constraints.maxWidth * 0.7) / widget.width;
-        cellHeight = (constraints.maxHeight * 0.6) / widget.height;
+        cellWidth = (constraints.maxWidth * gridWidthFactor) / widget.width;
+        cellHeight = (constraints.maxHeight * gridHeightFactor) / widget.height;
         return GestureDetector(
           onTapDown: (details) {
             if (paintCubit.state || eraseCubit.state || dropperCubit.state) {
