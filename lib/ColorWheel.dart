@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_editor_app/Cubit/RecentColorsState.dart';
 import 'dart:math';
 import 'Cubit/ColorState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +25,8 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
   double lightness = 0.5;
 
   late final ColorCubit colorCubit;
-  late final ColorWheelCubit colorWheelCubit; //NOT NEEDED ANYMORE
+  late final ColorWheelCubit colorWheelCubit;
+  late RecentColorsCubit recentColorsCubit;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
 
     colorCubit = context.read<ColorCubit>();
     colorWheelCubit = context.read<ColorWheelCubit>();
+    recentColorsCubit = context.read<RecentColorsCubit>();
   }
 
   @override
@@ -203,6 +206,7 @@ Widget colorWheel(double width, double height) {
                   ),
                 ),
                 Expanded( // LIST 
+                  flex: 8,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: GridView.builder(
@@ -221,6 +225,7 @@ Widget colorWheel(double width, double height) {
                           },
                           onTap: () {
                             colorCubit.changeColor(color);
+                            recentColorsCubit.addColor(color);
                             setState(() {
                               //rebuild
                             });
@@ -241,6 +246,60 @@ Widget colorWheel(double width, double height) {
                       },
                     ),
                   ),
+                ),
+                Expanded( //RECENT COLORS
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text("Recent Colors"),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: BlocBuilder<RecentColorsCubit, List<Color>>(
+                          builder: (context, state) {
+                            return LayoutBuilder(
+                              builder: (context, constraints) {
+                                double itemWidth = constraints.maxWidth / 4 ;
+                                List<Widget> row = [];
+                                for (var color in state){
+                                  row.add(
+                                    Padding( //Recent Color Wrapper
+                                      padding: EdgeInsets.all(4.0),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState((){
+                                            colorCubit.changeColor(color);
+                                          });
+                                        },
+                                        child: Container( 
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12.0),
+                                            color: color,
+                                          ),
+                                          width: itemWidth,
+                                          child: Center(
+                                            child: color == colorCubit.state ? Icon(
+                                              Icons.thumb_up_alt_outlined,
+                                            ) : null
+                                          )
+                                        )
+                                      )
+                                    )
+                                  );
+                                }
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center, // Center the items horizontally
+                                  children: row,
+                                );
+                              },
+                            );
+                          }
+                        )
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
@@ -248,7 +307,6 @@ Widget colorWheel(double width, double height) {
     ],
   );
 }
-
   void showColorShades(BuildContext context, Color color, List<Color> shades) {
     showModalBottomSheet(
       context: context,
@@ -259,6 +317,7 @@ Widget colorWheel(double width, double height) {
             return GestureDetector(
               onTap: (){
                 colorCubit.changeColor(shade);
+                recentColorsCubit.addColor(shade);
                 setState(() {
                   //rebuild
                 });
