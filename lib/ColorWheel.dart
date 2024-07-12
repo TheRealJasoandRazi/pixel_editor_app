@@ -128,7 +128,7 @@ Widget colorWheel(double width, double height) {
           ? Column( // COLOR WHEEL
               children: [
                 Expanded(
-                  flex: 5,
+                  flex: 3,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: GestureDetector(
@@ -146,6 +146,9 @@ Widget colorWheel(double width, double height) {
                           indicatorPosition = offset;
                         });
                       },
+                      onPanEnd: (details) { //add color to recents when user lets go
+                        recentColorsCubit.addColor(colorCubit.state); 
+                      },
                       child: CustomPaint(
                         size: Size(width * 0.8, height * 0.8),
                         painter: ColorWheelPainter(
@@ -159,38 +162,64 @@ Widget colorWheel(double width, double height) {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Text("Lightness"),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Slider(
-                    value: lightness,
-                    min: 0.0,
-                    max: 1.0,
-                    onChanged: (newValue) {
-                      setState(() {
-                        lightness = newValue;
-                      });
-                    },
-                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Text("Lightness"),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Slider(
+                          value: lightness,
+                          min: 0.0,
+                          max: 1.0,
+                          onChanged: (newValue) {
+                            setState(() {
+                              lightness = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                    ]
+                  )
                 ),
                 Expanded(
                   flex: 1,
-                  child: Text("Saturation"),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Text("Saturation"),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Slider(
+                          value: saturation,
+                          min: 0.0,
+                          max: 1.0,
+                          onChanged: (newValue) {
+                            setState(() {
+                              saturation = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  )
                 ),
                 Expanded(
-                  flex: 2,
-                  child: Slider(
-                    value: saturation,
-                    min: 0.0,
-                    max: 1.0,
-                    onChanged: (newValue) {
-                      setState(() {
-                        saturation = newValue;
-                      });
-                    },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text("Recent Colors"),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: recentColorsList()
+                      )
+                    ],
                   ),
-                ),
+                )
               ],
             )
           : Column(
@@ -257,46 +286,7 @@ Widget colorWheel(double width, double height) {
                       ),
                       Expanded(
                         flex: 3,
-                        child: BlocBuilder<RecentColorsCubit, List<Color>>(
-                          builder: (context, state) {
-                            return LayoutBuilder(
-                              builder: (context, constraints) {
-                                double itemWidth = constraints.maxWidth / 4 ;
-                                List<Widget> row = [];
-                                for (var color in state){
-                                  row.add(
-                                    Padding( //Recent Color Wrapper
-                                      padding: EdgeInsets.all(4.0),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState((){
-                                            colorCubit.changeColor(color);
-                                          });
-                                        },
-                                        child: Container( 
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(12.0),
-                                            color: color,
-                                          ),
-                                          width: itemWidth,
-                                          child: Center(
-                                            child: color == colorCubit.state ? Icon(
-                                              Icons.thumb_up_alt_outlined,
-                                            ) : null
-                                          )
-                                        )
-                                      )
-                                    )
-                                  );
-                                }
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.center, // Center the items horizontally
-                                  children: row,
-                                );
-                              },
-                            );
-                          }
-                        )
+                        child: recentColorsList()
                       )
                     ],
                   ),
@@ -305,6 +295,49 @@ Widget colorWheel(double width, double height) {
             ),
       ),
     ],
+  );
+}
+
+Widget recentColorsList(){
+  return BlocBuilder<RecentColorsCubit, List<Color>>(
+    builder: (context, state) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          double itemWidth = constraints.maxWidth / 4 ;
+          List<Widget> row = [];
+          for (var color in state){
+            row.add(
+              Padding( //Recent Color Wrapper
+                padding: EdgeInsets.all(4.0),
+                child: GestureDetector(
+                  onTap: (){
+                    setState((){
+                      colorCubit.changeColor(color);
+                    });
+                  },
+                  child: Container( 
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      color: color,
+                    ),
+                    width: itemWidth,
+                    child: Center(
+                      child: color == colorCubit.state ? Icon(
+                        Icons.thumb_up_alt_outlined,
+                      ) : null
+                    )
+                  )
+                )
+              )
+            );
+          }
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center, // Center the items horizontally
+            children: row,
+          );
+        },
+      );
+    }
   );
 }
   void showColorShades(BuildContext context, Color color, List<Color> shades) {
