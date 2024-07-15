@@ -172,29 +172,36 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                                   width: itemWidth,
                                   child: Builder(
                                     builder: (context) {
-                                      return Stack(
+                                      return Stack( //STACK TO DISPLAY ALL SELECTED LAYERS
                                         children: () { //displays all layers in a stack for each grid
                                         List<Widget> positionedWidgets = [];
                                         for (var layer in state[index].allLayers) { //loop through layers
                                           bool widget = selectedGridCubit.state == index;
-                                          positionedWidgets.add(widget ? //if the grid is the same as the selected grid, wrap it in a value notifier
-                                          ListenableBuilder( //index of selected grid
-                                            listenable: state[selectedGridCubit.state!],//selectedGridCubit.state!,
-                                            builder: (context, child) {
-                                              return Container(
-                                                child: RepaintBoundary( //only rebuild child not entire page
-                                                  child: BuildGrid( //create replica under a value notifer
-                                                    pixelColors: layer,
-                                                    selected: true, 
-                                                    widthFactor: 0.9, 
-                                                    heightFactor: 0.9
-                                                  )
-                                                )
-                                              ); 
-                                            }
-                                          )
-                                        : BuildGrid(pixelColors: layer, selected: false, widthFactor: 0.9, heightFactor: 0.9,)
-                                          );
+
+                                          positionedWidgets.add(
+                                            widget ? //if the grid is the same as the selected grid, wrap it in a value notifier
+                                              ListenableBuilder( //index of selected grid
+                                                listenable: state[selectedGridCubit.state!],//selectedGridCubit.state!,
+                                                builder: (context, child) {
+                                                  return Container(
+                                                    child: RepaintBoundary( //only rebuild child not entire page
+                                                      child: BuildGrid( //create replica under a value notifer
+                                                        pixelColors: layer,
+                                                        selected: true, 
+                                                        widthFactor: 0.9, 
+                                                        heightFactor: 0.9
+                                                      )
+                                                    )
+                                                  ); 
+                                                }
+                                              )
+                                            : BuildGrid(
+                                                pixelColors: layer,
+                                                selected: false,
+                                                widthFactor: 0.9,
+                                                heightFactor: 0.9
+                                              )
+                                          ); 
                                         }
                                         return positionedWidgets;
                                         }(),
@@ -251,51 +258,53 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
           Expanded( 
             flex: 8,
             child: Center(
-              child: BlocBuilder<SelectedGridCubit, int?>(
-                builder: (context, state) {
-                  if (state != null) {
-                    return ListenableBuilder( 
-                      listenable: gridListCubit.state[state],
-                      builder: (context, child) {
-                        return Stack(
-                          children: () {
-                            List<Widget> positionedWidgets = [];
-                            Grid selected = gridListCubit.state[state];
-                            for (var layer in selected.allLayers) {
-                              if (selected.isViewable(layer)) {
-                                if (selected.isEditable(layer)) {
-                                  positionedWidgets.add(
-                                    CreateGrid( 
-                                      layer: selected,
-                                      widthFactor: sizeFactor,
-                                      heightFactor: sizeFactor,
-                                    ),
-                                  );
-                                } else {
-                                  positionedWidgets.add(
-                                    IgnorePointer( 
-                                      child: BuildGrid(
-                                        pixelColors: layer,
-                                        includeOpacity: true,
+              child: InteractiveViewer( //ALLOWS USER TO ZOOM INTO GRID
+                child: BlocBuilder<SelectedGridCubit, int?>(
+                  builder: (context, state) {
+                    if (state != null) {
+                      return ListenableBuilder( 
+                        listenable: gridListCubit.state[state],
+                        builder: (context, child) {
+                          return Stack(
+                            children: () {
+                              List<Widget> positionedWidgets = [];
+                              Grid selected = gridListCubit.state[state];
+                              for (var layer in selected.allLayers) {
+                                if (selected.isViewable(layer)) {
+                                  if (selected.isEditable(layer)) {
+                                    positionedWidgets.add(
+                                      CreateGrid( 
+                                        layer: selected,
                                         widthFactor: sizeFactor,
                                         heightFactor: sizeFactor,
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  } else {
+                                    positionedWidgets.add(
+                                      IgnorePointer( 
+                                        child: BuildGrid(
+                                          pixelColors: layer,
+                                          includeOpacity: true,
+                                          widthFactor: sizeFactor,
+                                          heightFactor: sizeFactor,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                               }
-                            }
-                            return positionedWidgets;
-                          }(),
-                        );
-                      },
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
+                              return positionedWidgets;
+                            }(),
+                          );
+                        },
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
               ),
-            ),
+            )
           ),
           Expanded( 
             flex: 1,
