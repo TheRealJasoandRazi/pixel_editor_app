@@ -170,42 +170,49 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                               children: [
                                 Container(
                                   width: itemWidth,
-                                  child: Builder(
+                                  child: Builder( //BUILDS ALL LAYERS FOR ONE GRID
                                     builder: (context) {
-                                      return Stack( //STACK TO DISPLAY ALL SELECTED LAYERS
-                                        children: () { //displays all layers in a stack for each grid
-                                        List<Widget> positionedWidgets = [];
-                                        for (var layer in state[index].allLayers) { //loop through layers
-                                          bool widget = selectedGridCubit.state == index;
+                                      bool currenltySelected = selectedGridCubit.state == index; 
 
-                                          positionedWidgets.add(
-                                            widget ? //if the grid is the same as the selected grid, wrap it in a value notifier
-                                              ListenableBuilder( //index of selected grid
-                                                listenable: state[selectedGridCubit.state!],//selectedGridCubit.state!,
-                                                builder: (context, child) {
-                                                  return Container(
-                                                    child: RepaintBoundary( //only rebuild child not entire page
-                                                      child: BuildGrid( //create replica under a value notifer
-                                                        pixelColors: layer,
-                                                        selected: true, 
-                                                        widthFactor: 0.9, 
-                                                        heightFactor: 0.9
-                                                      )
-                                                    )
-                                                  ); 
-                                                }
-                                              )
-                                            : BuildGrid(
+                                      return currenltySelected ? 
+                                        ListenableBuilder(
+                                          listenable: state[selectedGridCubit.state!], //the currently selected grid
+                                          builder: (context, child) {
+                                            return Stack( 
+                                              children: () {
+                                              List<Widget> positionedWidgets = [];
+                                              for (var layer in state[index].allLayers) { //loop through layers
+                                                positionedWidgets.add(
+                                                  BuildGrid(
+                                                    pixelColors: layer,
+                                                    selected: true,
+                                                    widthFactor: 0.9,
+                                                    heightFactor: 0.9
+                                                  )
+                                                ); 
+                                              }
+                                              return positionedWidgets;
+                                              }(),
+                                            );
+                                          }
+                                        )
+                                      : Stack( 
+                                          children: () {
+                                          List<Widget> positionedWidgets = [];
+                                          for (var layer in state[index].allLayers) { //loop through layers
+                                            positionedWidgets.add(
+                                              BuildGrid(
                                                 pixelColors: layer,
                                                 selected: false,
                                                 widthFactor: 0.9,
                                                 heightFactor: 0.9
                                               )
-                                          ); 
-                                        }
-                                        return positionedWidgets;
-                                        }(),
-                                      );
+                                            ); 
+                                          }
+                                          return positionedWidgets;
+                                          }(),
+                                        );
+                                      
                                     }
                                   )
                                 ),
@@ -229,6 +236,52 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
             child: Stack(
               fit: StackFit.expand,
               children: [
+                Positioned( //UNDO AND REDO BUTTON
+                  top: 0, //the numbers represent the distance between the parents and child, i think
+                  left: 0, //so 0 means, take up the entire space, no distance
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: BlocBuilder<SelectedGridCubit, int?>(
+                      builder: (context, state) {
+                        if (state != null) { //IF A GRID IS SELECTED
+                          return ListenableBuilder( //REBUILD TO CHANGE OPACITY OF UNDO/REDO BUTTONS
+                            listenable: gridListCubit.state[selectedGridCubit.state!], //CURRENTLY SELECTED GRID
+                            builder: (context, child) {
+                              final grid = gridListCubit.state[selectedGridCubit.state!];
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Opacity(
+                                    opacity: grid.backPossible() ? 1 : 0.5,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        gridListCubit.state[selectedGridCubit.state!].back();
+                                      },
+                                      icon: Icon(Icons.undo),
+                                    ),
+                                  ),
+                                  Opacity(
+                                    opacity: grid.forwardPossible() ? 1 : 0.5,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        gridListCubit.state[selectedGridCubit.state!].forward();
+                                      },
+                                      icon: Icon(Icons.redo),
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                          );
+                        }
+                        else {
+                          return Container();
+                        }
+                      }
+                    )
+                  ),
+                ),
                 FractionallySizedBox(
                   heightFactor: 0.6,
                   child: ColorWheel(), 
@@ -265,12 +318,15 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                       return ListenableBuilder( 
                         listenable: gridListCubit.state[state],
                         builder: (context, child) {
+                          //print("rebuilding grid");
                           return Stack(
                             children: () {
                               List<Widget> positionedWidgets = [];
                               Grid selected = gridListCubit.state[state];
                               for (var layer in selected.allLayers) {
+                                //print("getting layer");
                                 if (selected.isViewable(layer)) {
+                                  //print("viewable");
                                   if (selected.isEditable(layer)) {
                                     positionedWidgets.add(
                                       CreateGrid( 

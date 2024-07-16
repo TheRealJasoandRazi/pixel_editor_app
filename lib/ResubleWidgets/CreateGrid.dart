@@ -61,18 +61,19 @@ class _CreateGridState extends State<CreateGrid> {
   void _handleClick(Offset localPosition, ColorCubit colorCubit) {
     final column = (localPosition.dx / cellWidth).floor().clamp(0, widget.width - 1);
     final row = (localPosition.dy / cellHeight).floor().clamp(0, widget.height - 1);
+    final grid = widget.thisLayer!;
 
     setState(() {
       if(paintCubit.state){
-        if (colorCubit.state == widget.thisLayer!.getColor(row, column)) {
-          widget.thisLayer!.editLayer(row, column, Colors.transparent); 
+        if (colorCubit.state == grid.getColor(row, column)) {
+          grid.editLayer(row, column, Colors.transparent); 
         } else {
-          widget.thisLayer!.editLayer(row, column, colorCubit.state);
+          grid.editLayer(row, column, colorCubit.state);
         }
       } else if (eraseCubit.state){
-        widget.thisLayer!.editLayer(row, column, Colors.transparent); 
+        grid.editLayer(row, column, Colors.transparent); 
       } else if (dropperCubit.state){
-        Color newColor = widget.thisLayer!.getColor(row, column);
+        Color newColor = grid.getColor(row, column);
         colorCubit.changeColor(newColor);
       }
     });
@@ -83,6 +84,8 @@ class _CreateGridState extends State<CreateGrid> {
     gridWidthFactor = widget.widthFactor;
     gridHeightFactor = widget.heightFactor;
 
+    final grid = widget.thisLayer!;
+
     return LayoutBuilder( //to get parent size
       builder: (context, constraints) {
         cellWidth = (constraints.maxWidth * gridWidthFactor) / widget.width;
@@ -91,6 +94,7 @@ class _CreateGridState extends State<CreateGrid> {
           onTapDown: (details) {
             if (paintCubit.state || eraseCubit.state || dropperCubit.state) {
               _handleClick(details.localPosition, colorCubit);
+              grid.addState(grid.listOfViews[grid.editable]);
             }
           },
           onPanUpdate: (details) {
@@ -99,6 +103,9 @@ class _CreateGridState extends State<CreateGrid> {
             } else if (eraseCubit.state) {
               _calculateGridIndex(details.localPosition, Colors.transparent);
             }
+          },
+          onPanEnd: (details) {
+            grid.addState(grid.listOfViews[grid.editable]);
           },
           child: buildGrid(widget.width, widget.height)
         );

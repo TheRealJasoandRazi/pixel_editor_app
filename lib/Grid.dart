@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:pixel_editor_app/ResubleWidgets/BuildGrid.dart';
 
@@ -11,7 +9,67 @@ class Grid with ChangeNotifier {
 
   late int height;
   late int width;
-  int layerCount = 1;
+  int layerCount = 1; //initial count
+
+  /////////////////////////////NEW CODE/////////////////////////////////////////
+  List<Layer> states = [];
+  late int currentStateIndex;
+
+  bool backPossible(){
+    return currentStateIndex > 0;
+  }
+  
+  bool forwardPossible(){
+    return currentStateIndex < states.length - 1;
+  }
+
+  void changeIndex(int newIndex){
+    currentStateIndex = newIndex;
+  }
+
+  void addState(Layer newState) {
+    Layer clonedState = newState.clone(); //creates clone in order to add deep copy instead of reference
+    states.add(clonedState);
+    deleteStates(); 
+    changeIndex(states.length - 1);
+    /*print("NEW STATE CHECK ///////////////////////////////////");
+    for(var state in states){
+      print(state.layout);
+    }*/
+  }
+
+  void deleteStates(){
+    if(states.length > 2){ //TO AVOID ERROR
+      states.removeRange(currentStateIndex + 1, states.length - 1);
+    }
+    // INCLUSIVE AND EXCLUSIVE
+  }
+
+  void back() {
+    if(currentStateIndex > 0){
+      changeIndex(currentStateIndex - 1);
+      int allLayersIndex = allLayers.indexOf(listOfViews[editable]);
+      Layer clonedState = getCurrentState().clone(); //make a deep copy
+      listOfViews[editable] = clonedState; //update editable in views list
+      allLayers[allLayersIndex] = clonedState; //update editable is all layers list
+      notifyListeners(); //trigger editable rebuild
+    }
+  }
+
+  void forward(){
+    if(currentStateIndex < states.length - 1){
+      changeIndex(currentStateIndex + 1);
+      int allLayersIndex = allLayers.indexOf(listOfViews[editable]);
+      listOfViews[editable] = getCurrentState(); //update list
+      allLayers[allLayersIndex] = getCurrentState(); //update list
+      notifyListeners(); //trigger editable rebuild
+    }
+  }
+
+  Layer getCurrentState(){
+    return states[currentStateIndex];
+  }
+  ////////////////////////////END OF NEW CODE///////////////////////////////////////
 
   Grid(int aWidth, int aHeight) {
     width = aWidth;
@@ -20,6 +78,8 @@ class Grid with ChangeNotifier {
     listOfViews = [firstLayer];
     editable = 0;
     allLayers = [firstLayer];
+    currentStateIndex = 0;
+    addState(firstLayer);
   }
 
   Grid.import(List<List<Color>> aLayout){
@@ -29,6 +89,7 @@ class Grid with ChangeNotifier {
     listOfViews = [firstLayer];
     editable = 0;
     allLayers = [firstLayer];
+    //add editable state here
   }
 
   void rotateLayer(Layer layer) {
@@ -226,6 +287,12 @@ class Grid with ChangeNotifier {
   }
 
   void changeEditable(Layer layer){
+    
+    //reset state values
+    states = []; 
+    addState(layer);
+    currentStateIndex = 0; 
+
     if(listOfViews.contains(layer)){ //if currently viewable
       int index = listOfViews.indexOf(layer);
       editable = index;
@@ -268,4 +335,55 @@ class Layer{
   void changeOpacity(double newOpacity){
     opacity = newOpacity;
   }
+
+  Layer clone() { //FOR EDITABLE STATE
+    Layer newLayer = Layer(layout[0].length, layout.length, name);
+    newLayer.layout = layout.map((row) => List<Color>.from(row)).toList(); // Deep copy of layout
+    newLayer.opacity = opacity;
+    newLayer.name = name;
+    return newLayer;
+  }
 }
+
+/*
+class EditableState with ChangeNotifier {
+  late List<Layer> states = [];
+  late int currentStateIndex;
+
+  EditableState(Layer firstLayer){
+    addState(firstLayer);
+    currentStateIndex = 0;
+  }
+
+  void changeIndex(int newIndex){
+    currentStateIndex = newIndex;
+    notifyListeners(); //trigger editable rebuild
+  }
+
+  void addState(Layer newState) {
+    //Layer clonedState = newState.clone();
+    states.add(newState);
+    //print("States after adding new state:");
+    //for (var state in states) {
+      //print(state.layout);
+    //}
+    changeIndex(states.length - 1);
+  }
+
+
+  void back(){
+    if(currentStateIndex - 1 >= 0){
+      changeIndex(currentStateIndex - 1);
+    }
+  }
+
+  void forward(){
+    if(currentStateIndex < states.length){
+      changeIndex(currentStateIndex + 1);
+    }
+  }
+
+  Layer getCurrentState(){
+    return states[currentStateIndex];
+  }
+}*/
