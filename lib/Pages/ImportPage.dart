@@ -22,6 +22,12 @@ class ImportPage extends StatefulWidget {
 
 
 class _ImportPageState extends State<ImportPage> {
+  final maxHeight = 50;
+  final maxWidth = 50;
+
+  final minHeight = 3;
+  final minWidth = 3;
+
   late double imageWidth;
   late double imageHeight;
   late Uint8List? currentImage;
@@ -91,10 +97,10 @@ class _ImportPageState extends State<ImportPage> {
               children: [
                 Expanded(
                   // HEIGHT
-                  flex: 1,
+                  flex: 2,
                   child: Container(
                     alignment: Alignment.center,
-                    child: Text("H"),
+                    child: Text("H: ${height}"),
                   ),
                 ),
                 Expanded(
@@ -126,7 +132,7 @@ class _ImportPageState extends State<ImportPage> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (height > 3) {
+                                  if (height > minHeight) {
                                     height = height - 1;
                                   }
                                 });
@@ -138,7 +144,7 @@ class _ImportPageState extends State<ImportPage> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (height < 50) {
+                                  if (height < maxHeight) {
                                     height = height + 1;
                                   }
                                 });
@@ -169,10 +175,10 @@ class _ImportPageState extends State<ImportPage> {
               children: [
                 Expanded(
                   // WIDTH
-                  flex: 1,
+                  flex: 2,
                   child: Container(
                     alignment: Alignment.center,
-                    child: Text("W"),
+                    child: Text("W: ${width}"),
                   ),
                 ),
                 Expanded(
@@ -204,7 +210,7 @@ class _ImportPageState extends State<ImportPage> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (width > 3) {
+                                  if (width > minWidth) {
                                     width = width - 1;
                                   }
                                 });
@@ -216,7 +222,7 @@ class _ImportPageState extends State<ImportPage> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (width < 50) {
+                                  if (width < maxWidth) {
                                     width = width + 1;
                                   }
                                 });
@@ -278,7 +284,61 @@ class _ImportPageState extends State<ImportPage> {
           )
         ),
         newimage == null
-      ? sliders(screenHeight, screenWidth)
+      ? Column(
+          children: [
+            Text("Pick your size with the sliders below"),
+            sliders(screenHeight, screenWidth),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("OR"),
+            ),
+            FractionallySizedBox(
+              widthFactor: 0.3,
+              child: GestureDetector(
+                onTap: (){
+                  if(imageHeight > maxHeight || imageWidth > maxWidth){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Center(
+                          child: Text(
+                            'Image dimensions too large'
+                          )
+                        ),
+                      ),
+                    );
+                  } else if (imageHeight < minHeight || imageWidth < minWidth) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Center(
+                          child: Text(
+                            'Image dimensions too small'
+                          )
+                        ),
+                      ),
+                    );
+                  } else {
+                     setState((){
+                      height = imageHeight;
+                      width = imageWidth;
+                    });
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Use Image Dimensions"
+                    ),
+                  ),
+                )
+              )
+            )
+          ]
+        )
       : Center(
           child: ElevatedButton(
             onPressed: () {
