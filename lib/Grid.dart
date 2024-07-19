@@ -258,10 +258,26 @@ class Grid with ChangeNotifier {
         }
       }
     }
-    //remove one of the layers, replace current layer, and delete other layer
-    allLayers[currentLayerIndex] = newLayer;
-    allLayers.remove(allLayers[otherLayerIndex!]);
+    Layer otherLayer = allLayers[otherLayerIndex!];
+    removeLayer(layer); //removes current layer
+    removeLayer(otherLayer); //removes other layer
+
+    addView(newLayer); //add merged layer to be viewable
+    allLayers.add(newLayer); // add new layer to this list
+    changeEditable(newLayer); //make merged layer editable
+
     notifyListeners(); //REFRESHES LAYERSPAGE
+    /*
+    print("LIST OF VIEWS");
+    for(var layer in listOfViews){
+      print(layer.name);
+    }
+    print("ALL LAYERS");
+    for(var layer in allLayers){
+      print(layer.name);
+    }
+    print("END");
+    */
   }
 
   void removeLayer(Layer layer){ //when you deletinng the last listofview index, it crashes because editable has nothing to point to
@@ -271,7 +287,8 @@ class Grid with ChangeNotifier {
     }
     if(allLayers.contains(layer)){ //remove from allLayers
       allLayers.remove(layer);
-    } else if(listOfViews.contains(layer)){ //remove from listofViews
+    }
+    if(listOfViews.contains(layer)){ //remove from listofViews
       listOfViews.remove(layer);
     }
     notifyListeners();

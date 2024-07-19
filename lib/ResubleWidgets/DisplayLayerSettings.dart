@@ -225,10 +225,6 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                   duration: Duration(milliseconds: 300),
                   left: 0,
                   top: showMenu ? 0 : -100, // Slide into view
-                  /*child: LayerMenu(
-                    grid: widget.grid,
-                    layerIndex: widget.layerIndex,
-                  ),*/
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
@@ -292,6 +288,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                           onPressed: () {
                                             //showMenu = !showMenu; //when swapping layers, close menu, another solution is better
                                             grid.swapLayers(layer, "up");
+                                            showMenu = false;
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -300,6 +297,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                           onPressed: () {
                                             //showMenu = !showMenu;
                                             grid.swapLayers(layer, "down");
+                                            showMenu = false; 
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -330,6 +328,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                           child: Text('Merge Above'),
                                           onPressed: () {
                                             grid.mergeLayers(layer, "up");
+                                            showMenu = false;
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -337,6 +336,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                           child: Text('Merge Below'),
                                           onPressed: () {
                                             grid.mergeLayers(layer, "down");
+                                            showMenu = false;
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -398,187 +398,6 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
           ),
     
       ],
-    );
-  }
-}
-
-class LayerMenu extends StatefulWidget {
-  final int layerIndex;
-  final Grid grid;
-
-  const LayerMenu({
-    super.key,
-    required this.layerIndex,
-    required this.grid,
-  });
-
-  @override
-  _LayerMenuState createState() => _LayerMenuState();
-}
-
-class _LayerMenuState extends State<LayerMenu> {
-  late Layer layer;
-
-  @override
-  void initState() {
-    super.initState();
-    //layer = widget.grid.allLayers[widget.layerIndex];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    layer = widget.grid.allLayers[widget.layerIndex]; 
-
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: Center(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Column(
-                children: [
-                  Text(
-                    "Opacity",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Slider(
-                    value: layer.opacity,
-                    onChanged: (newValue) {
-                      setState(() {
-                        layer.opacity = newValue;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Enter new layer name',
-                ),
-                onChanged: (text) {
-                  setState(() {
-                    layer.changeName(text);
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoActionSheet(
-                      title: Text('Swap Layers'),
-                      actions: <Widget>[
-                        CupertinoActionSheetAction(
-                          child: Text('Swap With Layer Above'),
-                          onPressed: () {
-                            widget.grid.swapLayers(layer, "up");
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        CupertinoActionSheetAction(
-                          child: Text('Swap With Layer Below'),
-                          onPressed: () {
-                            widget.grid.swapLayers(layer, "down");
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                      cancelButton: CupertinoActionSheetAction(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.swap_calls,
-                ),
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoActionSheet(
-                      title: Text('Merge Layers'),
-                      actions: <Widget>[
-                        CupertinoActionSheetAction(
-                          child: Text('Merge Above'),
-                          onPressed: () {
-                            widget.grid.mergeLayers(layer, "up");
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        CupertinoActionSheetAction(
-                          child: Text('Merge Below'),
-                          onPressed: () {
-                            widget.grid.mergeLayers(layer, "down");
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                      cancelButton: CupertinoActionSheetAction(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.merge,
-                ),
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  if (widget.grid.width == widget.grid.height) {
-                    widget.grid.rotateLayer(layer);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Center(
-                          child: Text(
-                            "Cannot rotate layer when the width and height are different",
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
-                icon: Icon(
-                  Icons.rotate_right,
-                ),
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  widget.grid.reflectLayer(layer);
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
