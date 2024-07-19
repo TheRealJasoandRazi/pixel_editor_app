@@ -287,8 +287,8 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                           child: Text('Swap With Layer Above'),
                                           onPressed: () {
                                             //showMenu = !showMenu; //when swapping layers, close menu, another solution is better
+                                            showMenu = false; 
                                             grid.swapLayers(layer, "up");
-                                            showMenu = false;
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -296,8 +296,8 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                           child: Text('Swap With Layer Below'),
                                           onPressed: () {
                                             //showMenu = !showMenu;
-                                            grid.swapLayers(layer, "down");
                                             showMenu = false; 
+                                            grid.swapLayers(layer, "down");
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -355,7 +355,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                 ),
                               ),
                             ),
-                            Expanded(
+                            Expanded( //ROTATE LAYER BUTTON
                               child: IconButton(
                                 onPressed: (){
                                   if(grid.width == grid.height){
@@ -377,7 +377,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                 ),
                               ),
                             ),
-                            Expanded(
+                            Expanded( //REFLECT LAYER BUTTON
                               child: IconButton(
                                 onPressed: (){
                                   grid.reflectLayer(layer);
@@ -387,6 +387,16 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                 ),
                               ),
                             ),
+                            Expanded(
+                              child: IconButton(
+                                onPressed: (){
+                                  grid.duplicateLayer(layer);
+                                },
+                                icon: Icon(
+                                  Icons.copy
+                                )
+                              ),
+                            )
                           ],
                         ),
                       ),

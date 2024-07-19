@@ -258,12 +258,19 @@ class Grid with ChangeNotifier {
         }
       }
     }
+
     Layer otherLayer = allLayers[otherLayerIndex!];
+
+    if(currentLayerIndex != allLayers.length - 1){ //if the current layer isnt the last one
+      allLayers.insert(currentLayerIndex, newLayer); //insert under current layer
+    } else {
+      allLayers.add(newLayer);
+    }
+    addView(newLayer);
+
     removeLayer(layer); //removes current layer
     removeLayer(otherLayer); //removes other layer
 
-    addView(newLayer); //add merged layer to be viewable
-    allLayers.add(newLayer); // add new layer to this list
     changeEditable(newLayer); //make merged layer editable
 
     notifyListeners(); //REFRESHES LAYERSPAGE
@@ -278,6 +285,21 @@ class Grid with ChangeNotifier {
     }
     print("END");
     */
+  }
+
+  void duplicateLayer(Layer layer){
+    Layer duplicateLayer = layer.clone();
+    int index = allLayers.indexOf(layer);
+
+    if(index != allLayers.length - 1){ //if the current layer isnt the last one
+      allLayers.insert(index + 1, duplicateLayer); //insert under current layer
+      if(editable > index){
+        editable = editable - 1;
+      }
+    } else {
+      allLayers.add(duplicateLayer);
+    }
+    notifyListeners();
   }
 
   void removeLayer(Layer layer){ //when you deletinng the last listofview index, it crashes because editable has nothing to point to
