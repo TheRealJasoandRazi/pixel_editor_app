@@ -476,6 +476,31 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                 ),
               ),
             ),
+            Expanded( //DUPLICATE GRID
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: GestureDetector(
+                  onTap: () {
+                    gridListCubit.addGrid(
+                      gridListCubit.state[selectedGridCubit.state!].clone()
+                    );
+                    selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.copy,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Expanded( //LIST OF TOOLS
               flex: 8,
               child: LayoutBuilder(

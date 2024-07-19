@@ -92,6 +92,20 @@ class Grid with ChangeNotifier {
     //add editable state here
   }
 
+  Grid clone(){
+    Grid clone = Grid(width, height);
+    clone.allLayers = []; //empty lists
+    clone.listOfViews = []; //empty lists
+    for(var layer in allLayers){ //deep copy of lists
+      Layer clonedLayer = layer.clone();
+      clone.allLayers.add(clonedLayer);
+      if(isViewable(layer)){
+        clone.listOfViews.add(clonedLayer);
+      }
+    }
+    return clone;
+  }
+
   void rotateLayer(Layer layer) {
     int index = allLayers.indexOf(layer);
     if(index == -1){
