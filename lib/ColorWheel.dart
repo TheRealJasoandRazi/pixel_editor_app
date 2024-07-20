@@ -5,6 +5,8 @@ import 'Cubit/ColorState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Cubit/ColorWheelState.dart';
+import 'Pages/FullScreenColorWheelPage.dart';
+import 'ResubleWidgets/PageTransitionAnimations.dart';
 
 class ColorWheel extends StatefulWidget {
   const ColorWheel({Key? key}) : super(key: key);
@@ -27,6 +29,8 @@ class _ColorWheelState extends State<ColorWheel> with SingleTickerProviderStateM
   late final ColorCubit colorCubit;
   late final ColorWheelCubit colorWheelCubit;
   late RecentColorsCubit recentColorsCubit;
+
+  PageTransitionAnimations pageTransitionAnimations = PageTransitionAnimations();
 
   @override
   void initState() {
@@ -131,32 +135,49 @@ Widget colorWheel(double width, double height) {
                   flex: 3,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
-                    child: GestureDetector(
-                      onPanUpdate: (details) {
-                        final box = context.findRenderObject() as RenderBox;
-                        final offset = box.globalToLocal(details.globalPosition);
-                        final size = box.size;
-                        final center = Offset(size.width / 2, size.height / 2);
-                        final dx = offset.dx - center.dx;
-                        final dy = offset.dy - center.dy;
-                        setState(() {
-                          angle = (atan2(dy, dx) * 180 / pi + 360) % 360;
-                          selectedColor = HSLColor.fromAHSL(1, angle, saturation, lightness).toColor();
-                          colorCubit.changeColor(selectedColor);
-                          indicatorPosition = offset;
-                        });
-                      },
-                      onPanEnd: (details) { //add color to recents when user lets go
-                        recentColorsCubit.addColor(colorCubit.state); 
-                      },
-                      child: CustomPaint(
-                        size: Size(width * 0.8, height * 0.8),
-                        painter: ColorWheelPainter(
-                          indicatorPosition: indicatorPosition,
-                          lightness: lightness,
-                          saturation: saturation,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text("Double click color wheel to expand"),
                         ),
-                      ),
+                        Expanded(
+                          flex: 3,
+                          child: GestureDetector(
+                            onPanUpdate: (details) {
+                              final box = context.findRenderObject() as RenderBox;
+                              final offset = box.globalToLocal(details.globalPosition);
+                              final size = box.size;
+                              final center = Offset(size.width / 2, size.height / 2);
+                              final dx = offset.dx - center.dx;
+                              final dy = offset.dy - center.dy;
+                              setState(() {
+                                angle = (atan2(dy, dx) * 180 / pi + 360) % 360;
+                                selectedColor = HSLColor.fromAHSL(1, angle, saturation, lightness).toColor();
+                                colorCubit.changeColor(selectedColor);
+                                indicatorPosition = offset;
+                              });
+                            },
+                            onPanEnd: (details) { //add color to recents when user lets go
+                              recentColorsCubit.addColor(colorCubit.state); 
+                            },
+                            onDoubleTap: (){
+                              Navigator.push(
+                                context,
+                                pageTransitionAnimations.fadeInTransition(FullScreenColorWheelPage())
+                              );
+                            },
+                            child: CustomPaint(
+                              size: Size(width * 0.8, height * 0.8),
+                              painter: ColorWheelPainter(
+                                indicatorPosition: indicatorPosition,
+                                lightness: lightness,
+                                saturation: saturation,
+                              ),
+                            ),
+                          )
+                        )
+                      ]
                     )
                   ),
                 ),

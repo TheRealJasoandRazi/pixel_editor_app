@@ -188,16 +188,9 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                         setState(() {
                           if (grid.allLayers.length > 1) {
                             grid.removeLayer(layer);
+                            snackBar("Deleted ${layer.name}");
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Center(
-                                  child: Text(
-                                    'Cannot delete the last layer, otherwise it will delete the grid entirely',
-                                  ),
-                                ),
-                              ),
-                            );
+                            snackBar('Cannot delete the last layer, otherwise it will delete the grid entirely');
                           }
                         });
                       },
@@ -330,6 +323,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                             grid.mergeLayers(layer, "up");
                                             showMenu = false;
                                             Navigator.of(context).pop();
+                                            snackBar("Layer Merged!");
                                           },
                                         ),
                                         CupertinoActionSheetAction(
@@ -338,6 +332,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                             grid.mergeLayers(layer, "down");
                                             showMenu = false;
                                             Navigator.of(context).pop();
+                                            snackBar("Layer Merged!");
                                           },
                                         ),
                                       ],
@@ -361,15 +356,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                                   if(grid.width == grid.height){
                                     grid.rotateLayer(layer);
                                   } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Center(
-                                          child: Text(
-                                            "Cannot rotate layer when the width and height are different",
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    snackBar( "Cannot rotate layer when the width and height are different");
                                   }
                                 },
                                 icon: Icon(
@@ -391,6 +378,7 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
                               child: IconButton(
                                 onPressed: (){
                                   grid.duplicateLayer(layer);
+                                  snackBar("Layer Duplicated!");
                                 },
                                 icon: Icon(
                                   Icons.copy
@@ -409,5 +397,18 @@ class _DisplayLayerSettingsState extends State<DisplayLayerSettings> {
     
       ],
     );
+  }
+
+  Widget snackBar(String text){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Center(
+          child: Text(
+            text,
+          ),
+        ),
+      ),
+    );
+    return Container();
   }
 }

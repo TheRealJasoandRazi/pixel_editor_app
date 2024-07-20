@@ -485,6 +485,15 @@ class _EditorPageState extends State<EditorPage>  with SingleTickerProviderState
                       gridListCubit.state[selectedGridCubit.state!].clone()
                     );
                     selectedGridCubit.changeSelection(gridListCubit.state.length - 1);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(
+                          child: Text(
+                            "Duplicated Grid!",
+                          ),
+                        ),
+                      ),
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(

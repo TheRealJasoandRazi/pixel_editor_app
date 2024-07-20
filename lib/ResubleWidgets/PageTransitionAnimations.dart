@@ -32,6 +32,7 @@ class PageTransitionAnimations {
   }
 }
 
+//WHATS THE POINT OF THIS?
 enum TransitionType {
   slideDown,
   slideUp,

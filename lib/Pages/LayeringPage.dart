@@ -79,7 +79,15 @@ class _LayeringPageState extends State<LayeringPage> {
                 onTap: () {
                   setState(() {
                     gridListCubit.state[widget.gridIndex].addLayer();
-                    //grid.addLayer();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(
+                          child: Text(
+                            "Added New Layer!",
+                          ),
+                        ),
+                      ),
+                    );
                   });
                 },
                 child: Container(

@@ -318,15 +318,21 @@ class Grid with ChangeNotifier {
 
   void removeLayer(Layer layer){ //when you deletinng the last listofview index, it crashes because editable has nothing to point to
     int index = listOfViews.indexOf(layer);
-    if(index == editable){
-      editable = 0; //in case user deletes layer tahts editables
-    }
+
     if(allLayers.contains(layer)){ //remove from allLayers
       allLayers.remove(layer);
     }
     if(listOfViews.contains(layer)){ //remove from listofViews
       listOfViews.remove(layer);
     }
+
+    if(index == editable){
+      editable = 0;
+      if(listOfViews.isEmpty){ //Incase user deletes last viewable layer
+        addView(allLayers[0]);
+      }
+    }
+
     notifyListeners();
   }
 

@@ -57,7 +57,7 @@ class _ExportImagePageState extends State<ExportImagePage> {
     final RenderRepaintBoundary? boundary = globalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
     if (boundary != null) {
-      final ui.Image image = await boundary.toImage(pixelRatio: 10);
+      final ui.Image image = await boundary.toImage(pixelRatio: 1); //defualt pixel ratio
     
       final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixel_editor_app/Cubit/EraseState.dart';
 import 'package:pixel_editor_app/Cubit/GridListState.dart';
+import 'package:pixel_editor_app/Cubit/RecentColorsState.dart';
 import '../Cubit/PaintState.dart';
 import '../Cubit/ColorState.dart';
 import '../Cubit/DropperState.dart';
@@ -32,6 +33,7 @@ class _CreateGridState extends State<CreateGrid> {
   late EraseCubit eraseCubit;
   late DropperCubit dropperCubit;
   late GridListCubit gridListCubit;
+  late RecentColorsCubit recentColorsCubit;
 
   late double cellWidth;
   late double cellHeight;
@@ -48,6 +50,7 @@ class _CreateGridState extends State<CreateGrid> {
     eraseCubit = BlocProvider.of<EraseCubit>(context);
     dropperCubit = BlocProvider.of<DropperCubit>(context);
     gridListCubit = BlocProvider.of<GridListCubit>(context);
+    recentColorsCubit = BlocProvider.of<RecentColorsCubit>(context);
   }
 
   void _calculateGridIndex(Offset localPosition, Color color) {
@@ -75,6 +78,7 @@ class _CreateGridState extends State<CreateGrid> {
       } else if (dropperCubit.state){
         Color newColor = grid.getColor(row, column);
         colorCubit.changeColor(newColor);
+        recentColorsCubit.addColor(newColor);
       }
     });
   }
